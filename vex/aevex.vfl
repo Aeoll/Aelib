@@ -27,6 +27,21 @@ vector toCartesian(vector v)
 // ==============================
 // ==============================
 
+float bias(t, bias){
+    return (t / ((((1.0/bias) - 2.0)*(1.0 - t))+1.0));
+}
+
+float gain(t, gain){
+    if(t < 0.5) {
+        return bias(t * 2.0,gain)/2.0;
+    }   
+    else { 
+        return bias(t * 2.0 - 1.0,1.0 - gain)/2.0 + 0.5;
+    }
+}
+
+
+
 float smoothstep(float x){                
     return x * x * (3 - 2 * x);
 }
