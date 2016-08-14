@@ -143,3 +143,13 @@ void shuffle(int array[]){
         }
     }
 }
+
+// from hemesh
+float distToLine3D(vector p ; vector la; vector lb){
+    vector ab = lb - la;
+    vector ap = p - la;
+    float e = dot(ap, ab);
+    float f = dot(ab, ab);
+    float d2 = dot(ap, ap) - e*e/f;
+    return sqrt(d2);
+}
