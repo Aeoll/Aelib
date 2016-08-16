@@ -100,6 +100,14 @@ float ramptotri(float t){
     return 1-2*abs(0.5 - t);
 }
 
+float heading(vector2 v){
+    return atan2(v.y, v.x);
+}
+
+vector heading(vector v){
+    return set(atan2(v.y, v.x), atan2(v.z, v.x), atan2(v.z, v.y));
+}
+
 // ==============================
 // Useful geometry functions
 // ==============================
