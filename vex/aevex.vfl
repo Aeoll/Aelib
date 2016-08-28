@@ -45,11 +45,11 @@ vector stereo4(vector4 p; float mul) {
 // Useful maths functions
 // ==============================
 
-float bias(t, bias){
+float bias(float t, bias){
     return (t / ((((1.0/bias) - 2.0)*(1.0 - t))+1.0));
 }
 
-float gain(t, gain){
+float gain(float t, gain){
     if(t < 0.5) {
         return bias(t * 2.0,gain)/2.0;
     }   
@@ -72,7 +72,7 @@ float smoothstep(float e0, e1, t){
 }
 
 //double smoothstep
-float doublesmoothstep(float e0, e1 e2, e3, t){                
+float doublesmoothstep(float e0, e1, e2, e3, t){                
     float x = smoothstep(e0, e1, t);
     float y = 1- smoothstep(e2, e3, t);
     return min(x, y);
