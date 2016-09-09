@@ -12,7 +12,7 @@
 // Vector manipulation
 // ==============================
 
-vector toPolar(vector v)
+vector topolar(vector v)
 {
     float r = length(v);
     float th = acos(v.z/r);
@@ -21,7 +21,7 @@ vector toPolar(vector v)
     return a;
 }
 
-vector toCartesian(vector v)
+vector frompolar(vector v)
 {
     float x=v.x*sin(v.y)*cos(v.z);
     float y=v.x*sin(v.y)*sin(v.z);
@@ -30,15 +30,35 @@ vector toCartesian(vector v)
     return a;
 }
 
+vector toPolar(vector v){
+    return topolar(v); 
+}
+
+vector toCartesian(vector v){
+    return frompolas(v); 
+}
+
+
 // forward and reverse stereographic projection from 3D-4D
 vector4 inverseStereo4(vector p; float mul) {
-        float n = dot(p,p)+1;
-        return set(p.x*(mul/n),p.y*(mul/n),p.z*(mul/n),(n-2)/n);
+    float n = dot(p,p)+1;
+    return set(p.x*(mul/n),p.y*(mul/n),p.z*(mul/n),(n-2)/n);
 }
 
 vector stereo4(vector4 p; float mul) {
-        return set(p.x/(1-p.w),p.y/(1-p.w),p.z/(1-p.w));
-        //return set(p.x/(1+p.w),p.y/(1+p.w),p.z/(1+p.w)); wrong but fun  
+    return set(p.x/(1-p.w),p.y/(1-p.w),p.z/(1-p.w));
+    //return set(p.x/(1+p.w),p.y/(1+p.w),p.z/(1+p.w)); wrong but fun  
+}
+
+
+// from hemesh
+float distToLine3D(vector p ; vector la; vector lb){
+    vector ab = lb - la;
+    vector ap = p - la;
+    float e = dot(ap, ab);
+    float f = dot(ab, ab);
+    float d2 = dot(ap, ap) - e*e/f;
+    return sqrt(d2);
 }
 
 // ==============================
@@ -159,16 +179,6 @@ void shuffle(int array[]){
           int t = array[j];
           array[j] = array[i];
           array[i] = t;
-        }
-    }
-}
-
-// from hemesh
-float distToLine3D(vector p ; vector la; vector lb){
-    vector ab = lb - la;
-    vector ap = p - la;
-    float e = dot(ap, ab);
-    float f = dot(ab, ab);
-    float d2 = dot(ap, ap) - e*e/f;
-    return sqrt(d2);
+      }
+  }
 }
