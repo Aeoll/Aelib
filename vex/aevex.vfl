@@ -148,6 +148,16 @@ vector heading(vector v){
     return set(atan2(v.y, v.x), atan2(v.z, v.x), atan2(v.z, v.y));
 }
 
+// rint with float step
+float rfloat(float step, value){
+    return step * rint(value/step);
+}
+
+float floorfloat(float step, value){
+    return step * floor(value/step);
+}
+
+
 // ==============================
 // Geometry functions (use ptnum or primnum etc)
 // ==============================
