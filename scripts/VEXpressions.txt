@@ -1,0 +1,6 @@
+attribwrangle/snippet
+    ae_include
+	    #include <aevex.vfl>
+    ae_colour
+	    @Cd = 1;
+	    @Alpha = 1.0;

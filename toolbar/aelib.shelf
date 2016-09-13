@@ -5,7 +5,11 @@
  Note, that two definitions of the same element are not allowed in
  a single file. -->
 
-  <tool name="Reset Colours" label="Reset Colours" icon="PLASMA_App">
+  <toolshelf name="Aelib" label="Aelib">
+    <memberTool name="Reset_Colours"/>
+  </toolshelf> 
+
+  <tool name="Reset_Colours" label="Reset Colours" icon="PLASMA_App">
     <script scriptType="python"><![CDATA[root = hou.node("/")
        
 for cur_node in root.allNodes():
