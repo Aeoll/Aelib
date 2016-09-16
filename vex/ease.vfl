@@ -1,12 +1,3 @@
-#define M_PI 3.14159265359	
-#define M_PI_2 M_PI*2
-
-// Modeled after the line y = x
-float LinearInterpolation(float p)
-{
-	return p;
-}
-
 // Modeled after the parabola y = x^2
 float QuadraticEaseIn(float p)
 {
