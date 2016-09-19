@@ -153,7 +153,16 @@ float rfloat(float step, value){
     return step * rint(value/step);
 }
 
+// rint with float step
+vector rfloat(float step; vector value){
+    return step * rint(value/step);
+}
+
 float floorfloat(float step, value){
+    return step * floor(value/step);
+}
+
+float floorfloat(float step; vector value){
     return step * floor(value/step);
 }
 
