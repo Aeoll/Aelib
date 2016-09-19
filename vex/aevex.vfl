@@ -35,7 +35,7 @@ vector toPolar(vector v){
 }
 
 vector toCartesian(vector v){
-    return frompolas(v); 
+    return frompolar(v); 
 }
 
 
