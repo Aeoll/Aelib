@@ -65,11 +65,45 @@ float distToLine3D(vector p ; vector la; vector lb){
 // Useful maths functions
 // ==============================
 
+vector4 rgbtocmyk(vector rgb){
+    vector4 cmyk;
+    cmyk.x = 1 - rgb.r;
+    cmyk.y = 1 - rgb.g;
+    cmyk.z = 1 - rgb.b;
+    cmyk.w = min(cmyk[0], cmyk[1], cmyk[2]);
+    cmyk[0] = clamp(cmyk[0] - cmyk[3], 0, 1);
+    cmyk[1] = clamp(cmyk[1] - cmyk[3], 0, 1);
+    cmyk[2] = clamp(cmyk[2] - cmyk[3], 0, 1);
+    cmyk[3] = clamp(cmyk[3], 0, 1);
+    return cmyk;
+}
+
+vector cmyktorgb(vector4 cmyk){
+    vector rgb;
+    rgb[0] = 1.0 - min(1.0f, cmyk.x + cmyk.w);
+    rgb[1] = 1.0 - min(1.0f, cmyk.y + cmyk.w);
+    rgb[2] = 1.0 - min(1.0f, cmyk.z + cmyk.w);
+    return rgb;
+}
+
 float bias(float t, bias){
     return (t / ((((1.0/bias) - 2.0)*(1.0 - t))+1.0));
 }
 
+vector bias(vector t, bias){
+    return set(bias(t.x),bias(t.y),bias(t.z));
+}
+
 float gain(float t, gain){
+    if(t < 0.5) {
+        return bias(t * 2.0,gain)/2.0;
+    }   
+    else { 
+        return bias(t * 2.0 - 1.0,1.0 - gain)/2.0 + 0.5;
+    }
+}
+
+vector gain(vector t, gain){
     if(t < 0.5) {
         return bias(t * 2.0,gain)/2.0;
     }   
