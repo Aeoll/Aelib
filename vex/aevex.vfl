@@ -21,12 +21,28 @@ vector topolar(vector v)
     return a;
 }
 
+vector2 topolar(vector2 v)
+{
+    float r = length(v);
+    float th = acos(v.x/r);
+    vector2 a = set(r,th);
+    return a;
+}
+
 vector frompolar(vector v)
 {
     float x=v.x*sin(v.y)*cos(v.z);
     float y=v.x*sin(v.y)*sin(v.z);
     float z=v.x*cos(v.y);
     vector a = set(x,y,z);
+    return a;
+}
+
+vector2 frompolar(vector2 v)
+{
+    float x=v.x*cos(v.y);
+    float y=v.x*sin(v.y);
+    vector2 a = set(x,y);
     return a;
 }
 
