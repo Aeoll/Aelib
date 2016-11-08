@@ -68,7 +68,7 @@ vector stereo4(vector4 p; float mul) {
 
 
 // from hemesh
-float distToLine3D(vector p ; vector la; vector lb){
+float distToLine3D(vector p, la, lb){
     vector ab = lb - la;
     vector ap = p - la;
     float e = dot(ap, ab);
@@ -76,6 +76,27 @@ float distToLine3D(vector p ; vector la; vector lb){
     float d2 = dot(ap, ap) - e*e/f;
     return sqrt(d2);
 }
+
+// from toxiclibs
+float ptplanedist(vector p,  o,  n) {
+    float sn = -dot(n, p-o);
+    float sd = length2(n);
+    vector isec = p + n*(sn / sd);
+    return distance(isec, p);
+}       
+
+// LOOK AT THIS
+// vector getProjectedPoint(vector p, o, n) {
+//     vector dir;
+//     if (dot(n, -p) < 0) {
+//         dir = -n;
+//     } else {
+//         dir = n;
+//     }
+//     vector proj = new Ray3D(p, dir).getPointAtDistance(getDistanceToPoint(p));
+//     return proj;
+// }
+
 
 // ==============================
 // Useful maths functions
