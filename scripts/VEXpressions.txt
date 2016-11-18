@@ -1,6 +1,24 @@
 attribwrangle/snippet
     ae_include
-	    #include <aevex.vfl>
+    #include <aevex.vfl>
+
+attribwrangle/snippet
     ae_colour
-	    @Cd = 1;
-	    @Alpha = 1.0;
+    @Cd = 1;
+    @Alpha = 1.0;
+
+attribwrangle/snippet
+    ae_NFromP
+    @N = normalize(@P);
+
+attribwrangle/snippet
+    ae_chramp
+    @Cd = chramp("ramp", f@u); 
+
+attribwrangle/snippet
+    ae_curveuv  
+    // Assigns u-values to all points in all prims.
+    int v = pointvertex(0, @ptnum);
+    int ind = vertexprimindex(0, v);
+    int npts = len(primpoints(0, @primnum));
+    float u = float(ind) / (npts-1);
