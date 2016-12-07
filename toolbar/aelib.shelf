@@ -5,7 +5,18 @@
  Note, that two definitions of the same element are not allowed in
  a single file. -->
 
-  <tool name="Reset_Colours" label="Reset Colours" icon="PLASMA_App">
+  <toolshelf name="aelib_shelf" label="Aelib">
+    <memberTool name="nodeclrs"/>
+    <memberTool name="reset_colours"/>
+    <memberTool name="blast_to_split"/>
+    <memberTool name="merge"/>
+    <memberTool name="xform"/>
+    <memberTool name="copy"/>
+    <memberTool name="null"/>
+    <memberTool name="wrangle"/>
+  </toolshelf>
+
+  <tool name="reset_colours" label="Reset Colours" icon="PLASMA_App">
     <script scriptType="python"><![CDATA[root = hou.node("/")
        
 for cur_node in root.allNodes():
@@ -13,5 +24,14 @@ for cur_node in root.allNodes():
     hcol.setRGB((0.8, 0.8, 0.8))
     cur_node.setColor(hcol)
 ]]></script>
+  </tool>
+
+  <tool name="blast_to_split" label="Blast to Split" icon="OBJ_geo">
+    <script scriptType="python"><![CDATA[for node in hou.selectedNodes():
+    if(node.type() == hou.nodeType(hou.sopNodeTypeCategory(), "blast")):
+        # inv = node.parm("negate").evalAsInt()
+        newnode = node.changeNodeType("split", False, True, True, False)
+        # newnode.parm("negate").set(1-negate)
+    ]]></script>
   </tool>
 </shelfDocument>

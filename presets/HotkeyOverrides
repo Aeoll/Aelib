@@ -1,0 +1,9 @@
+h.pane.wsheet.tool:wrangle	"AttribWrangle (W)"	"Shelf Tool: AttribWrangle (W)"	 W
+h.update_mode_always	"Update Mode 'Always'"	"Update mode 'Always'"	 Ctrl+Shift+U
+h.pane.wsheet.tool:null	"Null (N)"	"Shelf Tool: Null (N)"	 N
+h.pane.wsheet.opmenu.output_visualize	"Visualize Output"	"Visualize Output Under Cursor"	 Shift+X
+h.pane.wsheet.tool:copy	"Copy (C)"	"Shelf Tool: Copy (C)"	 X
+h.pane.wsheet.tool:merge	"Merge (M)"	"Shelf Tool: Merge (M)"	 M
+h.pane.wsheet.tool:xform	"Transform (X)"	"Shelf Tool: Transform (X)"	 T
+h.update_mode_never	"Update Mode 'Never'"	"Update mode 'Never'"	 Ctrl+Shift+M
+h.pane.imgui.loadlut	"Load LUT"	"Load LUT"	
