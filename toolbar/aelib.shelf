@@ -43,10 +43,11 @@ for cur_node in root.allNodes():
         parent = node.parent()
         null = parent.createNode("null")
         null.setNextInput(node)
-        null.moveToGoodPosition(True, False, True, True) 
-        null.setSelected(True, True, False)   
+        null.moveToGoodPosition(True, False, True, True)
         
-        null.setDisplayFlag(True)    ]]></script>
+        null.setSelected(True, True, False)  
+        null.setCurrent(True)
+        null.setDisplayFlag(True)]]></script>
   </tool>
 
   <tool name="copy" label="Copy (X)" icon="PLASMA_App">
