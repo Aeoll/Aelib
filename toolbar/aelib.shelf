@@ -102,4 +102,18 @@ PY_PATH = "".join([BASE_PATH,"\houdini15.5",
                              "\scripts\colorLab\ColorLab_v1.0.py"])
 execfile(PY_PATH)   ]]></script>
   </tool>
+
+  <tool name="wrangle" label="Wrangle (W)" icon="PLASMA_App">
+    <script scriptType="python"><![CDATA[if(len(hou.selectedNodes()) > 0):
+    node = hou.selectedNodes()[0]
+    if(node.type().category() == hou.sopNodeTypeCategory()):
+        parent = node.parent()
+        wrangle = parent.createNode("attribwrangle")
+        wrangle.setNextInput(node)
+        wrangle.moveToGoodPosition(True, False, True, True) 
+        wrangle.setSelected(True, True, False)  
+        
+        # wrangle.setCurrent(True, True)
+        wrangle.setDisplayFlag(True)]]></script>
+  </tool>
 </shelfDocument>
