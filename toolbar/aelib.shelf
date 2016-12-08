@@ -34,4 +34,72 @@ for cur_node in root.allNodes():
         # newnode.parm("negate").set(1-negate)
     ]]></script>
   </tool>
+
+  <tool name="null" label="Null (N)" icon="PLASMA_App">
+    <script scriptType="python"><![CDATA[if(len(hou.selectedNodes()) > 0):
+    node = hou.selectedNodes()[0]
+    
+    if(node.type().category() == hou.sopNodeTypeCategory()):
+        parent = node.parent()
+        null = parent.createNode("null")
+        null.setNextInput(node)
+        null.moveToGoodPosition(True, False, True, True) 
+        null.setSelected(True, True, False)   
+        
+        null.setDisplayFlag(True)    ]]></script>
+  </tool>
+
+  <tool name="copy" label="Copy (X)" icon="PLASMA_App">
+    <script scriptType="python"><![CDATA[if(len(hou.selectedNodes()) > 0):
+
+    nodes = hou.selectedNodes()
+    if(nodes[0].type().category() == hou.sopNodeTypeCategory()):
+        parent = nodes[0].parent()
+        copy = parent.createNode("copy")
+        if(len(nodes) == 1):
+            copy.setNextInput(nodes[0])
+        else:
+            copy.setNextInput(nodes[0])
+            copy.setNextInput(nodes[1])
+        copy.moveToGoodPosition(True, False, True, True) 
+        copy.setSelected(True, True, False)   
+        copy.setDisplayFlag(True)]]></script>
+  </tool>
+
+  <tool name="xform" label="Transform (T)" icon="PLASMA_App">
+    <script scriptType="python"><![CDATA[if(len(hou.selectedNodes()) > 0):
+    node = hou.selectedNodes()[0]
+    if(node.type().category() == hou.sopNodeTypeCategory()):
+        parent = node.parent()
+        trans = parent.createNode("xform")
+        trans.setNextInput(node)
+        trans.moveToGoodPosition(True, False, True, True) 
+        trans.setSelected(True, True, False)  
+        trans.setDisplayFlag(True)    ]]></script>
+  </tool>
+
+  <tool name="merge" label="Merge (M)" icon="PLASMA_App">
+    <script scriptType="python"><![CDATA[if(len(hou.selectedNodes()) > 0):
+    nodes = hou.selectedNodes()
+    parent = nodes[0].parent()
+    merge = parent.createNode("merge")
+    
+    for node in hou.selectedNodes():
+        if(node.type().category() == hou.sopNodeTypeCategory()):
+            merge.setNextInput(node)
+        
+    merge.moveToGoodPosition(True, False, True, True) 
+    merge.setSelected(True, True, False)   
+    merge.setDisplayFlag(True)]]></script>
+  </tool>
+
+  <tool name="nodeclrs" label="ColorLib" icon="PLASMA_App">
+    <script scriptType="python"><![CDATA[import os
+
+#Add dynamic path to houdini home folder
+BASE_PATH = hou.hscriptExpression("$HOME").replace("/", "\\")
+PY_PATH = "".join([BASE_PATH,"\houdini15.5",
+                             "\scripts\colorLab\ColorLab_v1.0.py"])
+execfile(PY_PATH)   ]]></script>
+  </tool>
 </shelfDocument>
