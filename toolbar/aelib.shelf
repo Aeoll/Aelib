@@ -8,12 +8,14 @@
   <toolshelf name="aelib_shelf" label="Aelib">
     <memberTool name="nodeclrs"/>
     <memberTool name="reset_colours"/>
+    <memberTool name="caps"/>
     <memberTool name="blast_to_split"/>
     <memberTool name="merge"/>
     <memberTool name="xform"/>
     <memberTool name="copy"/>
     <memberTool name="null"/>
     <memberTool name="wrangle"/>
+    <memberTool name="iterate"/>
   </toolshelf>
 
   <tool name="reset_colours" label="Reset Colours" icon="PLASMA_App">
@@ -116,5 +118,22 @@ execfile(PY_PATH)   ]]></script>
         
         # wrangle.setCurrent(True, True)
         wrangle.setDisplayFlag(True)]]></script>
+  </tool>
+
+  <tool name="caps" label="Caps/Uncaps" icon="PLASMA_App">
+    <script scriptType="python"><![CDATA[nodes = hou.selectedNodes()
+for node in nodes:
+    name = node.name()
+    if(name.islower()):
+        node.setName(name.upper())
+    elif(name.isupper()):
+        node.setName(name.lower())    ]]></script>
+  </tool>
+
+  <tool name="iterate" label="IterateNodes" icon="PLASMA_App">
+    <script scriptType="python"><![CDATA[allNodes = hou.node(â/objâ).allSubChildren()
+
+for node in allNodes:
+    print node.name()]]></script>
   </tool>
 </shelfDocument>
