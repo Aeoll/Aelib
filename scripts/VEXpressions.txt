@@ -22,3 +22,17 @@ attribwrangle/snippet
     int ind = vertexprimindex(0, v);
     int npts = len(primpoints(0, @primnum));
     float u = float(ind) / (npts-1);
+    
+attribwrangle/snippet
+    ae_delpts  
+    // remove points
+    if(rand(@ptnum + 978.88) < 0.5){
+        removepoint(0, @ptnum);
+    }
+
+attribwrangle/snippet
+    ae_delprims  
+    // remove prims
+    if(rand(@primnum + 978.88) < 0.5){
+        removeprim(0, @primnum, 1);
+    }
