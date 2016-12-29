@@ -85,19 +85,6 @@ float ptplanedist(vector p,  o,  n) {
     return distance(isec, p);
 }       
 
-// LOOK AT THIS
-// vector getProjectedPoint(vector p, o, n) {
-//     vector dir;
-//     if (dot(n, -p) < 0) {
-//         dir = -n;
-//     } else {
-//         dir = n;
-//     }
-//     vector proj = new Ray3D(p, dir).getPointAtDistance(getDistanceToPoint(p));
-//     return proj;
-// }
-
-
 // ==============================
 // Useful maths functions
 // ==============================
