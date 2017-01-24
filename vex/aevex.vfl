@@ -243,6 +243,15 @@ int primpointsfrompt(int ptnum){
     int npts[] = primpoints(0, primnum);
 }
 
+// idtopoint but with custom id attribute (eg match ptid instead id)
+int idtopoint(const int opnum; const string idattr; const int id){
+    if (hasattrib(opnum, 'point', idattr))
+        return findattribval(opnum, 'point', idattr, id);
+    if (id < npoints(opnum))
+        return id;
+    return -1;
+}
+
 // ==============================
 // Arrays
 // ==============================
