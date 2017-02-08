@@ -1,281 +1,435 @@
-// Modeled after the parabola y = x^2
-float QuadraticEaseIn(float p)
-{
-	return p * p;
+// Penner's Equations
+//------------------------------------------------------------------
+float function_PennerEaseInBack (float x) {
+  functionName = "Penner's Ease-In Back";
+
+  float s = 1.70158;
+  float y = x*x*((s+1.0)*x - s);
+  return y;
 }
 
-// Modeled after the parabola y = -x^2 + 2x
-float QuadraticEaseOut(float p)
-{
-	return -(p * (p - 2));
+//------------------------------------------------------------------
+float function_PennerEaseOutBack (float x) {
+  functionName = "Penner's Ease-Out Back";
+
+  float s = 1.70158;
+  x = x-1.0;
+  float y = (x*x*((s+1.0)*x + s) + 1.0);
+  return y;
 }
 
-// Modeled after the piecewise quadratic
-// y = (1/2)((2x)^2)             ; [0, 0.5)
-// y = -(1/2)((2x-1)*(2x-3) - 1) ; [0.5, 1]
-float QuadraticEaseInOut(float p)
-{
-	if(p < 0.5)
-	{
-		return 2 * p * p;
-	}
-	else
-	{
-		return (-2 * p * p) + (4 * p) - 1;
-	}
+//------------------------------------------------------------------
+float function_BrycePolynomial (float x; int n){
+  functionName = "Bryce's Cubic";
+  
+  float xnm1 = pow (x, n-1); 
+  float xn = xnm1 * x; 
+  
+  return n*xnm1 - (n-1)*xn; 
 }
 
-// Modeled after the cubic y = x^3
-float CubicEaseIn(float p)
-{
-	return p * p * p;
+//------------------------------------------------------------------
+float function_PennerEaseInOutBack (float x) {
+  functionName = "Penner's EaseInOut Back";
+
+  float s = 1.70158 * 1.525;
+  x /= 0.5;
+
+  float y = 0; 
+  if (x < 1) {
+    y = 1.0/2.0* (x*x*((s+1.0)*x - s));
+  } 
+  else {
+    x -= 2.0;
+    y = 1.0/2.0* (x*x*((s+1.0)*x + s) + 2.0);
+  } 
+  return y;
 }
 
-// Modeled after the cubic y = (x - 1)^3 + 1
-float CubicEaseOut(float p)
-{
-	float f = (p - 1);
-	return f * f * f + 1;
+
+//------------------------------------------------------------------
+float function_PennerEaseInQuadratic (float t) {
+  functionName = "Penner's EaseIn Quadratic";
+  return t*t;
+}
+//------------------------------------------------------------------
+float function_PennerEaseOutQuadratic (float t) {
+  functionName = "Penner's EaseOut Quadratic";
+  return -1.0 *(t)*(t-2);
+}
+//------------------------------------------------------------------
+float function_PennerEaseInOutQuadratic (float t) {
+  functionName = "Penner's EaseInOut Quadratic";
+  if ((t/=1.f/2) < 1) return 1.f/2*t*t;
+  return -1.f/2 * ((--t)*(t-2) - 1);
 }
 
-// Modeled after the piecewise cubic
-// y = (1/2)((2x)^3)       ; [0, 0.5)
-// y = (1/2)((2x-2)^3 + 2) ; [0.5, 1]
-float CubicEaseInOut(float p)
-{
-	if(p < 0.5)
-	{
-		return 4 * p * p * p;
-	}
-	else
-	{
-		float f = ((2 * p) - 2);
-		return 0.5 * f * f * f + 1;
-	}
+//------------------------------------------------------------------
+float function_PennerEaseInCubic (float x) {
+  functionName = "Penner's EaseIn Cubic";
+  return x*x*x;
 }
 
-// Modeled after the quartic x^4
-float QuarticEaseIn(float p)
-{
-	return p * p * p * p;
+//------------------------------------------------------------------
+float function_PennerEaseOutCubic (float x) {
+  functionName = "Penner's EaseOut Cubic";
+  x = x-1.0;
+  return (x*x*x + 1);
 }
 
-// Modeled after the quartic y = 1 - (x - 1)^4
-float QuarticEaseOut(float p)
-{
-	float f = (p - 1);
-	return f * f * f * (1 - p) + 1;
+
+//------------------------------------------------------------------
+float function_PennerEaseInOutCubic (float x) {
+  functionName = "Penner's EaseInOut Cubic";
+  
+  x *= 2.0; 
+  float y = 0; 
+
+  if (x < 1) {
+    y = 0.5 * x*x*x;
+  } 
+  else {
+    x -= 2.0;
+    y = 0.5 * (x*x*x + 2.0);
+  }
+  return y;
 }
 
-// Modeled after the piecewise quartic
-// y = (1/2)((2x)^4)        ; [0, 0.5)
-// y = -(1/2)((2x-2)^4 - 2) ; [0.5, 1]
-float QuarticEaseInOut(float p) 
-{
-	if(p < 0.5)
-	{
-		return 8 * p * p * p * p;
-	}
-	else
-	{
-		float f = (p - 1);
-		return -8 * f * f * f * f + 1;
-	}
+
+//------------------------------------------------------------------
+float function_PennerEaseInQuartic (float t) {
+  functionName = "Penner's EaseIn Quartic";
+  return t*t*t*t;
+}
+//------------------------------------------------------------------
+float function_PennerEaseOutQuartic (float t) {
+  functionName = "Penner's EaseOut Quartic";
+  return -1.0 * ((t=t-1)*t*t*t - 1.0);
 }
 
-// Modeled after the quintic y = x^5
-float QuinticEaseIn(float p) 
-{
-	return p * p * p * p * p;
+//------------------------------------------------------------------
+float function_PennerEaseInOutQuartic (float t) {
+  functionName = "Penner's EaseInOut Quartic";
+
+  if ((t/=1.0f/2.0) < 1) return 1.0f/2.0*t*t*t*t;
+  return -1.0f/2.0 * ((t-=2.0)*t*t*t - 2.0);
 }
 
-// Modeled after the quintic y = (x - 1)^5 + 1
-float QuinticEaseOut(float p) 
-{
-	float f = (p - 1);
-	return f * f * f * f * f + 1;
+//------------------------------------------------------------------
+float function_PennerEaseInQuintic (float t) {
+  functionName = "Penner's EaseIn Quintic";
+  return t*t*t*t*t;
+}
+//------------------------------------------------------------------
+float function_PennerEaseOutQuintic (float t) {
+  functionName = "Penner's EaseOut Quintic";
+  t = t-1;
+  return (t*t*t*t*t + 1.0);
 }
 
-// Modeled after the piecewise quintic
-// y = (1/2)((2x)^5)       ; [0, 0.5)
-// y = (1/2)((2x-2)^5 + 2) ; [0.5, 1]
-float QuinticEaseInOut(float p) 
-{
-	if(p < 0.5)
-	{
-		return 16 * p * p * p * p * p;
-	}
-	else
-	{
-		float f = ((2 * p) - 2);
-		return  0.5 * f * f * f * f * f + 1;
-	}
+//------------------------------------------------------------------
+float function_PennerEaseInOutQuintic (float t) {
+  functionName = "Penner's EaseInOut Quintic";
+  if ((t/=1.f/2) < 1) return 1.f/2*t*t*t*t*t;
+  return 1.f/2*((t-=2)*t*t*t*t + 2);
 }
 
-// Modeled after quarter-cycle of sine wave
-float SineEaseIn(float p)
-{
-	return sin((p - 1) * M_PI_2) + 1;
+//------------------------------------------------------------------
+float function_PennerEaseInSine (float t) {
+  functionName = "Penner's EaseIn Sine";
+  return -1.0 * cos(t * (PI/2)) + 1;
 }
 
-// Modeled after quarter-cycle of sine wave (different phase)
-float SineEaseOut(float p)
-{
-	return sin(p * M_PI_2);
+//------------------------------------------------------------------
+float function_PennerEaseOutSine(float t) {
+  functionName = "Penner's EaseOut Sine";
+  return sin(t * (PI/2));
 }
 
-// Modeled after half sine wave
-float SineEaseInOut(float p)
-{
-	return 0.5 * (1 - cos(p * M_PI));
+//------------------------------------------------------------------
+float function_PennerEaseInOutSine(float t) {
+  functionName = "Penner's EaseInOut Sine";
+  return -0.5 * (cos(PI*t) - 1);
 }
 
-// Modeled after shifted quadrant IV of unit circle
-float CircularEaseIn(float p)
-{
-	return 1 - sqrt(1 - (p * p));
+
+
+
+//------------------------------------------------------------------
+float function_PennerEaseInExpo(float t) {
+  functionName = "Penner's EaseIn Exponential";
+  return (t==0) ? 0 : pow(2, 10 * (t - 1));
 }
 
-// Modeled after shifted quadrant II of unit circle
-float CircularEaseOut(float p)
-{
-	return sqrt((2 - p) * p);
+//------------------------------------------------------------------
+float function_PennerEaseOutExpo(float t) {
+  functionName = "Penner's EaseOut Exponential";
+  return (t==1) ? 1 : (-pow(2, -10 * t) + 1);
 }
 
-// Modeled after the piecewise circular function
-// y = (1/2)(1 - sqrt(1 - 4x^2))           ; [0, 0.5)
-// y = (1/2)(sqrt(-(2x - 3)*(2x - 1)) + 1) ; [0.5, 1]
-float CircularEaseInOut(float p)
-{
-	if(p < 0.5)
-	{
-		return 0.5 * (1 - sqrt(1 - 4 * (p * p)));
-	}
-	else
-	{
-		return 0.5 * (sqrt(-((2 * p) - 3) * ((2 * p) - 1)) + 1);
-	}
+//------------------------------------------------------------------
+float function_PennerEaseInOutExpo(float t) {
+  functionName = "Penner's EaseInOut Exponential";
+  if (t==0) return 0.0;
+  if (t==1) return 1.0;
+  if ((t/=1.f/2) < 1) return 1.0f/2 * pow(2, 10 * (t - 1));
+  return 1.f/2 * (-pow(2, -10 * --t) + 2);
 }
 
-// Modeled after the exponential function y = 2^(10(x - 1))
-float ExponentialEaseIn(float p)
-{
-	return (p == 0.0) ? p : pow(2, 10 * (p - 1));
+//------------------------------------------------------------------
+float function_PennerEaseInElastic (float t) {
+  functionName = "Penner's EaseIn Elastic";
+
+  if (t==0) return 0.0; 
+  if (t==1) return 1.0;
+  float p=0.3f;
+
+  float s=p/4;
+  float postFix = pow(2, 10.0 * (t-=1)); // this is a fix, again, with post-increment operators
+  return -(postFix * sin((t-s)*(2*PI)/p ));
 }
 
-// Modeled after the exponential function y = -2^(-10x) + 1
-float ExponentialEaseOut(float p)
-{
-	return (p == 1.0) ? p : 1 - pow(2, -10 * p);
+//------------------------------------------------------------------
+float function_PennerEaseOutElastic(float t) {
+  functionName = "Penner's EaseOut Elastic";
+  
+  if (t==0) return 0.0; 
+  if (t==1) return 1.0;
+  float p = 0.3f;
+  float s = p/4;
+
+  return (pow(2, -10*t) * sin( (t-s)*(2*PI)/p ) + 1);
 }
 
-// Modeled after the piecewise exponential
-// y = (1/2)2^(10(2x - 1))         ; [0,0.5)
-// y = -(1/2)*2^(-10(2x - 1))) + 1 ; [0.5,1]
-float ExponentialEaseInOut(float p)
-{
-	if(p == 0.0 || p == 1.0) return p;
-	
-	if(p < 0.5)
-	{
-		return 0.5 * pow(2, (20 * p) - 10);
-	}
-	else
-	{
-		return -0.5 * pow(2, (-20 * p) + 10) + 1;
-	}
+//------------------------------------------------------------------
+float function_PennerEaseInOutElastic (float t) {
+  functionName = "Penner's EaseInOut Elastic";
+
+  if (t==0) return 0; 
+  if ((t/=0.5)==2) return 1;
+  float p=(.3f*1.5);
+  float a=1;
+  float s=p/4;
+
+  if (t < 1) {
+    float postFix = pow(2, 10*(t-=1)); // postIncrement is evil
+    return -0.5*(postFix* sin( (t-s)*(2*PI)/p ));
+  } 
+  float postFix = pow(2, -10*(t-=1)); // postIncrement is evil
+  return postFix * sin( (t-s)*(2*PI)/p )*.5 + 1;
 }
 
-// Modeled after the damped sine wave y = sin(13pi/2*x)*pow(2, 10 * (x - 1))
-float ElasticEaseIn(float p)
-{
-	return sin(13 * M_PI_2 * p) * pow(2, 10 * (p - 1));
+
+
+//------------------------------------------------------------------
+float function_PennerEaseOutBounce (float t) {
+  functionName = "Penner's EaseOut Bounce";
+
+  if ((t) < (1/2.75)) {
+    return (7.5625* t*t);
+  } 
+  else if (t < (2/2.75)) {
+    float postFix = t-=(1.5/2.75);
+    return (7.5625*(postFix)*t + 0.75);
+  } 
+  else if (t < (2.5/2.75)) {
+    float postFix = t-=(2.25/2.75);
+    return (7.5625*(postFix)*t + 0.9375);
+  } 
+  else {
+    float postFix = t-=(2.625/2.75);
+    return (7.5625*(postFix)*t + 0.984375);
+  }
 }
 
-// Modeled after the damped sine wave y = sin(-13pi/2*(x + 1))*pow(2, -10x) + 1
-float ElasticEaseOut(float p)
-{
-	return sin(-13 * M_PI_2 * (p + 1)) * pow(2, -10 * p) + 1;
+//------------------------------------------------------------------
+float function_PennerEaseInBounce (float t) {
+  functionName = "Penner's EaseIn Bounce";
+  return (1.0 - function_PennerEaseOutBounce (1.0-t));
 }
 
-// Modeled after the piecewise exponentially-damped sine wave:
-// y = (1/2)*sin(13pi/2*(2*x))*pow(2, 10 * ((2*x) - 1))      ; [0,0.5)
-// y = (1/2)*(sin(-13pi/2*((2x-1)+1))*pow(2,-10(2*x-1)) + 2) ; [0.5, 1]
-float ElasticEaseInOut(float p)
-{
-	if(p < 0.5)
-	{
-		return 0.5 * sin(13 * M_PI_2 * (2 * p)) * pow(2, 10 * ((2 * p) - 1));
-	}
-	else
-	{
-		return 0.5 * (sin(-13 * M_PI_2 * ((2 * p - 1) + 1)) * pow(2, -10 * (2 * p - 1)) + 2);
-	}
+//------------------------------------------------------------------
+float function_PennerEaseInOutBounce(float t) {
+  functionName = "Penner's EaseInOut Bounce";
+  if (t < 0.5) {
+    return function_PennerEaseInBounce (t*2) * .5;
+  } 
+  else {
+    return function_PennerEaseOutBounce (t*2-1) * .5 + .5;
+  }
 }
 
-// Modeled after the overshooting cubic y = x^3-x*sin(x*pi)
-float BackEaseIn(float p)
-{
-	return p * p * p - p * sin(p * M_PI);
+//------------------------------------------------------------------
+float function_Staircase (float x, int n) {
+  functionName = "Staircase";
+  float y = floor(x*n) / (float)(n-1);
+  return y;
 }
 
-// Modeled after overshooting cubic y = 1-((1-x)^3-(1-x)*sin((1-x)*pi))
-float BackEaseOut(float p)
-{
-	float f = (1 - p);
-	return 1 - (f * f * f - f * sin(f * M_PI));
+//------------------------------------------------------------------
+float function_ExponentialSmoothedStaircase (float x, float a; int n) {
+  functionName = "Smoothed Exponential Staircase";
+  // See http://web.mit.edu/fnl/volume/204/winston.html
+  
+  float fa = sq (fit(a, 0,1, 5,30));
+  float y = 0; 
+  for (int i=0; i<n; i++){
+    y += (1.0/(n-1.0))/ (1.0 + exp(fa*(((i+1.0)/n) - x)));
+  }
+  y = clamp(y, 0,1); 
+  return y;
 }
 
-// Modeled after the piecewise overshooting cubic function:
-// y = (1/2)*((2x)^3-(2x)*sin(2*x*pi))           ; [0, 0.5)
-// y = (1/2)*(1-((1-x)^3-(1-x)*sin((1-x)*pi))+1) ; [0.5, 1]
-float BackEaseInOut(float p)
-{
-	if(p < 0.5)
-	{
-		float f = 2 * p;
-		return 0.5 * (f * f * f - f * sin(f * M_PI));
-	}
-	else
-	{
-		float f = (1 - (2*p - 1));
-		return 0.5 * (1 - (f * f * f - f * sin(f * M_PI))) + 0.5;
-	}
+
+//------------------------------------------------------------------
+float function_Gompertz (float x, float a) {
+  // http://en.wikipedia.org/wiki/Gompertz_curve
+  functionName = "Gompertz Function";
+ 
+  float min_param_a = 0.0 + EPSILON;
+  a = max(a, min_param_a); 
+
+  float b = -8.0;
+  float c = 0 - a*16.0;
+  float y = exp( b * exp(c * x));
+
+  float maxVal = exp(b * exp(c));
+  float minVal = exp(b );
+  y = fit(y, minVal, maxVal, 0, 1); 
+
+  return y ;
 }
 
-float BounceEaseIn(float p)
-{
-	return 1 - BounceEaseOut(1 - p);
+// Generalized fit
+float function_GeneralizedLinearfit (float x, float a, float b, float c, float d) {
+  functionName = "Generalized Linear fit";
+  
+  float y = 0;
+  if (a < c) {
+    if (x <= a) {
+      y = b;
+    } 
+    else if (x >= c) {
+      y = d;
+    } 
+    else {
+      y = fit(x, a, c, b, d);
+    }
+  } 
+  else {
+    if (x <= c) {
+      y = d;
+    } 
+    else if (x >= a) {
+      y = b;
+    } 
+    else {
+      y = fit(x, c, a, d, b);
+    }
+  }
+  return y;
 }
 
-float BounceEaseOut(float p)
-{
-	if(p < 4/11.0)
-	{
-		return (121 * p * p)/16.0;
-	}
-	else if(p < 8/11.0)
-	{
-		return (363/40.0 * p * p) - (99/10.0 * p) + 17/5.0;
-	}
-	else if(p < 9/10.0)
-	{
-		return (4356/361.0 * p * p) - (35442/1805.0 * p) + 16061/1805.0;
-	}
-	else
-	{
-		return (54/5.0 * p * p) - (513/25.0 * p) + 268/25.0;
-	}
+// Double-(Odd) Polynomial Seat
+//------------------------------------------------------------------
+float function_DoubleOddPolynomialOgee (float x, float a, float b, int n) {
+  functionName = "Double Odd-Polynomial Ogee";
+
+  float min_param_a = 0.0 + EPSILON;
+  float max_param_a = 1.0 - EPSILON;
+  float min_param_b = 0.0;
+  float max_param_b = 1.0;
+
+  a = clamp(a, min_param_a, max_param_a); 
+  b = clamp(b, min_param_b, max_param_b); 
+  int p = 2*n + 1;
+  float y = 0;
+  if (x <= a) {
+    y = b - b*pow(1-x/a, p);
+  } 
+  else {
+    y = b + (1-b)*pow((x-a)/(1-a), p);
+  }
+  return y;
 }
 
-float BounceEaseInOut(float p)
-{
-	if(p < 0.5)
-	{
-		return 0.5 * BounceEaseIn(p*2);
-	}
-	else
-	{
-		return 0.5 * BounceEaseOut(p * 2 - 1) + 0.5;
-	}
+// Double-Linear Interpolator
+//------------------------------------------------------------------
+float function_DoubleLinear (float x, float a, float b) {
+  functionName = "Double-Linear";
+
+  float min_param_a = 0.0 + EPSILON;
+  float max_param_a = 1.0 - EPSILON;
+  float min_param_b = 0.0;
+  float max_param_b = 1.0;
+  a = clamp(a, min_param_a, max_param_a); 
+  b = clamp(b, min_param_b, max_param_b); 
+
+  float y = 0;
+  if (x<=a) {
+    y = (b/a) * x;
+  } 
+  else {
+    y = b + ((1-b)/(1-a))*(x-a);
+  }
+  return y;
+}
+
+//------------------------------------------------------------------
+// Generalized fit
+float function_TripleLinear (float x, float a, float b, float c, float d) {
+  functionName = "Triple Linear";
+
+  float y = 0;
+  if (a < c) {
+    if (x <= a) {
+      y = fit(x, 0, a, 0, b);
+    } 
+    else if (x >= c) {
+      y = fit(x, c, 1, d, 1);
+    } 
+    else {
+      y = fit(x, a, c, b, d);
+    }
+  } 
+  else {
+    if (x <= c) {
+      y = fit(x, 0, c, 0, d);
+    } 
+    else if (x >= a) {
+      y = fit(x, a, 1, b, 1);
+    } 
+    else {
+      y = fit(x, c, a, d, b);
+    }
+  }
+  return y;
+}
+
+//------------------------------------------------------------------
+float function_VariableStaircase (float x, float a, int n) {
+  functionName = "Variable Staircase";
+
+  float aa = (a - 0.5);
+  if (aa == 0) {
+    return x;
+  }
+
+  float x0 = (floor (x*n))/ (float) n; 
+  float x1 = (ceil  (x*n))/ (float) n;
+  float y0 = x0; 
+  float y1 = x1; 
+
+  float px = 0.5*(x0+x1) + aa/n;
+  float py = 0.5*(x0+x1) - aa/n;
+
+  float y = 0;
+  if ((x < px) && (x > x0)) {
+    y = fit(x, x0, px, y0, py);
+  } 
+  else {
+    y = fit(x, px, x1, py, y1);
+  }
+
+  return y;
 }
