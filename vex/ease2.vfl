@@ -1,7 +1,7 @@
 // Penner's Equations
 //------------------------------------------------------------------
 float function_PennerEaseInBack (float x) {
-  functionName = "Penner's Ease-In Back";
+  string functionName = "Penner's Ease-In Back";
 
   float s = 1.70158;
   float y = x*x*((s+1.0)*x - s);
@@ -10,7 +10,7 @@ float function_PennerEaseInBack (float x) {
 
 //------------------------------------------------------------------
 float function_PennerEaseOutBack (float x) {
-  functionName = "Penner's Ease-Out Back";
+  string functionName = "Penner's Ease-Out Back";
 
   float s = 1.70158;
   x = x-1.0;
@@ -20,7 +20,7 @@ float function_PennerEaseOutBack (float x) {
 
 //------------------------------------------------------------------
 float function_BrycePolynomial (float x; int n){
-  functionName = "Bryce's Cubic";
+  string functionName = "Bryce's Cubic";
   
   float xnm1 = pow (x, n-1); 
   float xn = xnm1 * x; 
@@ -30,7 +30,7 @@ float function_BrycePolynomial (float x; int n){
 
 //------------------------------------------------------------------
 float function_PennerEaseInOutBack (float x) {
-  functionName = "Penner's EaseInOut Back";
+  string functionName = "Penner's EaseInOut Back";
 
   float s = 1.70158 * 1.525;
   x /= 0.5;
@@ -49,30 +49,30 @@ float function_PennerEaseInOutBack (float x) {
 
 //------------------------------------------------------------------
 float function_PennerEaseInQuadratic (float t) {
-  functionName = "Penner's EaseIn Quadratic";
+  string functionName = "Penner's EaseIn Quadratic";
   return t*t;
 }
 //------------------------------------------------------------------
 float function_PennerEaseOutQuadratic (float t) {
-  functionName = "Penner's EaseOut Quadratic";
+  string functionName = "Penner's EaseOut Quadratic";
   return -1.0 *(t)*(t-2);
 }
 //------------------------------------------------------------------
 float function_PennerEaseInOutQuadratic (float t) {
-  functionName = "Penner's EaseInOut Quadratic";
+  string functionName = "Penner's EaseInOut Quadratic";
   if ((t/=1.f/2) < 1) return 1.f/2*t*t;
   return -1.f/2 * ((--t)*(t-2) - 1);
 }
 
 //------------------------------------------------------------------
 float function_PennerEaseInCubic (float x) {
-  functionName = "Penner's EaseIn Cubic";
+  string functionName = "Penner's EaseIn Cubic";
   return x*x*x;
 }
 
 //------------------------------------------------------------------
 float function_PennerEaseOutCubic (float x) {
-  functionName = "Penner's EaseOut Cubic";
+  string functionName = "Penner's EaseOut Cubic";
   x = x-1.0;
   return (x*x*x + 1);
 }
@@ -80,7 +80,7 @@ float function_PennerEaseOutCubic (float x) {
 
 //------------------------------------------------------------------
 float function_PennerEaseInOutCubic (float x) {
-  functionName = "Penner's EaseInOut Cubic";
+  string functionName = "Penner's EaseInOut Cubic";
   
   x *= 2.0; 
   float y = 0; 
@@ -98,18 +98,18 @@ float function_PennerEaseInOutCubic (float x) {
 
 //------------------------------------------------------------------
 float function_PennerEaseInQuartic (float t) {
-  functionName = "Penner's EaseIn Quartic";
+  string functionName = "Penner's EaseIn Quartic";
   return t*t*t*t;
 }
 //------------------------------------------------------------------
 float function_PennerEaseOutQuartic (float t) {
-  functionName = "Penner's EaseOut Quartic";
+  string functionName = "Penner's EaseOut Quartic";
   return -1.0 * ((t=t-1)*t*t*t - 1.0);
 }
 
 //------------------------------------------------------------------
 float function_PennerEaseInOutQuartic (float t) {
-  functionName = "Penner's EaseInOut Quartic";
+  string functionName = "Penner's EaseInOut Quartic";
 
   if ((t/=1.0f/2.0) < 1) return 1.0f/2.0*t*t*t*t;
   return -1.0f/2.0 * ((t-=2.0)*t*t*t - 2.0);
@@ -117,38 +117,38 @@ float function_PennerEaseInOutQuartic (float t) {
 
 //------------------------------------------------------------------
 float function_PennerEaseInQuintic (float t) {
-  functionName = "Penner's EaseIn Quintic";
+  string functionName = "Penner's EaseIn Quintic";
   return t*t*t*t*t;
 }
 //------------------------------------------------------------------
 float function_PennerEaseOutQuintic (float t) {
-  functionName = "Penner's EaseOut Quintic";
+  string functionName = "Penner's EaseOut Quintic";
   t = t-1;
   return (t*t*t*t*t + 1.0);
 }
 
 //------------------------------------------------------------------
 float function_PennerEaseInOutQuintic (float t) {
-  functionName = "Penner's EaseInOut Quintic";
+  string functionName = "Penner's EaseInOut Quintic";
   if ((t/=1.f/2) < 1) return 1.f/2*t*t*t*t*t;
   return 1.f/2*((t-=2)*t*t*t*t + 2);
 }
 
 //------------------------------------------------------------------
 float function_PennerEaseInSine (float t) {
-  functionName = "Penner's EaseIn Sine";
+  string functionName = "Penner's EaseIn Sine";
   return -1.0 * cos(t * (PI/2)) + 1;
 }
 
 //------------------------------------------------------------------
 float function_PennerEaseOutSine(float t) {
-  functionName = "Penner's EaseOut Sine";
+  string functionName = "Penner's EaseOut Sine";
   return sin(t * (PI/2));
 }
 
 //------------------------------------------------------------------
 float function_PennerEaseInOutSine(float t) {
-  functionName = "Penner's EaseInOut Sine";
+  string functionName = "Penner's EaseInOut Sine";
   return -0.5 * (cos(PI*t) - 1);
 }
 
@@ -157,19 +157,19 @@ float function_PennerEaseInOutSine(float t) {
 
 //------------------------------------------------------------------
 float function_PennerEaseInExpo(float t) {
-  functionName = "Penner's EaseIn Exponential";
+  string functionName = "Penner's EaseIn Exponential";
   return (t==0) ? 0 : pow(2, 10 * (t - 1));
 }
 
 //------------------------------------------------------------------
 float function_PennerEaseOutExpo(float t) {
-  functionName = "Penner's EaseOut Exponential";
+  string functionName = "Penner's EaseOut Exponential";
   return (t==1) ? 1 : (-pow(2, -10 * t) + 1);
 }
 
 //------------------------------------------------------------------
 float function_PennerEaseInOutExpo(float t) {
-  functionName = "Penner's EaseInOut Exponential";
+  string functionName = "Penner's EaseInOut Exponential";
   if (t==0) return 0.0;
   if (t==1) return 1.0;
   if ((t/=1.f/2) < 1) return 1.0f/2 * pow(2, 10 * (t - 1));
@@ -178,7 +178,7 @@ float function_PennerEaseInOutExpo(float t) {
 
 //------------------------------------------------------------------
 float function_PennerEaseInElastic (float t) {
-  functionName = "Penner's EaseIn Elastic";
+  string functionName = "Penner's EaseIn Elastic";
 
   if (t==0) return 0.0; 
   if (t==1) return 1.0;
@@ -191,7 +191,7 @@ float function_PennerEaseInElastic (float t) {
 
 //------------------------------------------------------------------
 float function_PennerEaseOutElastic(float t) {
-  functionName = "Penner's EaseOut Elastic";
+  string functionName = "Penner's EaseOut Elastic";
   
   if (t==0) return 0.0; 
   if (t==1) return 1.0;
@@ -203,7 +203,7 @@ float function_PennerEaseOutElastic(float t) {
 
 //------------------------------------------------------------------
 float function_PennerEaseInOutElastic (float t) {
-  functionName = "Penner's EaseInOut Elastic";
+  string functionName = "Penner's EaseInOut Elastic";
 
   if (t==0) return 0; 
   if ((t/=0.5)==2) return 1;
@@ -223,7 +223,7 @@ float function_PennerEaseInOutElastic (float t) {
 
 //------------------------------------------------------------------
 float function_PennerEaseOutBounce (float t) {
-  functionName = "Penner's EaseOut Bounce";
+  string functionName = "Penner's EaseOut Bounce";
 
   if ((t) < (1/2.75)) {
     return (7.5625* t*t);
@@ -244,13 +244,13 @@ float function_PennerEaseOutBounce (float t) {
 
 //------------------------------------------------------------------
 float function_PennerEaseInBounce (float t) {
-  functionName = "Penner's EaseIn Bounce";
+  string functionName = "Penner's EaseIn Bounce";
   return (1.0 - function_PennerEaseOutBounce (1.0-t));
 }
 
 //------------------------------------------------------------------
 float function_PennerEaseInOutBounce(float t) {
-  functionName = "Penner's EaseInOut Bounce";
+  string functionName = "Penner's EaseInOut Bounce";
   if (t < 0.5) {
     return function_PennerEaseInBounce (t*2) * .5;
   } 
@@ -261,14 +261,14 @@ float function_PennerEaseInOutBounce(float t) {
 
 //------------------------------------------------------------------
 float function_Staircase (float x, int n) {
-  functionName = "Staircase";
+  string functionName = "Staircase";
   float y = floor(x*n) / (float)(n-1);
   return y;
 }
 
 //------------------------------------------------------------------
 float function_ExponentialSmoothedStaircase (float x, float a; int n) {
-  functionName = "Smoothed Exponential Staircase";
+  string functionName = "Smoothed Exponential Staircase";
   // See http://web.mit.edu/fnl/volume/204/winston.html
   
   float fa = sq (fit(a, 0,1, 5,30));
@@ -285,9 +285,9 @@ float function_ExponentialSmoothedStaircase (float x, float a; int n) {
 //------------------------------------------------------------------
 float function_Gompertz (float x, float a) {
   // http://en.wikipedia.org/wiki/Gompertz_curve
-  functionName = "Gompertz Function";
+  string functionName = "Gompertz Function";
  
-  float min_param_a = 0.0 + EPSILON;
+  float min_param_a = 0.0 + M_E;
   a = max(a, min_param_a); 
 
   float b = -8.0;
@@ -308,7 +308,7 @@ float function_Gompertz (float x, float a) {
 
 // Generalized fit
 float function_GeneralizedLinearfit (float x, float a, float b, float c, float d) {
-  functionName = "Generalized Linear fit";
+  string functionName = "Generalized Linear fit";
   
   float y = 0;
   if (a < c) {
@@ -343,10 +343,10 @@ float function_GeneralizedLinearfit (float x, float a, float b, float c, float d
 // Double-(Odd) Polynomial Seat
 //------------------------------------------------------------------
 float function_DoubleOddPolynomialOgee (float x, float a, float b, int n) {
-  functionName = "Double Odd-Polynomial Ogee";
+  string functionName = "Double Odd-Polynomial Ogee";
 
-  float min_param_a = 0.0 + EPSILON;
-  float max_param_a = 1.0 - EPSILON;
+  float min_param_a = 0.0 + M_E;
+  float max_param_a = 1.0 - M_E;
   float min_param_b = 0.0;
   float max_param_b = 1.0;
 
@@ -376,10 +376,10 @@ float function_DoubleOddPolynomialOgee (float x, float a, float b, int n) {
 
 //------------------------------------------------------------------
 float function_DoubleLinear (float x, float a, float b) {
-  functionName = "Double-Linear";
+  string functionName = "Double-Linear";
 
-  float min_param_a = 0.0 + EPSILON;
-  float max_param_a = 1.0 - EPSILON;
+  float min_param_a = 0.0 + M_E;
+  float max_param_a = 1.0 - M_E;
   float min_param_b = 0.0;
   float max_param_b = 1.0;
   a = clamp(a, min_param_a, max_param_a); 
@@ -399,7 +399,7 @@ float function_DoubleLinear (float x, float a, float b) {
 //------------------------------------------------------------------
 // Generalized fit
 float function_TripleLinear (float x, float a, float b, float c, float d) {
-  functionName = "Triple Linear";
+  string functionName = "Triple Linear";
 
   float y = 0;
   if (a < c) {
@@ -429,7 +429,7 @@ float function_TripleLinear (float x, float a, float b, float c, float d) {
 
 //------------------------------------------------------------------
 float function_VariableStaircase (float x, float a, int n) {
-  functionName = "Variable Staircase";
+  string functionName = "Variable Staircase";
 
   float aa = (a - 0.5);
   if (aa == 0) {
@@ -458,7 +458,7 @@ float function_VariableStaircase (float x, float a, int n) {
 
 //------------------------------------------------------------------
 float function_QuadraticBezierStaircase (float x, float a, int n) {
-  functionName = "Quadratic Bezier Staircase";
+  string functionName = "Quadratic Bezier Staircase";
 
   float aa = (a - 0.5);
   if (aa == 0) {
@@ -488,7 +488,7 @@ float function_QuadraticBezierStaircase (float x, float a, int n) {
       y = fit(x, x0, px, y0, py);
     } else {
       
-      if (abs(x - x0) < EPSILON){
+      if (abs(x - x0) < M_E){
         // problem when x == x0 !
       }
       
@@ -515,7 +515,7 @@ float function_QuadraticBezierStaircase (float x, float a, int n) {
       y = fit(x, px, x1, py, y1);
     } 
     else {
-      if (abs(x - x1) < EPSILON){
+      if (abs(x - x1) < M_E){
         // problem when x == x1 !
       }
       
@@ -523,11 +523,11 @@ float function_QuadraticBezierStaircase (float x, float a, int n) {
       float zb = (y1 - p1y)/denom; 
       float zx = ( x - p1x)/denom; 
       if (za == 0.5) {
-        za += EPSILON;
+        za += M_E;
       }
       float om2a = 1.0 - 2.0*za;
-      if (abs(om2a) < EPSILON) {
-        om2a = ((om2a < 0) ? -1:1) * EPSILON;
+      if (abs(om2a) < M_E) {
+        om2a = ((om2a < 0) ? -1:1) * M_E;
       }
       
       float interior = max (0, za*za + om2a*zx);
@@ -545,7 +545,7 @@ float function_QuadraticBezierStaircase (float x, float a, int n) {
     float zb = (py - p0y)/denom; 
     float zx = ( x - p0x)/denom; 
     if (za == 0.5) {
-      za += EPSILON;
+      za += M_E;
     }
     float om2a = 1.0 - 2.0*za;
     float t = (sqrt(za*za + om2a*zx) - za)/om2a;
@@ -562,10 +562,10 @@ float function_QuadraticBezierStaircase (float x, float a, int n) {
 
 //------------------------------------------------------------------
 float function_DoubleExponentialSigmoid (float x, float a){
-  functionName = "Double-Exponential Sigmoid";
+  string functionName = "Double-Exponential Sigmoid";
   
-  float min_param_a = 0.0 + EPSILON;
-  float max_param_a = 1.0 - EPSILON;
+  float min_param_a = 0.0 + M_E;
+  float max_param_a = 1.0 - M_E;
   a = clamp(a, min_param_a, max_param_a); 
   a = 1-a;
   
@@ -584,10 +584,10 @@ float function_DoubleExponentialSigmoid (float x, float a){
 //------------------------------------------------------------------
 float function_AdjustableCenterDoubleExponentialSigmoid (float x, float a, float b){
   
-  functionName = "Adjustable-Center Double-Exponential Sigmoid";
+  string functionName = "Adjustable-Center Double-Exponential Sigmoid";
   
-  float min_param_a = 0.0 + EPSILON;
-  float max_param_a = 1.0 - EPSILON;
+  float min_param_a = 0.0 + M_E;
+  float max_param_a = 1.0 - M_E;
   a = clamp(a, min_param_a, max_param_a); 
   a = 1-a;
   
@@ -606,7 +606,7 @@ float function_AdjustableCenterDoubleExponentialSigmoid (float x, float a, float
 
 //------------------------------------------------------------------
 float function_DoubleQuadraticSigmoid (float x){
-  functionName = "Double-Quadratic Sigmoid";
+  string functionName = "Double-Quadratic Sigmoid";
 
   float y = 0;
   if (x<=0.5){
@@ -621,7 +621,7 @@ float function_DoubleQuadraticSigmoid (float x){
 
 //------------------------------------------------------------------
 float function_DoublePolynomialSigmoid (float x, int n){
-  functionName = "Double-Polynomial Sigmoid";
+  string functionName = "Double-Polynomial Sigmoid";
 
   float y = 0;
   if (n%2 == 0){ 
@@ -653,10 +653,10 @@ float function_DoublePolynomialSigmoid (float x, int n){
 
 //------------------------------------------------------------------
 float function_DoubleEllipticOgee (float x, float a, float b){
-  functionName = "Double-Elliptic Ogee";
+  string functionName = "Double-Elliptic Ogee";
 
-  float min_param_a = 0.0 + EPSILON;
-  float max_param_a = 1.0 - EPSILON;
+  float min_param_a = 0.0 + M_E;
+  float max_param_a = 1.0 - M_E;
   a = clamp(a, min_param_a, max_param_a); 
   float y = 0;
 
@@ -671,10 +671,10 @@ float function_DoubleEllipticOgee (float x, float a, float b){
 
 //------------------------------------------------------------------
 float function_AdjustableCenterEllipticWindow (float x, float a){
-  functionName = "Adjustable-Center Elliptic Window";
+  string functionName = "Adjustable-Center Elliptic Window";
   
-  float min_param_a = 0.0 + EPSILON;
-  float max_param_a = 1.0 - EPSILON;
+  float min_param_a = 0.0 + M_E;
+  float max_param_a = 1.0 - M_E;
   a = clamp(a, min_param_a, max_param_a);
   
   float y = 0;
@@ -691,10 +691,10 @@ float function_AdjustableCenterEllipticWindow (float x, float a){
 
 //------------------------------------------------------------------
 float function_AdjustableCenterHyperellipticWindow (float x, float a, int n){
-  functionName = "Adjustable-Center Hyperelliptic Window";
+  string functionName = "Adjustable-Center Hyperelliptic Window";
   
-  float min_param_a = 0.0 + EPSILON;
-  float max_param_a = 1.0 - EPSILON;
+  float min_param_a = 0.0 + M_E;
+  float max_param_a = 1.0 - M_E;
   a = clamp(a, min_param_a, max_param_a);
   
   float y = 0;
@@ -711,10 +711,10 @@ float function_AdjustableCenterHyperellipticWindow (float x, float a, int n){
 
 //------------------------------------------------------------------
 float function_AdjustableCenterSquircularWindow (float x, float a, int n){
-  functionName = "Adjustable-Center Squircular Window";
+  string functionName = "Adjustable-Center Squircular Window";
   
-  float min_param_a = 0.0 + EPSILON;
-  float max_param_a = 1.0 - EPSILON;
+  float min_param_a = 0.0 + M_E;
+  float max_param_a = 1.0 - M_E;
   a = clamp(a, min_param_a, max_param_a);
   
   float y = 0;
@@ -738,10 +738,10 @@ float function_AdjustableCenterSquircularWindow (float x, float a, int n){
 
 //------------------------------------------------------------------
 float function_DoubleCubicOgee (float x, float a, float b){
-  functionName = "Double-Cubic Ogee";
+  string functionName = "Double-Cubic Ogee";
   
-  float min_param_a = 0.0 + EPSILON;
-  float max_param_a = 1.0 - EPSILON;
+  float min_param_a = 0.0 + M_E;
+  float max_param_a = 1.0 - M_E;
   float min_param_b = 0.0;
   float max_param_b = 1.0;
 
@@ -758,7 +758,7 @@ float function_DoubleCubicOgee (float x, float a, float b){
 }
 //------------------------------------------------------------------
 float function_DoubleCircularSigmoid (float x, float a) {
-  functionName = "Double-Circular Sigmoid";
+  string functionName = "Double-Circular Sigmoid";
   
   float y = 0;
   if (x<=a) {
@@ -772,7 +772,7 @@ float function_DoubleCircularSigmoid (float x, float a) {
 
 //------------------------------------------------------------------
 float function_DoubleSquircularSigmoid (float x, float a, int n) {
-  functionName = "Double-Squircular Sigmoid";
+  string functionName = "Double-Squircular Sigmoid";
  
   float pwn = max(2, n * 2.0); 
   float y = 0;
@@ -788,7 +788,7 @@ float function_DoubleSquircularSigmoid (float x, float a, int n) {
 
 //------------------------------------------------------------------
 float function_CircularEaseIn (float x) {
-  functionName = "Circular Ease In";
+  string functionName = "Circular Ease In";
 
   float y = 1.0 - sqrt(1.0 - x*x);
   return y;
@@ -796,7 +796,7 @@ float function_CircularEaseIn (float x) {
 
 //------------------------------------------------------------------
 float function_CircularEaseOut (float x) {
-  functionName = "Circular Ease Out";
+  string functionName = "Circular Ease Out";
 
   float y = sqrt(1.0 - sq(1.0 - x));
   return y;
@@ -805,7 +805,7 @@ float function_CircularEaseOut (float x) {
 
 //------------------------------------------------------------------
 float function_CircularEaseInOut (float x) {
-  functionName = "Penner's Circular Ease InOut";
+  string functionName = "Penner's Circular Ease InOut";
 
   float y = 0; 
   x *= 2.0; 
@@ -823,14 +823,14 @@ float function_CircularEaseInOut (float x) {
 
 //------------------------------------------------------------------
 float function_DoubleQuadraticBezier (float x, float a, float b, float c, float d) {
-  functionName = "Double Quadratic Bezier";
+  string functionName = "Double Quadratic Bezier";
   // also see http://engineeringtraining.tpub.com/14069/css/14069_150.htm
   // produces mysterious values when a=0,b=1,c=0.667,d=0.417
   
   float xmid = (a + c)/2.0; 
   float ymid = (b + d)/2.0; 
-  xmid = clamp (xmid, EPSILON, 1.0-EPSILON);
-  ymid = clamp (ymid, EPSILON, 1.0-EPSILON);
+  xmid = clamp (xmid, M_E, 1.0-M_E);
+  ymid = clamp (ymid, M_E, 1.0-M_E);
   
   float y = 0;
   float om2a;
@@ -845,7 +845,7 @@ float function_DoubleQuadraticBezier (float x, float a, float b, float c, float 
     bb = b / ymid; 
     om2a = 1.0 - 2.0*aa;
     if (om2a == 0) {
-       om2a = EPSILON; 
+       om2a = M_E; 
     }   
     t = (sqrt(aa*aa + om2a*xx) - aa)/om2a;
     y = (1.0-2.0*bb)*(t*t) + (2*bb)*t;
@@ -857,7 +857,7 @@ float function_DoubleQuadraticBezier (float x, float a, float b, float c, float 
      bb = (d - ymid)/(1.0-ymid); 
      om2a = 1.0 - 2.0*aa;
      if (om2a == 0) {
-       om2a = EPSILON; 
+       om2a = M_E; 
      }     
      t = (sqrt(aa*aa + om2a*xx) - aa)/om2a;
      y = (1.0-2.0*bb)*(t*t) + (2*bb)*t;
@@ -871,7 +871,7 @@ float function_DoubleQuadraticBezier (float x, float a, float b, float c, float 
 
 //------------------------------------------------------------------
 float function_DoubleEllipticSigmoid (float x, float a, float b){
-  functionName = "Double-Elliptic Sigmoid";
+  string functionName = "Double-Elliptic Sigmoid";
 
   float y = 0;
   if (x<=a){
@@ -894,7 +894,7 @@ float function_DoubleEllipticSigmoid (float x, float a, float b){
 
 //------------------------------------------------------------------
 float function_DoubleCubicOgeeSimplified (float x, float a, float b){
-  functionName = "Simplified Double-Cubic Ogee";
+  string functionName = "Simplified Double-Cubic Ogee";
   b = 1 - b; //reverse, for intelligibility.
   
   float y = 0;
@@ -921,7 +921,7 @@ float function_DoubleCubicOgeeSimplified (float x, float a, float b){
 
 //------------------------------------------------------------------
 float function_RaisedInvertedCosine (float x) {
-  functionName = "Raised Inverted Cosine";
+  string functionName = "Raised Inverted Cosine";
 
   float y = (1.0 - cos(PI*x))/2.0;
   return y;
@@ -929,7 +929,7 @@ float function_RaisedInvertedCosine (float x) {
 
 //------------------------------------------------------------------
 float function_BlinnWyvillCosineApproximation (float x) {
-  functionName = "Blinn/Wyvill's Cosine Approximation";
+  string functionName = "Blinn/Wyvill's Cosine Approximation";
 
   float x2 = x*x;
   float x4 = x2*x2;
@@ -945,7 +945,7 @@ float function_BlinnWyvillCosineApproximation (float x) {
 //------------------------------------------------------------------
 float function_SmoothStep (float x) { 
   // http://en.wikipedia.org/wiki/Smoothstep
-  functionName = "Smooth Step";
+  string functionName = "Smooth Step";
 
   return x*x*(3.0 - 2.0*x);
 }
@@ -953,7 +953,7 @@ float function_SmoothStep (float x) {
 //------------------------------------------------------------------
 float function_SmootherStep (float x) { 
   // http://en.wikipedia.org/wiki/Smoothstep
-  functionName = "Perlin's Smoother Step";
+  string functionName = "Perlin's Smoother Step";
 
   return x*x*x*(x*(x*6.0 - 15.0) + 10.0);
 }
@@ -962,7 +962,7 @@ float function_SmootherStep (float x) {
 float function_MaclaurinCos (float x) {
   // http://blogs.ubc.ca/infiniteseriesmodule/units/unit-3-power-series/taylor-series/the-maclaurin-expansion-of-cosx/
 
-  functionName = "Maclaurin Cosine Approximation";
+  string functionName = "Maclaurin Cosine Approximation";
   int nTerms = 6; // anything less is fouled
 
   x *= PI;
@@ -988,7 +988,7 @@ float function_MaclaurinCos (float x) {
 //------------------------------------------------------------------
 // from http://paulbourke.net/miscellaneous/interpolation/
 float function_CatmullRomInterpolate (float x, float a, float b) {
-  functionName = "Catmull-Rom Interpolation";
+  string functionName = "Catmull-Rom Interpolation";
 
   float y0 = a; 
   float y3 = b; 
@@ -1018,7 +1018,7 @@ float function_CatmullRomInterpolate (float x, float a, float b) {
 // from http://musicdsp.org/showArchiveComment.php?ArchiveID=93
 // by Laurent de Soras
 float function_Hermite (float x, float a, float b, float c, float d) {
-  functionName = "Hermite (de Soras)";
+  string functionName = "Hermite (de Soras)";
   a = fit(a, 0,1, -1,1);
   c = fit(c, 0,1, -1,1);
   
@@ -1035,7 +1035,7 @@ float function_Hermite (float x, float a, float b, float c, float d) {
 //------------------------------------------------------------------
 // from http://paulbourke.net/miscellaneous/interpolation/
 float function_Hermite2 (float x, float a, float b, float c, float d) {
-  functionName = "Hermite (Bourke)";
+  string functionName = "Hermite (Bourke)";
 
   /*
    Tension: 1 is high, 0 normal, -1 is low
@@ -1071,7 +1071,7 @@ float function_Hermite2 (float x, float a, float b, float c, float d) {
 float function_NormalizedErf (float x) {
   // http://en.wikipedia.org/wiki/Error_function
   // Note that this implementation is a shifted, scaled and normalized error function!
-  functionName = "Error Function";
+  string functionName = "Error Function";
   
   float erfBound = 2.0; // set bounds for artificial "normalization"
   float erfBoundNorm = 0.99532226501; // this = erf(2.0), i.e., erf(erfBound)
@@ -1092,7 +1092,7 @@ float function_NormalizedErf (float x) {
 float function_NormalizedInverseErf (float x) {
   // http://en.wikipedia.org/wiki/Error_function
   // Note that this implementation is a shifted, scaled and normalized error function!
-  functionName = "Inverse Error Function";
+  string functionName = "Inverse Error Function";
 
   float erfBound = 2.0;
   float erfBoundNorm = 0.99532226501; // this = erf(2.0), i.e., erf(erfBound)
@@ -1116,7 +1116,7 @@ float function_NormalizedInverseErf (float x) {
 //------------------------------------------------------------------
 float function_SimpleHalfGaussian (float x) {
   // http://en.wikipedia.org/wiki/Gaussian_function
-  functionName = "Simple Gaussian (Half)";
+  string functionName = "Simple Gaussian (Half)";
 
   float sigma = 0.25; // produces results < 0.001 at f(0); 
   float out = exp(0.0 - (sq(x-1.0) / (2.0*sigma*sigma))); 
@@ -1127,7 +1127,7 @@ float function_SimpleHalfGaussian (float x) {
 float function_AdjustableFwhmHalfGaussian (float x, float a) {
   // http://en.wikipedia.org/wiki/Gaussian_function
   // http://en.wikipedia.org/wiki/Full_width_at_half_maximum
-  functionName = "Adjustable-FWHM Gaussian (Half)";
+  string functionName = "Adjustable-FWHM Gaussian (Half)";
 
   float denom = sqrt(2.0*log(2.0));
   float sigma = (1.0 - a) / denom;
@@ -1141,7 +1141,7 @@ float function_AdjustableFwhmHalfGaussian (float x, float a) {
 float function_HalfGaussianThroughAPoint (float x, float a, float b) {
   // http://en.wikipedia.org/wiki/Gaussian_function
   // http://en.wikipedia.org/wiki/Full_width_at_half_maximum
-  functionName = "Gaussian Through A Point (Half)";
+  string functionName = "Gaussian Through A Point (Half)";
   
   b = max(0.0000001, b); 
   float denom = sqrt(2.0*log(1.0/b));
@@ -1155,7 +1155,7 @@ float function_HalfGaussianThroughAPoint (float x, float a, float b) {
 //------------------------------------------------------------------
 float function_AdjustableSigmaHalfGaussian (float x, float a) {
   // http://en.wikipedia.org/wiki/Gaussian_function
-  functionName = "Adjustable-Sigma Gaussian (Half)";
+  string functionName = "Adjustable-Sigma Gaussian (Half)";
 
   float sigma = 1.0-a;
   float out = exp(0.0 - (sq(x-1.0) / (2.0*sigma*sigma))); 
@@ -1165,7 +1165,7 @@ float function_AdjustableSigmaHalfGaussian (float x, float a) {
 //------------------------------------------------------------------
 float function_HalfLanczosSincWindow (float x) {
   // http://en.wikipedia.org/wiki/Window_function 
-  functionName = "Lanczos Sinc Window (Half)";
+  string functionName = "Lanczos Sinc Window (Half)";
 
   float y = sinc (1.0 - x);
   return y;
@@ -1184,7 +1184,7 @@ float sinc (float x) {
 //------------------------------------------------------------------
 float function_HalfNuttallWindow (float x) {
   // http://en.wikipedia.org/wiki/Window_function 
-  functionName = "Nuttall Window (Half)";
+  string functionName = "Nuttall Window (Half)";
 
   float a0 = 0.355768;
   float a1 = 0.487396;
@@ -1200,7 +1200,7 @@ float function_HalfNuttallWindow (float x) {
 //------------------------------------------------------------------
 float function_HalfBlackmanNuttallWindow (float x) {
   // http://en.wikipedia.org/wiki/Window_function 
-  functionName = "Blackman–Nuttall Window (Half)";
+  string functionName = "Blackman–Nuttall Window (Half)";
 
   float a0 = 0.3635819;
   float a1 = 0.4891775;
@@ -1216,7 +1216,7 @@ float function_HalfBlackmanNuttallWindow (float x) {
 //------------------------------------------------------------------
 float function_HalfBlackmanHarrisWindow (float x) {
   // http://en.wikipedia.org/wiki/Window_function 
-  functionName = "Blackman–Harris Window (Half)";
+  string functionName = "Blackman–Harris Window (Half)";
 
   float a0 = 0.35875;
   float a1 = 0.48829;
@@ -1232,7 +1232,7 @@ float function_HalfBlackmanHarrisWindow (float x) {
 //------------------------------------------------------------------
 float function_HalfExactBlackmanWindow (float x) {
   // http://en.wikipedia.org/wiki/Window_function 
-  functionName = "Exact Blackman Window (Half)";
+  string functionName = "Exact Blackman Window (Half)";
 
   float a0 = 7938.0 / 18608.0;
   float a1 = 9240.0 / 18608.0;
@@ -1247,7 +1247,7 @@ float function_HalfExactBlackmanWindow (float x) {
 //------------------------------------------------------------------
 float function_HalfGeneralizedBlackmanWindow (float x, float a) {
   // http://en.wikipedia.org/wiki/Window_function 
-  functionName = "Generalized Blackman Window (Half)";
+  string functionName = "Generalized Blackman Window (Half)";
 
   float a0 = (1.0 - a)/2.0;
   float a1 = 0.5;
@@ -1262,7 +1262,7 @@ float function_HalfGeneralizedBlackmanWindow (float x, float a) {
 //------------------------------------------------------------------
 float function_HalfFlatTopWindow (float x) {
   // http://en.wikipedia.org/wiki/Window_function 
-  functionName = "Flat Top Window (Half)";
+  string functionName = "Flat Top Window (Half)";
 
   float a0 = 1.000;
   float a1 = 1.930;
@@ -1281,7 +1281,7 @@ float function_HalfFlatTopWindow (float x) {
 //------------------------------------------------------------------
 float function_HalfBartlettHannWindow (float x) {
   // http://en.wikipedia.org/wiki/Window_function 
-  functionName = "Bartlett-Hann Window (Half)";
+  string functionName = "Bartlett-Hann Window (Half)";
 
   float a0 = 0.62;
   float a1 = 0.48;
@@ -1296,7 +1296,7 @@ float function_HalfBartlettHannWindow (float x) {
 float function_BartlettWindow (float x) {
   // http://en.wikipedia.org/wiki/Window_function 
   // Triangular window with zero-valued end-points:
-  functionName = "Bartlett (Triangle) Window";
+  string functionName = "Bartlett (Triangle) Window";
 
   float y = 2.0 * (0.5 - abs(x - 0.5));
   return y;
@@ -1304,7 +1304,7 @@ float function_BartlettWindow (float x) {
 
 //------------------------------------------------------------------
 float function_TukeyWindow (float x, float a) {
-  functionName = "Tukey Window";
+  string functionName = "Tukey Window";
   // http://en.wikipedia.org/wiki/Window_function 
   // The Tukey window, also known as the tapered cosine window, 
   // can be regarded as a cosine lobe of width \tfrac{\alpha N}{2} 
@@ -1326,7 +1326,7 @@ float function_TukeyWindow (float x, float a) {
 
 //------------------------------------------------------------------
 float function_AdjustableCenterCosineWindow (float x, float a) {
-  functionName = "Adjustable Center Cosine Window";
+  string functionName = "Adjustable Center Cosine Window";
   
   float ah = a/2.0; 
   float omah = 1.0 - ah;
@@ -1344,7 +1344,7 @@ float function_AdjustableCenterCosineWindow (float x, float a) {
 //------------------------------------------------------------------
 float function_CosineWindow (float x) {
   // http://en.wikipedia.org/wiki/Window_function 
-  functionName = "Cosine Window";
+  string functionName = "Cosine Window";
 
   float y = sin (PI*x);
   return y;
@@ -1353,7 +1353,7 @@ float function_CosineWindow (float x) {
 //------------------------------------------------------------------
 float function_AdjustableSigmaGaussian (float x, float a) {
   // http://en.wikipedia.org/wiki/Gaussian_function
-  functionName = "Adjustable-Sigma Gaussian Window";
+  string functionName = "Adjustable-Sigma Gaussian Window";
  
   x *= 2.0;
   a *= 2.0; 
@@ -1365,7 +1365,7 @@ float function_AdjustableSigmaGaussian (float x, float a) {
 //------------------------------------------------------------------
 float function_SlidingAdjustableSigmaGaussian (float x, float a, float b) {
   // http://en.wikipedia.org/wiki/Gaussian_function
-  functionName = "Sliding Adjustable-Sigma Gaussian Window";
+  string functionName = "Sliding Adjustable-Sigma Gaussian Window";
   
   x *= 2.0;
   b *= 2.0; 
@@ -1378,7 +1378,7 @@ float function_SlidingAdjustableSigmaGaussian (float x, float a, float b) {
 //------------------------------------------------------------------
 float function_LanczosSincWindow (float x) {
   // http://en.wikipedia.org/wiki/Window_function 
-  functionName = "Lanczos Sinc Window";
+  string functionName = "Lanczos Sinc Window";
 
   x *= 2.0;
   float y = sinc (1.0 - x);
@@ -1388,7 +1388,7 @@ float function_LanczosSincWindow (float x) {
 //------------------------------------------------------------------
 float function_NuttallWindow (float x) {
   // http://en.wikipedia.org/wiki/Window_function 
-  functionName = "Nuttall Window";
+  string functionName = "Nuttall Window";
 
   float a0 = 0.355768;
   float a1 = 0.487396;
@@ -1403,7 +1403,7 @@ float function_NuttallWindow (float x) {
 //------------------------------------------------------------------
 float function_BlackmanNuttallWindow (float x) {
   // http://en.wikipedia.org/wiki/Window_function 
-  functionName = "Blackman–Nuttall Window";
+  string functionName = "Blackman–Nuttall Window";
 
   float a0 = 0.3635819;
   float a1 = 0.4891775;
@@ -1419,7 +1419,7 @@ float function_BlackmanNuttallWindow (float x) {
 //------------------------------------------------------------------
 float function_BlackmanHarrisWindow (float x) {
   // http://en.wikipedia.org/wiki/Window_function 
-  functionName = "Blackman–Harris Window";
+  string functionName = "Blackman–Harris Window";
 
   float a0 = 0.35875;
   float a1 = 0.48829;
@@ -1435,7 +1435,7 @@ float function_BlackmanHarrisWindow (float x) {
 //------------------------------------------------------------------
 float function_ExactBlackmanWindow (float x) {
   // http://en.wikipedia.org/wiki/Window_function 
-  functionName = "Exact Blackman Window";
+  string functionName = "Exact Blackman Window";
 
   float a0 = 7938.0 / 18608.0;
   float a1 = 9240.0 / 18608.0;
@@ -1450,7 +1450,7 @@ float function_ExactBlackmanWindow (float x) {
 //------------------------------------------------------------------
 float function_GeneralizedBlackmanWindow (float x, float a) {
   // http://en.wikipedia.org/wiki/Window_function 
-  functionName = "Generalized Blackman Window";
+  string functionName = "Generalized Blackman Window";
 
   float a0 = (1.0 - a)/2.0;
   float a1 = 0.5;
@@ -1465,7 +1465,7 @@ float function_GeneralizedBlackmanWindow (float x, float a) {
 //------------------------------------------------------------------
 float function_FlatTopWindow (float x) {
   // http://en.wikipedia.org/wiki/Window_function 
-  functionName = "Flat Top Window";
+  string functionName = "Flat Top Window";
 
   float a0 = 1.000;
   float a1 = 1.930;
@@ -1483,7 +1483,7 @@ float function_FlatTopWindow (float x) {
 //------------------------------------------------------------------
 float function_BartlettHannWindow (float x) {
   // http://en.wikipedia.org/wiki/Window_function 
-  functionName = "Bartlett-Hann Window";
+  string functionName = "Bartlett-Hann Window";
 
   float a0 = 0.62;
   float a1 = 0.48;
@@ -1496,7 +1496,7 @@ float function_BartlettHannWindow (float x) {
 //------------------------------------------------------------------
 float function_HannWindow (float x){
   // http://en.wikipedia.org/wiki/Window_function 
-  functionName = "Hann (Raised Cosine) Window";
+  string functionName = "Hann (Raised Cosine) Window";
 
   float y = 0.5 * (1.0 - cos(TWO_PI*x));
   return y;
@@ -1505,7 +1505,7 @@ float function_HannWindow (float x){
 //------------------------------------------------------------------
 float function_HammingWindow (float x){
   // http://en.wikipedia.org/wiki/Window_function 
-  functionName = "Hamming Window";
+  string functionName = "Hamming Window";
 
   float y = 0.54 - 0.46*cos(TWO_PI*x);
   return y;
@@ -1514,11 +1514,11 @@ float function_HammingWindow (float x){
 //------------------------------------------------------------------
 float function_GeneralizedTriangleWindow (float x, float a) {
   // http://en.wikipedia.org/wiki/Window_function 
-  functionName = "Generalized Triangle Window";
+  string functionName = "Generalized Triangle Window";
  
   float y = 0; 
-  float min_param_a = 0.0 + EPSILON;
-  float max_param_a = 1.0 - EPSILON;
+  float min_param_a = 0.0 + M_E;
+  float max_param_a = 1.0 - M_E;
   a = clamp(a, min_param_a, max_param_a); 
   
   if (x < a){
@@ -1532,10 +1532,10 @@ float function_GeneralizedTriangleWindow (float x, float a) {
 //------------------------------------------------------------------
 float function_PoissonWindow (float x, float a) {
   // http://en.wikipedia.org/wiki/Window_function 
-  functionName = "Poisson or Exponential Window";
+  string functionName = "Poisson or Exponential Window";
 
-  float epsilon = 0.00001;
-  float tau = max(a, epsilon); 
+  float M_E = 0.00001;
+  float tau = max(a, M_E); 
   
   float y = exp (0.0 - (abs(x - 0.5))*(1.0/tau));
   return y; 
@@ -1544,10 +1544,10 @@ float function_PoissonWindow (float x, float a) {
 //------------------------------------------------------------------
 float function_HannPoissonWindow (float x, float a) {
   // http://en.wikipedia.org/wiki/Window_function 
-  functionName = "Hann-Poisson Window";
+  string functionName = "Hann-Poisson Window";
 
-  float epsilon = 0.00001;
-  float tau = 25.0 * max(a*a*a*a, epsilon); // nice control
+  float M_E = 0.00001;
+  float tau = 25.0 * max(a*a*a*a, M_E); // nice control
   
   float hy = 0.5 * (1.0 - cos(TWO_PI*x));
   float py = exp (0.0 - (abs(x - 0.5))*(1.0/tau));
@@ -1557,10 +1557,10 @@ float function_HannPoissonWindow (float x, float a) {
 //------------------------------------------------------------------
 float function_HannPoissonWindowSliding (float x, float a, float b) {
   // http://en.wikipedia.org/wiki/Window_function 
-  functionName = "Sliding Hann-Poisson Window";
+  string functionName = "Sliding Hann-Poisson Window";
 
-  float epsilon = 0.00001;
-  float tau = 25.0 * max(b*b*b*b, epsilon); // nice range of control
+  float M_E = 0.00001;
+  float tau = 25.0 * max(b*b*b*b, M_E); // nice range of control
   
   float newx = clamp(x + (0.5 - a), 0, 1); 
   float hy = 0.5 * (1.0 - cos(TWO_PI*newx));
@@ -1572,10 +1572,10 @@ float function_HannPoissonWindowSliding (float x, float a, float b) {
 // Exponential shapers
 
 float function_ExponentialEmphasis (float x, float a) {
-  functionName = "Exponential Emphasis";
+  string functionName = "Exponential Emphasis";
 
-  float min_param_a = 0.0 + EPSILON;
-  float max_param_a = 1.0 - EPSILON;
+  float min_param_a = 0.0 + M_E;
+  float max_param_a = 1.0 - M_E;
   a = clamp(a, min_param_a, max_param_a); 
 
   if (a < 0.5) {
@@ -1596,7 +1596,7 @@ float function_ExponentialEmphasis (float x, float a) {
 float function_IterativeSquareRoot (float x) {
   // http://en.wikipedia.org/wiki/Methods_of_computing_square_roots
   // Ancient Babylonian technology
-  functionName = "Iterative (Heron's) Square Root";
+  string functionName = "Iterative (Heron's) Square Root";
   float y = 0.5; 
   int n = 6;
   for (int i=0; i<n; i++) {
@@ -1609,7 +1609,7 @@ float function_IterativeSquareRoot (float x) {
 float function_FastSquareRoot(float x) {
   // http://en.wikipedia.org/wiki/Fast_inverse_square_root
   // http://stackoverflow.com/questions/11513344/how-to-implement-the-fast-inverse-square-root-in-java
-  functionName = "FastSquareRoot";
+  string functionName = "FastSquareRoot";
   
   float xhalf = 0.5f * x;
   int i = Float.floatToIntBits(x);
@@ -1623,10 +1623,10 @@ float function_FastSquareRoot(float x) {
 
 //------------------------------------------------------------------
 float function_DoubleExponentialOgee (float x, float a){
-  functionName = "Double-Exponential Ogee";
+  string functionName = "Double-Exponential Ogee";
 
-  float min_param_a = 0.0 + EPSILON;
-  float max_param_a = 1.0 - EPSILON;
+  float min_param_a = 0.0 + M_E;
+  float max_param_a = 1.0 - M_E;
   a = clamp(a, min_param_a, max_param_a); 
 
   float y = 0;
@@ -1650,12 +1650,12 @@ float arcRadius;
 
 // ====================================================================
 float function_CircularFillet (float x, float a, float b, float c) {
-  functionName = "Double-Linear with Circular Fillet";
+  string functionName = "Double-Linear with Circular Fillet";
 
-  float min_param_a = 0.0 + EPSILON;
-  float max_param_a = 1.0 - EPSILON;
-  float min_param_b = 0.0 + EPSILON;
-  float max_param_b = 1.0 - EPSILON;
+  float min_param_a = 0.0 + M_E;
+  float max_param_a = 1.0 - M_E;
+  float min_param_b = 0.0 + M_E;
+  float max_param_b = 1.0 - M_E;
   a = clamp(a, min_param_a, max_param_a); 
   b = clamp(b, min_param_b, max_param_b); 
 
@@ -1667,7 +1667,7 @@ float function_CircularFillet (float x, float a, float b, float c) {
   x = clamp(x, 0, 1); 
 
   if (x <= arcStartX) {
-    if (arcStartX < EPSILON){
+    if (arcStartX < M_E){
       y = 0;
     } else {
       t = x / arcStartX;
@@ -1814,15 +1814,15 @@ float m_dRadius;
 
 //==============================================================
 float function_CircularArcThroughAPoint (float x, float a, float b){
-  functionName = "Circular Arc Through a Given Point";
+  string functionName = "Circular Arc Through a Given Point";
   
-  float min_param_a = 0.0 + EPSILON;
-  float max_param_a = 1.0 - EPSILON;
-  float min_param_b = 0.0 + EPSILON;
-  float max_param_b = 1.0 - EPSILON;
+  float min_param_a = 0.0 + M_E;
+  float max_param_a = 1.0 - M_E;
+  float min_param_b = 0.0 + M_E;
+  float max_param_b = 1.0 - M_E;
   a = clamp(a, min_param_a, max_param_a); 
   b = clamp(b, min_param_b, max_param_b); 
-  x = clamp(x, 0+EPSILON,1-EPSILON);
+  x = clamp(x, 0+M_E,1-M_E);
   
   float pt1x = 0;
   float pt1y = 0;
@@ -1879,19 +1879,19 @@ float pt3x, float pt3y)
   float xDelta_b = pt3x - pt2x;
 
   // checking whether the line of the two pts are vertical
-  if (abs(xDelta_a) <= EPSILON && abs(yDelta_b) <= EPSILON){
+  if (abs(xDelta_a) <= M_E && abs(yDelta_b) <= M_E){
     return false;
   }
-  if (abs(yDelta_a) <= EPSILON){
+  if (abs(yDelta_a) <= M_E){
     return true;
   }
-  else if (abs(yDelta_b) <= EPSILON){
+  else if (abs(yDelta_b) <= M_E){
     return true;
   }
-  else if (abs(xDelta_a)<= EPSILON){
+  else if (abs(xDelta_a)<= M_E){
     return true;
   }
-  else if (abs(xDelta_b)<= EPSILON){
+  else if (abs(xDelta_b)<= M_E){
     return true;
   }
   else return false;
@@ -1909,7 +1909,7 @@ float pt3x, float pt3y)
   float yDelta_b = pt3y - pt2y;
   float xDelta_b = pt3x - pt2x;
 
-  if (abs(xDelta_a) <= EPSILON && abs(yDelta_b) <= EPSILON){
+  if (abs(xDelta_a) <= M_E && abs(yDelta_b) <= M_E){
     m_Centerx = 0.5*(pt2x + pt3x);
     m_Centery = 0.5*(pt1y + pt2y);
     m_dRadius = sqrt(sq(m_Centerx-pt1x) + sq(m_Centery-pt1y));
@@ -1919,7 +1919,7 @@ float pt3x, float pt3y)
   // IsPerpendicular() assure that xDelta(s) are not zero
   float aSlope = yDelta_a / xDelta_a; 
   float bSlope = yDelta_b / xDelta_b;
-  if (abs(aSlope-bSlope) <= EPSILON){	// checking whether the given points are colinear. 	
+  if (abs(aSlope-bSlope) <= M_E){	// checking whether the given points are colinear. 	
     return;
   }
 
@@ -1936,7 +1936,7 @@ float pt3x, float pt3y)
 
 //------------------------------------------------------------------
 float function_QuadraticBezier (float x, float a, float b){
-  functionName = "Quadratic Bezier";
+  string functionName = "Quadratic Bezier";
 
   float min_param_a = 0.0;
   float max_param_a = 1.0;
@@ -1946,7 +1946,7 @@ float function_QuadraticBezier (float x, float a, float b){
   b = clamp(b, min_param_b, max_param_b); 
 
   if (a == 0.5){
-    a += EPSILON;
+    a += M_E;
   }
   // solve t from x (an inverse operation)
   float om2a = 1.0 - 2.0*a;
@@ -1958,14 +1958,14 @@ float function_QuadraticBezier (float x, float a, float b){
 
 //------------------------------------------------------------------
 float function_CubicBezier (float x, float a, float b, float c, float d){
-  functionName = "Cubic Bezier";
+  string functionName = "Cubic Bezier";
 
-  float min_param_a = 0.0 + EPSILON;
-  float max_param_a = 1.0 - EPSILON;
+  float min_param_a = 0.0 + M_E;
+  float max_param_a = 1.0 - M_E;
   float min_param_b = 0.0;
   float max_param_b = 1.0;
-  float min_param_c = 0.0 + EPSILON;
-  float max_param_c = 1.0 - EPSILON;
+  float min_param_c = 0.0 + M_E;
+  float max_param_c = 1.0 - M_E;
   float min_param_d = 0.0;
   float max_param_d = 1.0;
   a = clamp(a, min_param_a, max_param_a); 
@@ -2028,10 +2028,10 @@ float yFromT (float t, float E, float F, float G, float H){
 // Parabola (Quadratic) Through a Point
 //------------------------------------------------------------------
 float function_ParabolaThroughAPoint (float x, float a, float b){
-  functionName = "Quadratic Through a Given Point";
+  string functionName = "Quadratic Through a Given Point";
   
-  float min_param_a = 0.0 + EPSILON;
-  float max_param_a = 1.0 - EPSILON;
+  float min_param_a = 0.0 + M_E;
+  float max_param_a = 1.0 - M_E;
   float min_param_b = 0.0;
   float max_param_b = 1.0;
   a = clamp(a, min_param_a, max_param_a); 
@@ -2050,7 +2050,7 @@ float function_ParabolaThroughAPoint (float x, float a, float b){
 // generalized damped sinusoid
 float function_DampedSinusoid (float x, float a){
   // http://en.wikipedia.org/wiki/Damped_sine_wave
-  functionName = "Generalized Damped Sinusoid";
+  string functionName = "Generalized Damped Sinusoid";
   
   float omega  = 100*a;
   float lambda = -6.90775527; // ln(lambda) = 0.001 // decay constant
@@ -2066,7 +2066,7 @@ float function_DampedSinusoid (float x, float a){
 // generalized damped sinusoid
 float function_DampedSinusoidReverse (float x, float a){
   // http://en.wikipedia.org/wiki/Damped_sine_wave
-  functionName = "Generalized Damped Sinusoid (Reverse)";
+  string functionName = "Generalized Damped Sinusoid (Reverse)";
   
   float omega = 100*a;
   float lambda = -6.90775527; // ln(lambda) = 0.001
@@ -2081,14 +2081,14 @@ float function_DampedSinusoidReverse (float x, float a){
 
 //------------------------------------------------------------------
 float function_CubicBezierThrough2Points (float x, float a, float b, float c, float d){
-  functionName = "Cubic Bezier (Nearly) Through 2 Points"; 
+  string functionName = "Cubic Bezier (Nearly) Through 2 Points"; 
 
   float y = 0;
 
-  float min_param_a = 0.0 + EPSILON;
-  float max_param_a = 1.0 - EPSILON;
-  float min_param_b = 0.0 + EPSILON;
-  float max_param_b = 1.0 - EPSILON;
+  float min_param_a = 0.0 + M_E;
+  float max_param_a = 1.0 - M_E;
+  float min_param_b = 0.0 + M_E;
+  float max_param_b = 1.0 - M_E;
   a = clamp(a, min_param_a, max_param_a); 
   b = clamp(b, min_param_b, max_param_b); 
 
@@ -2124,13 +2124,13 @@ float function_CubicBezierThrough2Points (float x, float a, float b, float c, fl
   x1 = (ccx - x2*B2t1) / B1t1;
   y1 = (ccy - y2*B2t1) / B1t1;
 
-  x1 = clamp(x1, 0+EPSILON,1-EPSILON); 
-  x2 = clamp(x2, 0+EPSILON,1-EPSILON); 
+  x1 = clamp(x1, 0+M_E,1-M_E); 
+  x2 = clamp(x2, 0+M_E,1-M_E); 
 
   y = function_CubicBezier (x, x1,y1, x2,y2);
   y = clamp(y,0,1); 
   
-  functionName = "Cubic Bezier (Nearly) Through 2 Points";  
+  string functionName = "Cubic Bezier (Nearly) Through 2 Points";  
   return y;
 
 }
@@ -2158,7 +2158,7 @@ float  findy (float t, float y0, float y1, float y2, float y3){
 
 //------------------------------------------------------------------
 float function_DoubleCircularOgee (float x, float a){
-  functionName = "Double-Circular Ogee";
+  string functionName = "Double-Circular Ogee";
   
   float min_param_a = 0.0;
   float max_param_a = 1.0;
@@ -2177,7 +2177,7 @@ float function_DoubleCircularOgee (float x, float a){
 
 float function_DoubleSquircularOgee (float x, float a, int n){
   // http://en.wikipedia.org/wiki/Squircle
-  functionName = "Double-Squircular Ogee";
+  string functionName = "Double-Squircular Ogee";
   
   float min_param_a = 0.0;
   float max_param_a = 1.0;
@@ -2209,7 +2209,7 @@ float function_GeneralSigmoidLogitCombo (float x, float a, float b){
     y = function_NormalizedLogisticSigmoid (x+dx, (2.0*(a-0.5)));
   }
   
-  functionName = "General Sigmoid-Logit Combination";
+  string functionName = "General Sigmoid-Logit Combination";
   y = clamp(y, 0,1); 
   return y;
 }
@@ -2221,10 +2221,10 @@ float function_GeneralSigmoidLogitCombo (float x, float a, float b){
 
 //------------------------------------------------------------------
 float function_NormalizedLogisticSigmoid (float x, float a) {
-  functionName = "Normalized Logistic Sigmoid";
+  string functionName = "Normalized Logistic Sigmoid";
 
-  float min_param_a = 0.0 + EPSILON;
-  float max_param_a = 1.0 - EPSILON;
+  float min_param_a = 0.0 + M_E;
+  float max_param_a = 1.0 - M_E;
   float emph = 5.0;
 
   a = clamp(a, min_param_a, max_param_a);
@@ -2242,10 +2242,10 @@ float function_NormalizedLogisticSigmoid (float x, float a) {
 //------------------------------------------------------------------
 float function_NormalizedLogit (float x, float a) {
   // http://en.wikipedia.org/wiki/Logit
-  functionName = "Normalized Logit Function";
+  string functionName = "Normalized Logit Function";
 
-  float min_param_a = 0.0 + EPSILON;
-  float max_param_a = 1.0 - EPSILON;
+  float min_param_a = 0.0 + M_E;
+  float max_param_a = 1.0 - M_E;
   float emph = 5.0;
 
   a = clamp(a, min_param_a, max_param_a); 
@@ -2268,7 +2268,7 @@ float function_NormalizedLogit (float x, float a) {
 
 //------------------------------------------------------------------
 float function_NiftyQuartic (float x, float a, float b) {
-  functionName = "Quartic";
+  string functionName = "Quartic";
 
   float min_param_a = 0.0;
   float max_param_a = 1.0;
@@ -2285,19 +2285,19 @@ float function_NiftyQuartic (float x, float a, float b) {
 
 
 float function_Identity (float x) {
-  functionName = "Identity Function";
+  string functionName = "Identity Function";
   return x;
 }
 
 float function_Inverse (float x) {
-  functionName = "Inverse Function";
+  string functionName = "Inverse Function";
   return 1.0-x;
 }
 
 float function_BoxcarFunction (float x){
   // http://mathworld.wolfram.com/BoxcarFunction.html
   // Also see http://mathworld.wolfram.com/HeavisideStepFunction.html
-  functionName = "Boxcar Function";
+  string functionName = "Boxcar Function";
   if (x < 0.5){
     return 0.0; 
   } else if (x > 0.5){

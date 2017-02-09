@@ -10,15 +10,16 @@
     <memberTool name="reset_colours"/>
     <memberTool name="caps"/>
     <memberTool name="blast_to_split"/>
+    <memberTool name="Blast to Group-Delete"/>
+    <memberTool name="iterate"/>
     <memberTool name="merge"/>
     <memberTool name="xform"/>
     <memberTool name="copy"/>
     <memberTool name="null"/>
     <memberTool name="wrangle"/>
-    <memberTool name="iterate"/>
   </toolshelf>
 
-  <tool name="reset_colours" label="Reset Colours" icon="PLASMA_App">
+  <tool name="reset_colours" label="Reset Colours" icon="COP2_colorwheel">
     <script scriptType="python"><![CDATA[root = hou.node("/")
        
 for cur_node in root.allNodes():
@@ -96,7 +97,7 @@ for cur_node in root.allNodes():
     merge.setDisplayFlag(True)]]></script>
   </tool>
 
-  <tool name="nodeclrs" label="ColorLib" icon="PLASMA_App">
+  <tool name="nodeclrs" label="ColorLib" icon="COP2_colorwheel">
     <script scriptType="python"><![CDATA[import os
 
 #Add dynamic path to houdini home folder
@@ -120,13 +121,13 @@ execfile(PY_PATH)   ]]></script>
         wrangle.setDisplayFlag(True)]]></script>
   </tool>
 
-  <tool name="caps" label="Caps/Uncaps" icon="PLASMA_App">
+  <tool name="caps" label="Caps/Uncaps" icon="SOP_font">
     <script scriptType="python"><![CDATA[nodes = hou.selectedNodes()
 for node in nodes:
     name = node.name()
-    if(name.islower()):
+    if(name[0].islower()):
         node.setName(name.upper())
-    elif(name.isupper()):
+    elif(name[0].isupper()):
         node.setName(name.lower())    ]]></script>
   </tool>
 
@@ -135,5 +136,32 @@ for node in nodes:
 
 for node in allNodes:
     print node.name()]]></script>
+  </tool>
+
+  <tool name="Blast to Group-Delete" label="Blast to Group-Delete" icon="OBJ_geo">
+    <script scriptType="python"><![CDATA[for node in hou.selectedNodes():
+    if(node.type() == hou.nodeType(hou.sopNodeTypeCategory(), "blast")):
+        inv = node.parm("group").evalAsString()
+        # hou.ui.displayMessage("HI")
+        
+        ups = node.inputs()
+        if len(ups) > 0:
+            group = ups[0].createOutputNode("group", "aeGroup")
+        else:
+            group = inv.createOutputNode("group", "aeGroup")
+            
+        group.parm("crname").set("aeGroup")
+        group.parm("pattern").set(inv)
+        
+        delete = group.createOutputNode("delete", "aeDelete")
+        delete.parm("group").set("aeGroup")
+        delete.parm("pattern").set("*")
+        
+        downs = node.outputs()
+        if len(downs) > 0:
+            downs[0].setInput("aeDelete")
+        
+        node.destroy()
+            ]]></script>
   </tool>
 </shelfDocument>

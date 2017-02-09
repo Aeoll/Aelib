@@ -1,7 +1,9 @@
+#include <math.h>
+
 // Penner's Equations
 //------------------------------------------------------------------
 float function_PennerEaseInBack (float x) {
-  functionName = "Penner's Ease-In Back";
+  string functionName = "Penner's Ease-In Back";
 
   float s = 1.70158;
   float y = x*x*((s+1.0)*x - s);
@@ -10,7 +12,7 @@ float function_PennerEaseInBack (float x) {
 
 //------------------------------------------------------------------
 float function_PennerEaseOutBack (float x) {
-  functionName = "Penner's Ease-Out Back";
+  string functionName = "Penner's Ease-Out Back";
 
   float s = 1.70158;
   x = x-1.0;
@@ -20,7 +22,7 @@ float function_PennerEaseOutBack (float x) {
 
 //------------------------------------------------------------------
 float function_BrycePolynomial (float x; int n){
-  functionName = "Bryce's Cubic";
+  string functionName = "Bryce's Cubic";
   
   float xnm1 = pow (x, n-1); 
   float xn = xnm1 * x; 
@@ -30,7 +32,7 @@ float function_BrycePolynomial (float x; int n){
 
 //------------------------------------------------------------------
 float function_PennerEaseInOutBack (float x) {
-  functionName = "Penner's EaseInOut Back";
+  string functionName = "Penner's EaseInOut Back";
 
   float s = 1.70158 * 1.525;
   x /= 0.5;
@@ -49,30 +51,30 @@ float function_PennerEaseInOutBack (float x) {
 
 //------------------------------------------------------------------
 float function_PennerEaseInQuadratic (float t) {
-  functionName = "Penner's EaseIn Quadratic";
+  string functionName = "Penner's EaseIn Quadratic";
   return t*t;
 }
 //------------------------------------------------------------------
 float function_PennerEaseOutQuadratic (float t) {
-  functionName = "Penner's EaseOut Quadratic";
+  string functionName = "Penner's EaseOut Quadratic";
   return -1.0 *(t)*(t-2);
 }
 //------------------------------------------------------------------
 float function_PennerEaseInOutQuadratic (float t) {
-  functionName = "Penner's EaseInOut Quadratic";
+  string functionName = "Penner's EaseInOut Quadratic";
   if ((t/=1.f/2) < 1) return 1.f/2*t*t;
   return -1.f/2 * ((--t)*(t-2) - 1);
 }
 
 //------------------------------------------------------------------
 float function_PennerEaseInCubic (float x) {
-  functionName = "Penner's EaseIn Cubic";
+  string functionName = "Penner's EaseIn Cubic";
   return x*x*x;
 }
 
 //------------------------------------------------------------------
 float function_PennerEaseOutCubic (float x) {
-  functionName = "Penner's EaseOut Cubic";
+  string functionName = "Penner's EaseOut Cubic";
   x = x-1.0;
   return (x*x*x + 1);
 }
@@ -80,7 +82,7 @@ float function_PennerEaseOutCubic (float x) {
 
 //------------------------------------------------------------------
 float function_PennerEaseInOutCubic (float x) {
-  functionName = "Penner's EaseInOut Cubic";
+  string functionName = "Penner's EaseInOut Cubic";
   
   x *= 2.0; 
   float y = 0; 
@@ -98,18 +100,18 @@ float function_PennerEaseInOutCubic (float x) {
 
 //------------------------------------------------------------------
 float function_PennerEaseInQuartic (float t) {
-  functionName = "Penner's EaseIn Quartic";
+  string functionName = "Penner's EaseIn Quartic";
   return t*t*t*t;
 }
 //------------------------------------------------------------------
 float function_PennerEaseOutQuartic (float t) {
-  functionName = "Penner's EaseOut Quartic";
+  string functionName = "Penner's EaseOut Quartic";
   return -1.0 * ((t=t-1)*t*t*t - 1.0);
 }
 
 //------------------------------------------------------------------
 float function_PennerEaseInOutQuartic (float t) {
-  functionName = "Penner's EaseInOut Quartic";
+  string functionName = "Penner's EaseInOut Quartic";
 
   if ((t/=1.0f/2.0) < 1) return 1.0f/2.0*t*t*t*t;
   return -1.0f/2.0 * ((t-=2.0)*t*t*t - 2.0);
@@ -117,38 +119,38 @@ float function_PennerEaseInOutQuartic (float t) {
 
 //------------------------------------------------------------------
 float function_PennerEaseInQuintic (float t) {
-  functionName = "Penner's EaseIn Quintic";
+  string functionName = "Penner's EaseIn Quintic";
   return t*t*t*t*t;
 }
 //------------------------------------------------------------------
 float function_PennerEaseOutQuintic (float t) {
-  functionName = "Penner's EaseOut Quintic";
+  string functionName = "Penner's EaseOut Quintic";
   t = t-1;
   return (t*t*t*t*t + 1.0);
 }
 
 //------------------------------------------------------------------
 float function_PennerEaseInOutQuintic (float t) {
-  functionName = "Penner's EaseInOut Quintic";
+  string functionName = "Penner's EaseInOut Quintic";
   if ((t/=1.f/2) < 1) return 1.f/2*t*t*t*t*t;
   return 1.f/2*((t-=2)*t*t*t*t + 2);
 }
 
 //------------------------------------------------------------------
 float function_PennerEaseInSine (float t) {
-  functionName = "Penner's EaseIn Sine";
+  string functionName = "Penner's EaseIn Sine";
   return -1.0 * cos(t * (PI/2)) + 1;
 }
 
 //------------------------------------------------------------------
 float function_PennerEaseOutSine(float t) {
-  functionName = "Penner's EaseOut Sine";
+  string functionName = "Penner's EaseOut Sine";
   return sin(t * (PI/2));
 }
 
 //------------------------------------------------------------------
 float function_PennerEaseInOutSine(float t) {
-  functionName = "Penner's EaseInOut Sine";
+  string functionName = "Penner's EaseInOut Sine";
   return -0.5 * (cos(PI*t) - 1);
 }
 
@@ -157,19 +159,19 @@ float function_PennerEaseInOutSine(float t) {
 
 //------------------------------------------------------------------
 float function_PennerEaseInExpo(float t) {
-  functionName = "Penner's EaseIn Exponential";
+  string functionName = "Penner's EaseIn Exponential";
   return (t==0) ? 0 : pow(2, 10 * (t - 1));
 }
 
 //------------------------------------------------------------------
 float function_PennerEaseOutExpo(float t) {
-  functionName = "Penner's EaseOut Exponential";
+  string functionName = "Penner's EaseOut Exponential";
   return (t==1) ? 1 : (-pow(2, -10 * t) + 1);
 }
 
 //------------------------------------------------------------------
 float function_PennerEaseInOutExpo(float t) {
-  functionName = "Penner's EaseInOut Exponential";
+  string functionName = "Penner's EaseInOut Exponential";
   if (t==0) return 0.0;
   if (t==1) return 1.0;
   if ((t/=1.f/2) < 1) return 1.0f/2 * pow(2, 10 * (t - 1));
@@ -178,20 +180,21 @@ float function_PennerEaseInOutExpo(float t) {
 
 //------------------------------------------------------------------
 float function_PennerEaseInElastic (float t) {
-  functionName = "Penner's EaseIn Elastic";
+  string functionName = "Penner's EaseIn Elastic";
 
   if (t==0) return 0.0; 
   if (t==1) return 1.0;
-  float p=0.3f;
+  float p = 0.3f;
 
   float s=p/4;
-  float postFix = pow(2, 10.0 * (t-=1)); // this is a fix, again, with post-increment operators
+  float postFix = pow(2, 10.0 * (t-1)); // this is a fix, again, with post-increment operators
+
   return -(postFix * sin((t-s)*(2*PI)/p ));
 }
 
 //------------------------------------------------------------------
 float function_PennerEaseOutElastic(float t) {
-  functionName = "Penner's EaseOut Elastic";
+  string functionName = "Penner's EaseOut Elastic";
   
   if (t==0) return 0.0; 
   if (t==1) return 1.0;
@@ -203,32 +206,32 @@ float function_PennerEaseOutElastic(float t) {
 
 //------------------------------------------------------------------
 float function_PennerEaseInOutElastic (float t) {
-  functionName = "Penner's EaseInOut Elastic";
+  string functionName = "Penner's EaseInOut Elastic";
 
   if (t==0) return 0; 
   if ((t/=0.5)==2) return 1;
-  float p=(.3f*1.5);
+  float p=(0.3f*1.5);
   float a=1;
   float s=p/4;
 
   if (t < 1) {
-    float postFix = pow(2, 10*(t-=1)); // postIncrement is evil
-    return -0.5*(postFix* sin( (t-s)*(2*PI)/p ));
+    float postFix = pow(2, 10*(t-1)); // postIncrement is evil
+    return -0.5*(postFix* sin( (t-s)*(2*M_PI)/p ));
   } 
-  float postFix = pow(2, -10*(t-=1)); // postIncrement is evil
-  return postFix * sin( (t-s)*(2*PI)/p )*.5 + 1;
+  float postFix = pow(2, -10*(t-1)); // postIncrement is evil
+  return postFix * sin( (t-s)*(2*M_PI)/p )*.5 + 1;
 }
 
 
 
 //------------------------------------------------------------------
 float function_PennerEaseOutBounce (float t) {
-  functionName = "Penner's EaseOut Bounce";
+  string functionName = "Penner's EaseOut Bounce";
 
-  if ((t) < (1/2.75)) {
-    return (7.5625* t*t);
+  if ((t) < (1.0 / 2.75)) {
+    return (7.5625 * t*t);
   } 
-  else if (t < (2/2.75)) {
+  else if (t < (2.0/2.75)) {
     float postFix = t-=(1.5/2.75);
     return (7.5625*(postFix)*t + 0.75);
   } 
@@ -244,34 +247,34 @@ float function_PennerEaseOutBounce (float t) {
 
 //------------------------------------------------------------------
 float function_PennerEaseInBounce (float t) {
-  functionName = "Penner's EaseIn Bounce";
-  return (1.0 - function_PennerEaseOutBounce (1.0-t));
+  string functionName = "Penner's EaseIn Bounce";
+  return (1.0 - function_PennerEaseOutBounce(1.0-t));
 }
 
 //------------------------------------------------------------------
 float function_PennerEaseInOutBounce(float t) {
-  functionName = "Penner's EaseInOut Bounce";
+  string functionName = "Penner's EaseInOut Bounce";
   if (t < 0.5) {
-    return function_PennerEaseInBounce (t*2) * .5;
+    return function_PennerEaseInBounce(t*2) * .5;
   } 
   else {
-    return function_PennerEaseOutBounce (t*2-1) * .5 + .5;
+    return function_PennerEaseOutBounce(t*2-1) * .5 + .5;
   }
 }
 
 //------------------------------------------------------------------
-float function_Staircase (float x, int n) {
-  functionName = "Staircase";
-  float y = floor(x*n) / (float)(n-1);
+float function_Staircase (float x; int n) {
+  string functionName = "Staircase";
+  float y = floor(x*n) / float(n-1);
   return y;
 }
 
 //------------------------------------------------------------------
-float function_ExponentialSmoothedStaircase (float x, float a; int n) {
-  functionName = "Smoothed Exponential Staircase";
+float function_ExponentialSmoothedStaircase (float x, a; int n) {
+  string functionName = "Smoothed Exponential Staircase";
   // See http://web.mit.edu/fnl/volume/204/winston.html
   
-  float fa = sq (fit(a, 0,1, 5,30));
+  float fa = pow(fit(a, 0,1, 5,30), 2);
   float y = 0; 
   for (int i=0; i<n; i++){
     y += (1.0/(n-1.0))/ (1.0 + exp(fa*(((i+1.0)/n) - x)));
@@ -282,15 +285,15 @@ float function_ExponentialSmoothedStaircase (float x, float a; int n) {
 
 
 //------------------------------------------------------------------
-float function_Gompertz (float x, float a) {
+float function_Gompertz (float x, a) {
   // http://en.wikipedia.org/wiki/Gompertz_curve
-  functionName = "Gompertz Function";
+  string functionName = "Gompertz Function";
  
-  float min_param_a = 0.0 + EPSILON;
-  a = max(a, min_param_a); 
+  float min_param_a = 0.0 + M_E;
+  float aa = max(a, min_param_a); 
 
   float b = -8.0;
-  float c = 0 - a*16.0;
+  float c = 0 - aa*16.0;
   float y = exp( b * exp(c * x));
 
   float maxVal = exp(b * exp(c));
@@ -301,8 +304,8 @@ float function_Gompertz (float x, float a) {
 }
 
 // Generalized fit
-float function_GeneralizedLinearfit (float x, float a, float b, float c, float d) {
-  functionName = "Generalized Linear fit";
+float function_GeneralizedLinearfit (float x, a, b, c, d) {
+  string functionName = "Generalized Linear fit";
   
   float y = 0;
   if (a < c) {
@@ -332,53 +335,53 @@ float function_GeneralizedLinearfit (float x, float a, float b, float c, float d
 
 // Double-(Odd) Polynomial Seat
 //------------------------------------------------------------------
-float function_DoubleOddPolynomialOgee (float x, float a, float b, int n) {
-  functionName = "Double Odd-Polynomial Ogee";
+float function_DoubleOddPolynomialOgee (float x, a, b; int n) {
+  string functionName = "Double Odd-Polynomial Ogee";
 
-  float min_param_a = 0.0 + EPSILON;
-  float max_param_a = 1.0 - EPSILON;
+  float min_param_a = 0.0 + M_E;
+  float max_param_a = 1.0 - M_E;
   float min_param_b = 0.0;
   float max_param_b = 1.0;
 
-  a = clamp(a, min_param_a, max_param_a); 
-  b = clamp(b, min_param_b, max_param_b); 
+  float aa = clamp(a, min_param_a, max_param_a); 
+  float bb = clamp(b, min_param_b, max_param_b); 
   int p = 2*n + 1;
   float y = 0;
-  if (x <= a) {
-    y = b - b*pow(1-x/a, p);
+  if (x <= aa) {
+    y = bb - bb*pow(1-x/aa, p);
   } 
   else {
-    y = b + (1-b)*pow((x-a)/(1-a), p);
+    y = bb + (1-bb)*pow((x-aa)/(1-aa), p);
   }
   return y;
 }
 
 // Double-Linear Interpolator
 //------------------------------------------------------------------
-float function_DoubleLinear (float x, float a, float b) {
-  functionName = "Double-Linear";
+float function_DoubleLinear (float x, a, b) {
+  string functionName = "Double-Linear";
 
-  float min_param_a = 0.0 + EPSILON;
-  float max_param_a = 1.0 - EPSILON;
+  float min_param_a = 0.0 + M_E;
+  float max_param_a = 1.0 - M_E;
   float min_param_b = 0.0;
   float max_param_b = 1.0;
-  a = clamp(a, min_param_a, max_param_a); 
-  b = clamp(b, min_param_b, max_param_b); 
+  float aa = clamp(a, min_param_a, max_param_a); 
+  float bb = clamp(b, min_param_b, max_param_b); 
 
   float y = 0;
-  if (x<=a) {
-    y = (b/a) * x;
+  if (x<=aa) {
+    y = (bb/a) * x;
   } 
   else {
-    y = b + ((1-b)/(1-a))*(x-a);
+    y = bb + ((1-bb)/(1-aa))*(x-aa);
   }
   return y;
 }
 
 //------------------------------------------------------------------
 // Generalized fit
-float function_TripleLinear (float x, float a, float b, float c, float d) {
-  functionName = "Triple Linear";
+float function_TripleLinear (float x, a, b, c, d) {
+  string functionName = "Triple Linear";
 
   float y = 0;
   if (a < c) {
@@ -407,8 +410,8 @@ float function_TripleLinear (float x, float a, float b, float c, float d) {
 }
 
 //------------------------------------------------------------------
-float function_VariableStaircase (float x, float a, int n) {
-  functionName = "Variable Staircase";
+float function_VariableStaircase (float x, a; int n) {
+  string functionName = "Variable Staircase";
 
   float aa = (a - 0.5);
   if (aa == 0) {
