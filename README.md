@@ -1,6 +1,6 @@
 # Aelib
 
-A library of Digital Assets, Presets and Scripts for SideFX Houdini. 
+A library of Digital Assets, Presets and Scripts for SideFX Houdini.
 
 ## Installation
 
@@ -17,5 +17,5 @@ Evironment variables used:
 
 ## Other
 
-The structure of this library is inspired by qLib - https://github.com/qLab/qLib 
-qLib is a large and well-tested Houdini library which I'd highly recommend installing
+The structure of this library is inspired by qLib - a large open source Houdini library - https://github.com/qLab/qLib
+Most of the assets found in Aelib will work in isolation. However, a few tools do make use of qLib so it is highly recommended that this is installed alongside Aelib.
