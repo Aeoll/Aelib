@@ -2,6 +2,18 @@
 
 A library of Digital Assets, Presets and Scripts for SideFX Houdini.
 
+The /otls folder contains many HDAs (mostly SOP level) which are available from the 'aelib' context menu. 
+
+Assets which are mostly complete and stable are indicated by this icon:
+
+![alt text](otls/aelib_logo_small.png)
+
+Assets which are in progress are indicated by this icon:
+
+![alt text](otls/aelib_logo_wip_small.png)
+
+WIP assets are usually missing some functionality or have known bugs/issues. 
+
 ## Installation
 
 * Download the repository
