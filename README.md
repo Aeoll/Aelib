@@ -1,6 +1,6 @@
 # Aelib
 
-A library of Digital Assets, Presets and Scripts for SideFX Houdini.
+A library of Digital Assets, Presets and Scripts for SideFX Houdini. Video overviews of several tools may be found here https://vimeo.com/user27356169
 
 The /otls folder contains many HDAs (mostly SOP level) which are available from the 'aelib' context menu. 
 
