@@ -3,10 +3,10 @@
 // ==========================
 // TODO
 // ==========================
-// MAKE GALLERY PRESETS FOR MORE OF THESE?
+// Make gallery presets for some of these in AttribWrangle?
 // Line-Line Dist
 // ptlined with extras
-// circ from 2/3 pts etc?
+// circ from 2/3 pts etc? (Hemesh?)
 
 // ==============================
 // Vector manipulation
@@ -54,7 +54,6 @@ vector toCartesian(vector v){
     return frompolar(v); 
 }
 
-
 // forward and reverse stereographic projection from 3D-4D
 vector4 inverseStereo4(vector p; float mul) {
     float n = dot(p,p)+1;
@@ -65,7 +64,6 @@ vector stereo4(vector4 p; float mul) {
     return set(p.x/(1-p.w),p.y/(1-p.w),p.z/(1-p.w));
     //return set(p.x/(1+p.w),p.y/(1+p.w),p.z/(1+p.w)); wrong but fun  
 }
-
 
 // from hemesh
 float distToLine3D(vector p, la, lb){
@@ -256,15 +254,33 @@ int idtopoint(const int opnum; const string idattr; const int id){
 // Arrays
 // ==============================
 
-// shuffle array (Basic Fisher-Yates) NOT WORKING ###############################
-void shuffle(int array[]){
-    int n = len(array);
-    if (n > 1) {
-        for (int i = 0; i < (n - 1); i++) {
-          int j = (i + n*int(rand(34334+i*123)))%n;
-          int t = array[j];
-          array[j] = array[i];
-          array[i] = t;
-      }
-  }
+// fisher yates shuffle with seed
+float[] shuffle(float arr[]; float seed) {
+    int n = len(arr);
+    int i, j;
+    float tmp;
+    for (i = n - 1; i > 0; i--) {
+        j = int((i+1)*rand(101 + i*seed + 1337*seed));
+        tmp = arr[j];
+        arr[j] = arr[i];
+        arr[i] = tmp;
+   }
+   return arr;
 }
+
+// fisher yates argshuffle with seed
+// UNFINISHED TODO
+arg[] argshuffle(float arr[]; float seed) {
+    int n = len(arr);
+    int args[] = array();
+    int i, j;
+    float tmp;
+    for (i = n - 1; i > 0; i--) {
+        j = int((i+1)*rand( 1337 + i*seed + 101*seed));
+        tmp = arr[j];
+        arr[j] = arr[i];
+        arr[i] = tmp;
+   }
+   return arr;
+}
+
