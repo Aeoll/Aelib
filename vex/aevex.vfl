@@ -12,6 +12,15 @@
 // Vector manipulation
 // ==============================
 
+vector normalizeto(vector v; float l) {
+    return l*normalize(v);
+}
+
+vector2 normalizeto(vector2 v; float l) {
+    return l*normalize(v);
+}
+
+
 vector topolar(vector v)
 {
     float r = length(v);
@@ -134,6 +143,10 @@ vector gain(vector t, gain){
     }
 }
 
+//======================
+// Smoothsteps
+//======================
+
 float smoothstep(float x){                
     return x * x * (3 - 2 * x);
 }
@@ -175,6 +188,9 @@ vector smootherstep(float e0, e1; vector t){
     vector x = clamp((t - e0) / (e1 - e0), 0.0, 1.0);
     return x*x*x*(x*(x*6 - 15) + 10);
 }
+
+//======================
+//======================
 
 // clamps to new range and then fits back to initial range
 float fitclamp(float t, clampStart, clampEnd, fitStart, fitEnd){
