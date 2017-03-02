@@ -151,20 +151,20 @@ float smoothstep(float x){
     return x * x * (3 - 2 * x);
 }
 
-float smootherstep(float x){                
-    return x*x*x*(x*(x*6 - 15) + 10);
-}
-
 float smoothstep(float e0, e1, t){                
     float x = clamp((t - e0) / (e1 - e0), 0.0, 1.0);
     return x * x * (3 - 2 * x);
 }
 
-//double smoothstep
+//double smoothsteps
 float doublesmoothstep(float e0, e1, e2, e3, t){                
     float x = smoothstep(e0, e1, t);
     float y = 1- smoothstep(e2, e3, t);
     return min(x, y);
+}
+
+float dsmooth(float e0, e1, e2, e3, t){                
+    return doublesmoothstep(e0, e1, e2, e3, t);
 }
 
 // ends at 0 and 1
@@ -172,6 +172,15 @@ float doublesmoothstep(float e1, e2, t){
     float x = smoothstep(0, e1, t);
     float y = 1- smoothstep(e2, 1, t);
     return min(x, y);
+}
+
+float dsmooth(float e1, e2, t){                
+    return doublesmoothstep(e1, e2, t);
+}
+
+//smoothersteps
+float smootherstep(float x){                
+    return x*x*x*(x*(x*6 - 15) + 10);
 }
 
 float smootherstep(float e0, e1, t){                
