@@ -1,0 +1,87 @@
+# Dialog script for ae::Trail::1 automatically generated 01/11/17 15:10:07
+
+{
+    name	ae::Trail::1
+    script	ae::Trail::1
+    label	ae_Trail
+
+    help {
+	""
+    }
+
+    inputlabel	1	"Sub-Network Input #1"
+    inputlabel	2	"Sub-Network Input #2"
+    inputlabel	3	"Sub-Network Input #3"
+    inputlabel	4	"Sub-Network Input #4"
+
+    parm {
+	name	"add"
+	label	"Connect Polylines"
+	type	toggle
+	default	{ "1" }
+	range	{ 0 1 }
+	export	none
+    }
+    parm {
+	name	"remove_mids"
+	label	"Straight (Remove midpoints)"
+	type	toggle
+	default	{ "0" }
+	range	{ 0 1 }
+	export	none
+    }
+    parm {
+	name	"sepparm"
+	label	"Separator"
+	type	separator
+	default	{ "" }
+	range	{ 0 1 }
+	export	none
+    }
+    parm {
+	name	"inc"
+	label	"Trail Increment"
+	type	float
+	default	{ "1" }
+	range	{ 0! 10 }
+	export	none
+	parmtag	{ "autoscope" "0000000000000000" }
+    }
+    parm {
+	name	"scale"
+	label	"Trail Length (Maximum, acts as scaling factor)"
+	type	float
+	default	{ "2" }
+	range	{ 0 10 }
+	export	none
+    }
+    parm {
+	name	"use_vex"
+	label	"Use Vexpression"
+	type	toggle
+	default	{ "0" }
+	range	{ 0 1 }
+	export	none
+    }
+    parm {
+	name	"vexpression"
+	label	"Vexpression"
+	type	string
+	default	{ "f@trail_length = rand(i@id + 9.876);" }
+	disablewhen	"{ use_vex == 0 }"
+	menumini	{
+	}
+	range	{ 0 1 }
+	export	none
+	parmtag	{ "editor" "1" }
+	parmtag	{ "editorlang" "vex" }
+    }
+    parm {
+	name	"cull"
+	label	"Cull (TO FINISH)"
+	type	toggle
+	default	{ "0" }
+	range	{ 0 1 }
+	export	none
+    }
+}

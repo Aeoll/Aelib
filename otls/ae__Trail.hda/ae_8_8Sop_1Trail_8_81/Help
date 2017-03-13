@@ -1,0 +1,6 @@
+= Trail =
+
+Wraps standard Trail SOP. Allows per-particle control of trail length.
+
+TODO:
+Add other useful trail-based control or attributes?

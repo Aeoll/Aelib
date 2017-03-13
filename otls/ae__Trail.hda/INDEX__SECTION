@@ -1,0 +1,14 @@
+Operator:     ae::Trail::1
+Label:        ae_Trail
+Path:         oplib:/ae::Sop/Trail::1?ae::Sop/Trail::1
+Icon:         opdef:/ae::Sop/Trail::1?aelib_logo.png
+Table:        Sop
+License:      
+Extra:        
+User:         
+Inputs:       1 to 1
+Subnet:       true
+Python:       false
+Empty:        false
+Modified:     Mon Mar 13 09:58:28 2017
+
