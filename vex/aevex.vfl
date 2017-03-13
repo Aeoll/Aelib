@@ -1,4 +1,7 @@
 #include <math.h>
+#include <voptype.h>
+#include <voplib.h>
+#include <pyro_math.h>
 
 // ==========================
 // TODO
@@ -245,6 +248,14 @@ float floorfloat(float step, value){
 
 float floorfloat(float step; vector value){
     return step * floor(value/step);
+}
+
+float fitu(float val, s0,s1, t0,t1){
+    return efit(val, s0,s1, t0,t1);
+}
+
+float fitu01(float val, t0,t1){
+    return efit(val, 0, 1, t0, t1);
 }
 
 
