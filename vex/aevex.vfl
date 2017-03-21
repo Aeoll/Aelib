@@ -201,6 +201,11 @@ vector smootherstep(float e0, e1; vector t){
     return x*x*x*(x*(x*6 - 15) + 10);
 }
 
+// normal step function??
+float step(float e0, t){               
+    return (t<e0)?0:1;
+}
+
 //======================
 //======================
 
