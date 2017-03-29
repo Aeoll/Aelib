@@ -1,4 +1,4 @@
-# Dialog script for ae::Trail::1 automatically generated 01/11/17 15:10:07
+# Dialog script for ae::Trail::1 automatically generated
 
 {
     name	ae::Trail::1
@@ -20,7 +20,12 @@
 	type	toggle
 	default	{ "1" }
 	range	{ 0 1 }
-	export	none
+    }
+    parm {
+	name	"id_attr"
+	label	"Connection attrib (id)"
+	type	string
+	default	{ "id" }
     }
     parm {
 	name	"remove_mids"
@@ -28,7 +33,6 @@
 	type	toggle
 	default	{ "0" }
 	range	{ 0 1 }
-	export	none
     }
     parm {
 	name	"sepparm"
@@ -36,7 +40,6 @@
 	type	separator
 	default	{ "" }
 	range	{ 0 1 }
-	export	none
     }
     parm {
 	name	"inc"
@@ -44,7 +47,6 @@
 	type	float
 	default	{ "1" }
 	range	{ 0! 10 }
-	export	none
 	parmtag	{ "autoscope" "0000000000000000" }
     }
     parm {
@@ -53,7 +55,6 @@
 	type	float
 	default	{ "2" }
 	range	{ 0 10 }
-	export	none
     }
     parm {
 	name	"use_vex"
@@ -61,18 +62,17 @@
 	type	toggle
 	default	{ "0" }
 	range	{ 0 1 }
-	export	none
     }
     parm {
 	name	"vexpression"
 	label	"Vexpression"
 	type	string
-	default	{ "f@trail_length = rand(i@id + 9.876);" }
+	default	{ "" }
 	disablewhen	"{ use_vex == 0 }"
 	menumini	{
+	    "f@trail_length = rand(i@id + 9.876);"	"rand"
 	}
 	range	{ 0 1 }
-	export	none
 	parmtag	{ "editor" "1" }
 	parmtag	{ "editorlang" "vex" }
     }
@@ -80,8 +80,8 @@
 	name	"cull"
 	label	"Cull (TO FINISH)"
 	type	toggle
+	invisible
 	default	{ "0" }
 	range	{ 0 1 }
-	export	none
     }
 }
