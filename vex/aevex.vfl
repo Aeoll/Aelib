@@ -146,6 +146,20 @@ vector gain(vector t, gain){
     }
 }
 
+float sq(float x){
+    return pow(x, 2.0);
+}
+
+float sinc(float x) {
+  float pix = M_PI*x;
+  if (x == 0) {
+    return 1.0;
+  } 
+  else {
+    return (sin(pix) / pix);
+  }
+}
+
 //======================
 // Smoothsteps
 //======================
