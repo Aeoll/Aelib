@@ -277,6 +277,13 @@ float fitu01(float val, t0,t1){
     return efit(val, 0, 1, t0, t1);
 }
 
+// constrains vector to angle multiplier (e.g $PI/2 for x/y/z axes only)
+vector angleConstrain(vector v; float ang){
+    vector a = topolar(v);
+    a.y = rfloat(ang, a.y);
+    a.z = rfloat(ang, a.z);
+    return frompolar(a);
+}
 
 // ==============================
 // Geometry functions (use ptnum or primnum etc)
