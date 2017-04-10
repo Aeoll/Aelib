@@ -11,13 +11,13 @@
     <memberTool name="caps"/>
     <memberTool name="blast_to_split"/>
     <memberTool name="Blast to Group-Delete"/>
+    <memberTool name="ae_HipVersionIncrementer"/>
     <memberTool name="iterate"/>
     <memberTool name="merge"/>
     <memberTool name="xform"/>
     <memberTool name="copy"/>
     <memberTool name="null"/>
     <memberTool name="wrangle"/>
-    <memberTool name="ae_HipVersionIncrementer"/>
   </toolshelf>
 
   <tool name="reset_colours" label="Reset Colours" icon="COP2_colorwheel">
