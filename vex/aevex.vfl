@@ -277,6 +277,10 @@ float fitu01(float val, t0,t1){
     return efit(val, 0, 1, t0, t1);
 }
 
+float angBetween(vector a; vector b){
+    return acos(dot(normalize(a), normalize(b)));
+}
+
 // constrains vector to angle multiplier (e.g $PI/2 for x/y/z axes only)
 vector angleConstrain(vector v; float ang){
     vector a = topolar(v);
