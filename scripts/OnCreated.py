@@ -28,8 +28,6 @@ def redshiftDefaults(kwargs):
 		elif(n.type().name() == "cam"):
 			hou.hscript('Redshift_cameraSpareParameters')
 
-redshiftDefaults(kwargs)
-
 # =================================
 # Node colours
 # =================================
@@ -98,10 +96,6 @@ def colorize_op(kwargs):
 		N = kwargs['node']
 		n = kwargs['node'].name()
 		t = kwargs['type'].name()
-
-		dbg('node=%s type=%s' % (n, t, ))
-
-
 		# set all solver nodes to white
 		#
 		if 'solver' in t.lower():
@@ -123,3 +117,4 @@ def colorize_op(kwargs):
 		pass # ignore errors silently
 
 colorize_op(kwargs)
+redshiftDefaults(kwargs)
