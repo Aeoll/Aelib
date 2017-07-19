@@ -320,6 +320,8 @@ int idtopoint(const int opnum; const string idattr; const int id){
 // Arrays
 // ==============================
 
+// TODO array subtraction / exclusive merge?
+
 // fisher yates shuffle with seed
 float[] shuffle(float arr[]; float seed) {
     int n = len(arr);
