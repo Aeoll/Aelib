@@ -1,5 +1,5 @@
 """
-		From QLIB
+		Adapted from QLIB
 		Note: this script is automatically reloaded on each node creation!
 """
 import hou
@@ -16,8 +16,13 @@ def redshiftDefaults(kwargs):
 	n = kwargs['node']
 	n.setSelected(True, True) # set selected to obj spare params works properly
 
-	rsrop_type = hou.nodeType(hou.ropNodeTypeCategory(), "Redshift_ROP")
-	rsrops = rsrop_type.instances()
+	rsrops = []
+	try:
+		rsrop_type = hou.nodeType(hou.ropNodeTypeCategory(), "Redshift_ROP")
+		rsrops = rsrop_type.instances()
+	except:
+		# Redshift is not installed
+		pass
 
 	if(len(rsrops) > 0):		
 		if (n.type().name() == "geo"):
