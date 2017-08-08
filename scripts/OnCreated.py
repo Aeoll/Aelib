@@ -20,10 +20,6 @@ def redshiftDefaults(kwargs):
 	n = kwargs['node']
 	n.setSelected(True, True) # set selected to obj spare params works properly
 
-<<<<<<< HEAD
-	rsrop_type = hou.nodeType(hou.ropNodeTypeCategory(), "Redshift_ROP")
-	rsrops = rsrop_type.instances()
-=======
 	rsrops = []
 	try:
 		rsrop_type = hou.nodeType(hou.ropNodeTypeCategory(), "Redshift_ROP")
@@ -31,7 +27,6 @@ def redshiftDefaults(kwargs):
 	except:
 		# Redshift is not installed
 		pass
->>>>>>> 87047bf7ffc8203a6a98a0461b92961204d15cc7
 
 	if(len(rsrops) > 0):		
 		if (n.type().name() == "geo"):
@@ -42,11 +37,6 @@ def redshiftDefaults(kwargs):
 		elif(n.type().name() == "cam"):
 			hou.hscript('Redshift_cameraSpareParameters')
 
-<<<<<<< HEAD
-redshiftDefaults(kwargs)
-
-=======
->>>>>>> 87047bf7ffc8203a6a98a0461b92961204d15cc7
 # =================================
 # Node colours
 # =================================
@@ -115,13 +105,9 @@ def colorize_op(kwargs):
 		N = kwargs['node']
 		n = kwargs['node'].name()
 		t = kwargs['type'].name()
-<<<<<<< HEAD
-
 		dbg('node=%s type=%s' % (n, t, ))
 
 
-=======
->>>>>>> 87047bf7ffc8203a6a98a0461b92961204d15cc7
 		# set all solver nodes to white
 		#
 		if 'solver' in t.lower():
@@ -142,9 +128,5 @@ def colorize_op(kwargs):
 	except:
 		pass # ignore errors silently
 
-<<<<<<< HEAD
-colorize_op(kwargs)
-=======
 colorize_op(kwargs)
 redshiftDefaults(kwargs)
->>>>>>> 87047bf7ffc8203a6a98a0461b92961204d15cc7
