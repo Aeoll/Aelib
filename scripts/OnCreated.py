@@ -67,7 +67,8 @@ def colorize_op(kwargs):
 		'material':      (0.6, 0.6, 1.0),
 
 		'cache':         (1.0, 0.4, 0.0),
-		'filecache':         (1.0, 0.4, 0.0),
+		'filecache':     (1.0, 0.4, 0.0),
+		'ae_FileCache_1':     (1.0, 0.4, 0.0),
 
 		'dopnet':        (0.8, 0.0, 0.0),
 
