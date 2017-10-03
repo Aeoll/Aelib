@@ -80,8 +80,10 @@ def hipIncrementVersion():
 
     orighip = hou.hipFile.name()
     hipname = hou.hipFile.basename()
-    hipfile = hipname.split(".")[0]
-
+    # hipfile = hipname.split(".")[0]
+    # version which works for filenames with periods
+    hipfile = os.path.splitext(hipname)[0]
+    
     # check current filename for version prefix and split accordingly
     # Uses regex so a filename like myfile_verycool_v001.hip will get picked up correctly (not match the first _v)
     versionSections = ""
