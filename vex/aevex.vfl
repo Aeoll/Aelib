@@ -281,6 +281,10 @@ float angBetween(vector a; vector b){
     return acos(dot(normalize(a), normalize(b)));
 }
 
+float nrand(float seed){
+    return fit01(rand(seed), -1, 1);
+}
+
 // constrains vector to angle multiplier (e.g $PI/2 for x/y/z axes only)
 vector angleConstrain(vector v; float ang){
     vector a = topolar(v);
