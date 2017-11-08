@@ -11,6 +11,7 @@
     <memberTool name="Blast to Group-Delete"/>
     <memberTool name="ae_HipVersionIncrementer"/>
     <memberTool name="iterate"/>
+    <memberTool name="ExtractSelected"/>
   </toolshelf>
 
   <tool name="blast_to_split" label="Blast to Split" icon="OBJ_geo">
@@ -148,5 +149,26 @@ hipIncrementVersion()]]></script>
     <keywordList>
       <keyword>aelib</keyword>
     </keywordList>
+  </tool>
+
+  <tool name="ExtractSelected" label="ExtractSelected" icon="PLASMA_App">
+    <script scriptType="python"><![CDATA[sel = hou.selectedNodes()
+pname = sel[0].parent().name()
+
+geo = hou.node('/obj').createNode('geo', pname+'_extraction')
+geo.node('file1').destroy()
+geo.moveToGoodPosition()
+
+merge = geo.createNode('merge', 'MERGE')
+for ind, node in enumerate(sel):
+    path = node.path()
+    name = node.name()
+    pn = node.parent().name()
+    o = merge.createInputNode(ind, 'object_merge', pn+"_"+name)
+    o.parm("objpath1").set(path)
+    o.moveToGoodPosition()
+
+merge.moveToGoodPosition()
+merge.setCurrent(True, True)]]></script>
   </tool>
 </shelfDocument>
