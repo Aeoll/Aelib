@@ -12,6 +12,8 @@
     <memberTool name="ae_HipVersionIncrementer"/>
     <memberTool name="iterate"/>
     <memberTool name="ExtractSelected"/>
+    <memberTool name="CombineAll"/>
+    <memberTool name="MultiReferenceCopy"/>
   </toolshelf>
 
   <tool name="blast_to_split" label="Blast to Split" icon="OBJ_geo">
