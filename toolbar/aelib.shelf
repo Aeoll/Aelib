@@ -173,4 +173,35 @@ for ind, node in enumerate(sel):
 merge.moveToGoodPosition()
 merge.setCurrent(True, True)]]></script>
   </tool>
+
+  <tool name="CombineAll" label="CombineAllVisible" icon="PLASMA_App">
+    <script scriptType="python"><![CDATA[node_type = hou.nodeType(hou.objNodeTypeCategory(), 'geo')
+objnodes = node_type.instances()
+
+geo = hou.node('/obj').createNode('geo', 'CombineAll')
+geo.node('file1').destroy()
+geo.moveToGoodPosition()
+merge = geo.createNode('merge', 'MERGE')
+
+for ind, node in enumerate(objnodes):
+    if(node.isDisplayFlagSet()):
+        path = node.path()
+        name = node.name()
+        o = merge.createInputNode(ind, 'object_merge', name+"_merge")
+        o.parm("objpath1").set(path)
+        o.moveToGoodPosition()
+
+merge.moveToGoodPosition()
+merge.setCurrent(True, True)]]></script>
+  </tool>
+
+  <tool name="MultiReferenceCopy" label="MultiReferenceCopy" icon="PLASMA_App">
+    <script scriptType="python"><![CDATA[sel = hou.selectedNodes()
+tup = tuple(sel)
+
+p = sel[0].parent()
+p.copyItems(tup, True)
+# p.copyItems(tup, True, False) # absolute ref doesnt work?
+# p.copyItems(tup, channel_reference_originals=False, relative_references=True)]]></script>
+  </tool>
 </shelfDocument>
