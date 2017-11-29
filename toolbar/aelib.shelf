@@ -19,9 +19,9 @@
   <tool name="blast_to_split" label="Blast to Split" icon="OBJ_geo">
     <script scriptType="python"><![CDATA[for node in hou.selectedNodes():
     if(node.type() == hou.nodeType(hou.sopNodeTypeCategory(), "blast")):
-        # inv = node.parm("negate").evalAsInt()
-        newnode = node.changeNodeType("split", False, True, True, False)
-        # newnode.parm("negate").set(1-negate)
+        neg = node.parm("negate").evalAsInt()
+        newnode = node.changeNodeType("split", False, True, False, False)
+        newnode.parm("negate").set(1-neg)
     ]]></script>
   </tool>
 
@@ -153,7 +153,7 @@ hipIncrementVersion()]]></script>
     </keywordList>
   </tool>
 
-  <tool name="ExtractSelected" label="ExtractSelected" icon="PLASMA_App">
+  <tool name="ExtractSelected" label="ExtractSelected" icon="SHELF_extract_object">
     <script scriptType="python"><![CDATA[sel = hou.selectedNodes()
 pname = sel[0].parent().name()
 
@@ -174,7 +174,7 @@ merge.moveToGoodPosition()
 merge.setCurrent(True, True)]]></script>
   </tool>
 
-  <tool name="CombineAll" label="CombineAllVisible" icon="PLASMA_App">
+  <tool name="CombineAll" label="CombineAllVisible" icon="SHELF_combine_objects">
     <script scriptType="python"><![CDATA[node_type = hou.nodeType(hou.objNodeTypeCategory(), 'geo')
 objnodes = node_type.instances()
 
@@ -195,7 +195,7 @@ merge.moveToGoodPosition()
 merge.setCurrent(True, True)]]></script>
   </tool>
 
-  <tool name="MultiReferenceCopy" label="MultiReferenceCopy" icon="PLASMA_App">
+  <tool name="MultiReferenceCopy" label="MultiRefCopy" icon="SOP_duplicate">
     <script scriptType="python"><![CDATA[sel = hou.selectedNodes()
 tup = tuple(sel)
 
