@@ -1,0 +1,306 @@
+// =======================================
+// TODO
+// =======================================
+// non-halve split
+// Full attrib interpolation for newly added points
+// Full Attrib transfer for new prims
+// further algos (star bevel? aligned bevel?)
+
+
+// ==========================================
+// UTILITY
+// ==========================================
+// check this does the correct thing...
+function void interpAttribs(int new; int a; int b; float wt){
+    int pts[];
+    float wts[];
+    append(pts, a);
+    append(pts, b);
+    append(wts, 1 - wt);
+    append(wts, wt);
+    setpointattrib(0, "pts", new, pts, "set");
+    setpointattrib(0, "wts", new, wts, "set");    
+    setpointattrib(0, "newpt", new, 1, "set");
+}
+
+function void setPrimAtts(int p; int prim){
+    setprimattrib(0, "prid", p, int(prim(0, "prid", prim)), "set");
+    setprimattrib(0, "depth", p, int(prim(0, "depth", prim))+1, "set");
+}
+
+function int[] splitedges(int prim; int splits){
+    int newpts[];
+    int a,b,pt;
+    vector posa, posb, diff;
+    int h = primhedge(geoself(), prim);
+    int temp = h;
+    int n = 0;
+    do{
+        a = hedge_srcpoint(0, h);
+        b = hedge_dstpoint(0, h);
+        posa = point(0, "P", a);
+        posb = point(0, "P", b);
+        for (int i = 0; i < splits; i++) {
+            pt = addpoint(0, lerp(posa, posb, 1.0/(1+splits)));
+            interpAttribs(pt, a, b, 1.0/(1+splits));
+            append(newpts, pt);
+        }
+        h = hedge_next(0, h);
+        n++;
+    }
+    while(h != temp);
+    return newpts;
+}
+
+function int[] splitedgesat(int prim; float splitpos){
+    int newpts[];
+    int a,b,pt;
+    vector posa, posb, diff;
+    int h = primhedge(geoself(), prim);
+    int temp = h;
+    int n = 0;
+    do{
+        a = hedge_srcpoint(0, h);
+        b = hedge_dstpoint(0, h);
+        posa = point(0, "P", a);
+        posb = point(0, "P", b);
+        pt = addpoint(0, lerp(posa, posb, splitpos));
+        interpAttribs(pt, a, b, splitpos);
+        append(newpts, pt);
+        h = hedge_next(0, h);
+        n++;
+    }
+    while(h != temp);
+    return newpts;
+}
+
+// ===================================
+// ALGOS
+// ===================================
+void midrot(int prim; float scale){
+    int pts[] = primpoints(0, prim);
+    int n = len(pts);
+    int newpts[] = splitedgesat(prim, scale);
+
+    // create new prims
+    for(int i=0; i<n; i++){
+        int p = addprim(0, "poly", pts[i], newpts[i], newpts[((i+n-1)%n)]);
+        setPrimAtts(p, prim);
+    }
+    int centre = addprim(0, "poly", newpts);
+    setPrimAtts(centre, prim);
+}
+
+// fan to point
+void fan(int prim; int index){
+    int pts[] = primpoints(0, prim);
+    int n = len(pts);
+    // create new prims
+    for(int i=0; i<(n-2); i++){
+        int p = addprim(0, "poly", pts[index], pts[(index+1+i)%n], pts[(index+2+i)%n]);
+        setPrimAtts(p, prim);
+    }
+}
+
+void cornerbevel(int prim; vector cen; float scale; vector offset){
+    int pts[] = primpoints(0, prim);
+    int n = len(pts);
+
+    int newpts[];
+    int a,b;
+    vector posa, posb, diff;
+    int h = primhedge(geoself(), prim);
+    int temp = h;
+    do{
+        a = hedge_srcpoint(0, h);
+        posa = point(0, "P", a);
+        int p1 = addpoint(0, lerp(posa, cen+offset, scale));
+        append(newpts, p1);
+        h = hedge_next(0, h);
+    }
+    while(h != temp);
+
+    // create new prims
+    for(int i=0; i<n; i++){
+        int p = addprim(0, "poly", pts[i], pts[(i+1)%n], newpts[(i+1)%n], newpts[i]);
+        setPrimAtts(p, prim);
+    }
+    int centre = addprim(0, "poly", newpts);
+    setPrimAtts(centre, prim);
+}
+
+void cornerfull(int prim; vector cen; vector offset){
+    int pts[] = primpoints(0, prim);
+    int n = len(pts);
+    int cpt = addpoint(0, cen+offset);
+    // create new prims
+    for(int i=0; i<n; i++){
+        int p = addprim(0, "poly", pts[i], pts[(i+1)%n], cpt);
+        setPrimAtts(p, prim);  
+    }
+}
+
+// tweak this to also add the midpts?
+void midbevel(int prim; vector cen; float scale; vector offset){
+    int pts[] = primpoints(0, prim);
+    int n = len(pts);
+
+    int newpts[];
+    int a,b;
+    vector posa, posb, diff;
+    int h = primhedge(geoself(), prim);
+    int temp = h;
+    do{
+        a = hedge_srcpoint(0, h);
+        posa = point(0, "P", a);
+        b = hedge_dstpoint(0, h);
+        posb = point(0, "P", b);        
+        vector mid = lerp(posa, posb, 0.5);
+        int p1 = addpoint(0, lerp(mid, cen+offset, scale));
+        append(newpts, p1);
+        h = hedge_next(0, h);
+    }
+    while(h != temp);
+
+    // create new prims
+    for(int i=0; i<n; i++){
+        int p1 = addprim(0, "poly", pts[i], pts[(i+1)%n], newpts[i]);
+        setPrimAtts(p1, prim);        
+        int p2 = addprim(0, "poly", newpts[(i+n-1)%n], pts[i], newpts[i]);
+        setPrimAtts(p2, prim);   
+    }
+    int centre = addprim(0, "poly", newpts);
+    setPrimAtts(centre, prim);   
+}
+
+
+void midfull(int prim; vector cen; vector offset){
+    int newpts[] = splitedges(prim, 1);
+    int pts[] = primpoints(0, prim);
+    int n = len(pts);
+    int cpt = addpoint(0, cen+offset);
+    // create new prims
+    for(int i=0; i<n; i++){
+        //int p = addprim(0, "poly", pts[i], newpts[i], cpt, newpts[((i+n-1)%n)]);
+        //int p1 = addprim(0, "poly", pts[i], newpts[i], cpt);
+        //int p2 = addprim(0, "poly", pts[i], cpt, newpts[((i+n-1)%n)]);        
+        int p2 = addprim(0, "poly", newpts[i], cpt, newpts[((i+n-1)%n)]);           
+        setPrimAtts(p2, prim);         
+        int p1 = addprim(0, "poly", pts[i], newpts[((i+n-1)%n)], newpts[i]);
+        setPrimAtts(p1, prim);        
+    }    
+}
+
+// odd - pt index to new mid
+// even - pt index to pt index
+// even - new mind to new mid
+// works with a simple float ss-value for start index
+// seems to mostly work..
+void halve(int prim; float t){
+    int pts[] = primpoints(0, prim);
+    int newpts[] = pts;
+    int n = len(pts);
+
+    float ss = t%(n/2); // keep in the first half of the prim for ease
+
+    // create start cut pt if needed
+    int st;
+    int addeds = 0;
+    int ind_s = 0; // index to start from in the newpt list
+    if(abs(frac(ss)) > 0.00001 ){
+        vector sa = point(0, "P", pts[floor(ss)]);
+        vector sb = point(0, "P", pts[int(ceil(ss))]);
+        st = addpoint(0, lerp(sa, sb, frac(ss)));
+        // interpAttribs(st, int(ss), int(ceil(ss)), frac(ss));
+        insert(newpts, int(ceil(ss)), st);
+        ind_s = int(ceil(ss));
+        addeds = 1;
+    }
+    else{
+        st = pts[int(ss)];
+        ind_s = int(ss);
+    }
+
+    // create end cut pt if needed
+    float e = ss + n*0.5;
+    int en;
+    int addede = 0;
+    int ind_e = -1;
+    if(abs(frac(e)) > 0.00001 ){
+        vector ea = point(0, "P", pts[floor(e)]);
+        vector eb = point(0, "P", pts[int(ceil(e))%n]);
+        en = addpoint(0, lerp(ea, eb, frac(e)));
+        // interpAttribs(en, int(e), int(ceil(e))%n, frac(e));        
+        insert(newpts, addeds + int(ceil(e)), en);
+        ind_e = addeds + int(ceil(e));
+        addede = 1;
+    }
+    else{
+        en = pts[int(e)];
+        ind_e = int(ceil(e)) + addeds;
+    }    
+
+    // create prims. messy but seems to work...
+    int first[] = slice(newpts, ind_s, ind_e+1);
+    int p = addprim(0, "poly", first);    
+    setPrimAtts(p, prim);
+
+    int second[] = slice(newpts, ind_e, len(newpts)); // 2nd part to end of array
+    int extra[] = slice(newpts, 0, ind_s+1); // start of array to first cut
+    append( second, extra);
+    int p2 = addprim(0, "poly", second);
+    setPrimAtts(p2, prim);       
+}
+
+// TODO
+// generalised split. Not really working yet
+void split(int prim; float t1; float t2){
+    int pts[] = primpoints(0, prim);
+    int newpts[] = pts;
+    int n = len(pts);
+
+    float ss = t1%n;
+    // create start cut pt if needed
+    int st;
+    int addeds = 0;
+    int ind_s = 0; // index to start from in the newpt list
+    if(abs(frac(ss)) > 0.00001 ){
+        vector sa = point(0, "P", pts[floor(ss)]);
+        vector sb = point(0, "P", pts[int(ceil(ss))]);
+        st = addpoint(0, lerp(sa, sb, frac(ss)));
+        insert(newpts, int(ceil(ss)), st);
+        ind_s = int(ceil(ss));
+        addeds = 1;
+    }
+    else{
+        st = pts[int(ss)];
+        ind_s = int(ss);
+    }
+
+    // create end cut pt if needed
+    float e = ceil(t1) + 0 + 1-frac(t1);
+    e = e%n;
+    int en;
+    int addede = 0;
+    int ind_e = -1;
+    if(abs(frac(e)) > 0.00001 ){
+        vector ea = point(0, "P", pts[floor(e)]);
+        vector eb = point(0, "P", pts[int(ceil(e))%n]);
+        en = addpoint(0, lerp(ea, eb, frac(e)));
+        insert(newpts, addeds + int(ceil(e)), en);
+        ind_e = addeds + int(ceil(e));
+        addede = 1;
+    }
+    else{
+        en = pts[int(e)];
+        ind_e = int(ceil(e)) + addeds;
+    }    
+
+    // create prims. messy but seems to work...
+    int first[] = slice(newpts, ind_s, ind_e+1);
+    int pr = addprim(0, "poly", first);    
+    int second[] = slice(newpts, ind_e, len(newpts)); // 2nd part to end of array
+    int extra[] = slice(newpts, 0, ind_s+1); // start of array to first cut
+    append( second, extra);
+    int pr2 = addprim(0, "poly", second);    
+}
