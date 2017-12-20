@@ -222,7 +222,6 @@ float step(float e0, t){
 
 //======================
 //======================
-
 // clamps to new range and then fits back to initial range
 float fitclamp(float t, clampStart, clampEnd, fitStart, fitEnd){
     return fit(clamp(t, clampStart, clampEnd), clampStart, clampEnd, fitStart,fitEnd);
@@ -294,10 +293,9 @@ vector angleConstrain(vector v; float ang){
 }
 
 // ==============================
-// Geometry functions (use ptnum or primnum etc)
+// Geometry functions (using ptnum or primnum etc)
 // ==============================
-
-// This is perhaps quite slow?
+// This is perhaps quite slow? use UV Texture instead
 float curveuv(int ptnum, primnum){
     int v = pointvertex(geoself(), ptnum);
     int ind = vertexprimindex(geoself(), v);
@@ -318,6 +316,16 @@ int idtopoint(const int opnum; const string idattr; const int id){
     if (id < npoints(opnum))
         return id;
     return -1;
+}
+
+// quickly get positions of all primpoints
+function vector[] primpointpositions(int input; int prim){
+    int pts[] = primpoints(input, prim);
+    vector positions[];
+    foreach(int pt; pts){
+        append(positions, vector(point(input,"P",pt)));
+    }
+    return positions;
 }
 
 // ==============================
@@ -355,4 +363,3 @@ arg[] argshuffle(float arr[]; float seed) {
    }
    return arr;
 }
-
