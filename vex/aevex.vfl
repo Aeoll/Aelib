@@ -23,7 +23,6 @@ vector2 normalizeto(vector2 v; float l) {
     return l*normalize(v);
 }
 
-
 vector topolar(vector v)
 {
     float r = length(v);
@@ -158,6 +157,25 @@ float sinc(float x) {
   else {
     return (sin(pix) / pix);
   }
+}
+
+// some rand functions. For no seed, use a hash of sys time? this is probably dumb..
+int randint(int a; int b){
+    int sd = random_shash(__DATE__+__TIME__);
+    return int(fit01(rand(sd), a, b+1));
+}
+
+int randint(int a; int b; int seed){
+    return int(fit01(rand(seed), a, b+1));
+}
+
+float randuniform(float a; float b){
+    int sd = random_shash(__DATE__+__TIME__);
+    return fit01(rand(sd), a, b+1);
+}
+
+float randuniform(float a; float b; int seed){
+    return fit01(rand(seed), a, b+1);
 }
 
 //======================
