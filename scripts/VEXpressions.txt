@@ -8,6 +8,10 @@ attribwrangle/snippet
     @Alpha = 1.0;
 
 attribwrangle/snippet
+    pt/numpt
+	f@t = float(@ptnum)/(@numpt-1);
+
+attribwrangle/snippet
     ae_NFromP
     @N = normalize(@P);
 
@@ -15,14 +19,6 @@ attribwrangle/snippet
     ae_chramp
     @Cd = chramp("ramp", f@u); 
 
-attribwrangle/snippet
-    ae_curveuv  
-    // Assigns u-values to all points in all prims.
-    int v = pointvertex(0, @ptnum);
-    int ind = vertexprimindex(0, v);
-    int npts = len(primpoints(0, @primnum));
-    float u = float(ind) / (npts-1);
-    
 attribwrangle/snippet
     ae_delpts  
     // remove points
@@ -36,3 +32,11 @@ attribwrangle/snippet
     if(rand(@primnum + 978.88) < 0.5){
         removeprim(0, @primnum, 1);
     }
+
+attribwrangle/snippet
+    ae_curveuv  
+    // Assigns u-values to all points in all prims.
+    int v = pointvertex(0, @ptnum);
+    int ind = vertexprimindex(0, v);
+    int npts = len(primpoints(0, @primnum));
+    float u = float(ind) / (npts-1);
