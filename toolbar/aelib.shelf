@@ -14,6 +14,7 @@
     <memberTool name="ExtractSelected"/>
     <memberTool name="CombineAll"/>
     <memberTool name="MultiReferenceCopy"/>
+    <memberTool name="merge"/>
   </toolshelf>
 
   <tool name="blast_to_split" label="Blast to Split" icon="OBJ_geo">
@@ -203,5 +204,19 @@ p = sel[0].parent()
 p.copyItems(tup, True)
 # p.copyItems(tup, True, False) # absolute ref doesnt work?
 # p.copyItems(tup, channel_reference_originals=False, relative_references=True)]]></script>
+  </tool>
+
+  <tool name="merge" label="Merge" icon="PLASMA_App">
+    <script scriptType="python"><![CDATA[nodes = hou.selectedNodes()
+parent = nodes[0].parent()
+merge = parent.createNode("merge")
+
+for node in hou.selectedNodes():
+    if(node.type().category() == hou.sopNodeTypeCategory()):
+        merge.setNextInput(node)
+    
+merge.moveToGoodPosition(True, False, True, True) 
+merge.setSelected(True, True, False)   
+merge.setDisplayFlag(True)]]></script>
   </tool>
 </shelfDocument>
