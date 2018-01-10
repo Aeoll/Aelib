@@ -15,6 +15,7 @@
     <memberTool name="CombineAll"/>
     <memberTool name="MultiReferenceCopy"/>
     <memberTool name="merge"/>
+    <memberTool name="wrangle"/>
   </toolshelf>
 
   <tool name="blast_to_split" label="Blast to Split" icon="OBJ_geo">
@@ -158,6 +159,9 @@ hipIncrementVersion()]]></script>
     <script scriptType="python"><![CDATA[sel = hou.selectedNodes()
 pname = sel[0].parent().name()
 
+# TODO create a null under the selected node to reference
+# TODO extract each selected node seprately rather than merging?
+
 geo = hou.node('/obj').createNode('geo', pname+'_extraction')
 geo.node('file1').destroy()
 geo.moveToGoodPosition()
@@ -211,12 +215,27 @@ p.copyItems(tup, True)
 parent = nodes[0].parent()
 merge = parent.createNode("merge")
 
+# TODO if a bunch are selected, only merge the lowest in the tree? Potentially not useful tho
+
 for node in hou.selectedNodes():
     if(node.type().category() == hou.sopNodeTypeCategory()):
         merge.setNextInput(node)
     
 merge.moveToGoodPosition(True, False, True, True) 
 merge.setSelected(True, True, False)   
-merge.setDisplayFlag(True)]]></script>
+merge.setDisplayFlag(True)
+merge.setRenderFlag(True) # turn this off if u want]]></script>
+  </tool>
+
+  <tool name="wrangle" label="Wrangle" icon="PLASMA_App">
+    <script scriptType="python"><![CDATA[node = hou.selectedNodes()[0]
+if(node.type().category() == hou.sopNodeTypeCategory()):
+    parent = node.parent()
+    wrangle = parent.createNode("attribwrangle")
+    wrangle.setNextInput(node)
+    wrangle.moveToGoodPosition(True, False, True, True) 
+    wrangle.setSelected(True, True, False)  
+    wrangle.setDisplayFlag(True)
+    wrangle.setRenderFlag(True)]]></script>
   </tool>
 </shelfDocument>
