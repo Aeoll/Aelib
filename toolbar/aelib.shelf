@@ -196,9 +196,7 @@ p.copyItems(tup, True)
 parent = nodes[0].parent()
 merge = parent.createNode("merge")
 
-# TODO if a bunch are selected, only merge the lowest in the tree? Potentially not useful tho
-
-for node in hou.selectedNodes():
+for node in nodes:
     if(node.type().category() == hou.sopNodeTypeCategory()):
         merge.setNextInput(node)
     
@@ -213,6 +211,7 @@ merge.setRenderFlag(True) # turn this off if u want]]></script>
 
 node = hou.selectedNodes()[0]
 if(node.type().category() == hou.sopNodeTypeCategory()):
+    print "Hi"
     parent = node.parent()
     wrangle = parent.createNode("attribwrangle")
     wrangle.setNextInput(node)
