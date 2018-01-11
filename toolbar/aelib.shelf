@@ -209,7 +209,9 @@ merge.setRenderFlag(True) # turn this off if u want]]></script>
   </tool>
 
   <tool name="wrangle" label="Wrangle" icon="PLASMA_App">
-    <script scriptType="python"><![CDATA[node = hou.selectedNodes()[0]
+    <script scriptType="python"><![CDATA[# TODO insert into stream if the node has an ouput
+
+node = hou.selectedNodes()[0]
 if(node.type().category() == hou.sopNodeTypeCategory()):
     parent = node.parent()
     wrangle = parent.createNode("attribwrangle")
