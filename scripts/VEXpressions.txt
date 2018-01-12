@@ -27,6 +27,17 @@ attribwrangle/snippet
     }
 
 attribwrangle/snippet
+    ae_rotateprim  
+    // rotate prim around given center
+    float a = @Time * @primnum * 20;
+    vector4 q = quaternion(radians(a), set(0,1,0));
+
+    vector cen = set(0);
+    @P -= cen;
+    @P = qrotate(q, @P);
+    @P += cen;
+
+attribwrangle/snippet
     ae_delprims  
     // remove prims
     if(rand(@primnum + 978.88) < 0.5){
