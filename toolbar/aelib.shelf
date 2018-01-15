@@ -7,7 +7,6 @@
 
   <toolshelf name="aelib_shelf" label="Aelib">
     <memberTool name="blast_to_split"/>
-    <memberTool name="Blast to Group-Delete"/>
     <memberTool name="ae_HipVersionIncrementer"/>
     <memberTool name="ExtractSelected"/>
     <memberTool name="ExtractEach"/>
@@ -24,33 +23,6 @@
         newnode = node.changeNodeType("split", False, True, False, False)
         newnode.parm("negate").set(1-neg)
     ]]></script>
-  </tool>
-
-  <tool name="Blast to Group-Delete" label="Blast to Group-Delete" icon="OBJ_geo">
-    <script scriptType="python"><![CDATA[for node in hou.selectedNodes():
-    if(node.type() == hou.nodeType(hou.sopNodeTypeCategory(), "blast")):
-        inv = node.parm("group").evalAsString()
-        # hou.ui.displayMessage("HI")
-        
-        ups = node.inputs()
-        if len(ups) > 0:
-            group = ups[0].createOutputNode("group", "aeGroup")
-        else:
-            group = inv.createOutputNode("group", "aeGroup")
-            
-        group.parm("crname").set("aeGroup")
-        group.parm("pattern").set(inv)
-        
-        delete = group.createOutputNode("delete", "aeDelete")
-        delete.parm("group").set("aeGroup")
-        delete.parm("pattern").set("*")
-        
-        downs = node.outputs()
-        if len(downs) > 0:
-            downs[0].setInput("aeDelete")
-        
-        node.destroy()
-            ]]></script>
   </tool>
 
   <tool name="ae_HipVersionIncrementer" label="HIP_Increment" icon="SOP_file">
