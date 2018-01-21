@@ -6,14 +6,14 @@
  a single file. -->
 
   <toolshelf name="aelib_shelf" label="Aelib">
-    <memberTool name="caps"/>
     <memberTool name="blast_to_split"/>
-    <memberTool name="Blast to Group-Delete"/>
     <memberTool name="ae_HipVersionIncrementer"/>
-    <memberTool name="iterate"/>
     <memberTool name="ExtractSelected"/>
+    <memberTool name="ExtractEach"/>
     <memberTool name="CombineAll"/>
     <memberTool name="MultiReferenceCopy"/>
+    <memberTool name="merge"/>
+    <memberTool name="wrangle"/>
   </toolshelf>
 
   <tool name="blast_to_split" label="Blast to Split" icon="OBJ_geo">
@@ -23,50 +23,6 @@
         newnode = node.changeNodeType("split", False, True, False, False)
         newnode.parm("negate").set(1-neg)
     ]]></script>
-  </tool>
-
-  <tool name="caps" label="Caps/Uncaps" icon="SOP_font">
-    <script scriptType="python"><![CDATA[nodes = hou.selectedNodes()
-for node in nodes:
-    name = node.name()
-    if(name[0].islower()):
-        node.setName(name.upper())
-    elif(name[0].isupper()):
-        node.setName(name.lower())    ]]></script>
-  </tool>
-
-  <tool name="iterate" label="IterateNodes" icon="PLASMA_App">
-    <script scriptType="python"><![CDATA[allNodes = hou.node(â/objâ).allSubChildren()
-
-for node in allNodes:
-    print node.name()]]></script>
-  </tool>
-
-  <tool name="Blast to Group-Delete" label="Blast to Group-Delete" icon="OBJ_geo">
-    <script scriptType="python"><![CDATA[for node in hou.selectedNodes():
-    if(node.type() == hou.nodeType(hou.sopNodeTypeCategory(), "blast")):
-        inv = node.parm("group").evalAsString()
-        # hou.ui.displayMessage("HI")
-        
-        ups = node.inputs()
-        if len(ups) > 0:
-            group = ups[0].createOutputNode("group", "aeGroup")
-        else:
-            group = inv.createOutputNode("group", "aeGroup")
-            
-        group.parm("crname").set("aeGroup")
-        group.parm("pattern").set(inv)
-        
-        delete = group.createOutputNode("delete", "aeDelete")
-        delete.parm("group").set("aeGroup")
-        delete.parm("pattern").set("*")
-        
-        downs = node.outputs()
-        if len(downs) > 0:
-            downs[0].setInput("aeDelete")
-        
-        node.destroy()
-            ]]></script>
   </tool>
 
   <tool name="ae_HipVersionIncrementer" label="HIP_Increment" icon="SOP_file">
@@ -163,8 +119,10 @@ geo.moveToGoodPosition()
 
 merge = geo.createNode('merge', 'MERGE')
 for ind, node in enumerate(sel):
-    path = node.path()
+    null = node.createOutputNode("null", "OUT_"+node.name())
+    path = null.path()
     name = node.name()
+    
     pn = node.parent().name()
     o = merge.createInputNode(ind, 'object_merge', pn+"_"+name)
     o.parm("objpath1").set(path)
@@ -203,5 +161,56 @@ p = sel[0].parent()
 p.copyItems(tup, True)
 # p.copyItems(tup, True, False) # absolute ref doesnt work?
 # p.copyItems(tup, channel_reference_originals=False, relative_references=True)]]></script>
+  </tool>
+
+  <tool name="merge" label="Merge" icon="PLASMA_App">
+    <script scriptType="python"><![CDATA[nodes = hou.selectedNodes()
+parent = nodes[0].parent()
+merge = parent.createNode("merge")
+
+for node in nodes:
+    if(node.type().category() == hou.sopNodeTypeCategory()):
+        merge.setNextInput(node)
+    
+merge.moveToGoodPosition(True, False, True, True) 
+merge.setSelected(True, True, False)   
+merge.setDisplayFlag(True)
+merge.setRenderFlag(True) # turn this off if u want]]></script>
+  </tool>
+
+  <tool name="wrangle" label="Wrangle" icon="PLASMA_App">
+    <script scriptType="python"><![CDATA[# TODO insert into stream if the node has an ouput
+
+sel = hou.selectedNodes()
+if sel:
+    node = hou.selectedNodes()[0]
+    if node.type().category() == hou.sopNodeTypeCategory():
+        parent = node.parent()
+        wrangle = parent.createNode("attribwrangle")
+        wrangle.setNextInput(node)
+        wrangle.moveToGoodPosition(True, False, True, True) 
+        wrangle.setSelected(True, True, False)  
+        wrangle.setDisplayFlag(True)
+        wrangle.setRenderFlag(True)]]></script>
+  </tool>
+
+  <tool name="ExtractEach" label="ExtractEach" icon="SHELF_extract_object">
+    <script scriptType="python"><![CDATA[sel = hou.selectedNodes()
+pname = sel[0].parent().name()
+
+for ind, node in enumerate(sel):
+    null = node.createOutputNode("null", "OUT_" + node.name())
+    path = null.path()
+    pn = node.parent().name()
+    
+    geo = hou.node('/obj').createNode('geo', pn + '_' + null.name() + '_extraction')
+    geo.node('file1').destroy()
+    geo.moveToGoodPosition()    
+    
+    o = geo.createNode('object_merge', pn + "_" + null.name())
+    o.parm("objpath1").set(path)
+    o.moveToGoodPosition()
+
+# o.setCurrent(True, True)]]></script>
   </tool>
 </shelfDocument>
