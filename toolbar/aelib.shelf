@@ -181,16 +181,17 @@ merge.setRenderFlag(True) # turn this off if u want]]></script>
   <tool name="wrangle" label="Wrangle" icon="PLASMA_App">
     <script scriptType="python"><![CDATA[# TODO insert into stream if the node has an ouput
 
-node = hou.selectedNodes()[0]
-if(node.type().category() == hou.sopNodeTypeCategory()):
-    print "Hi"
-    parent = node.parent()
-    wrangle = parent.createNode("attribwrangle")
-    wrangle.setNextInput(node)
-    wrangle.moveToGoodPosition(True, False, True, True) 
-    wrangle.setSelected(True, True, False)  
-    wrangle.setDisplayFlag(True)
-    wrangle.setRenderFlag(True)]]></script>
+sel = hou.selectedNodes()
+if sel:
+    node = hou.selectedNodes()[0]
+    if node.type().category() == hou.sopNodeTypeCategory():
+        parent = node.parent()
+        wrangle = parent.createNode("attribwrangle")
+        wrangle.setNextInput(node)
+        wrangle.moveToGoodPosition(True, False, True, True) 
+        wrangle.setSelected(True, True, False)  
+        wrangle.setDisplayFlag(True)
+        wrangle.setRenderFlag(True)]]></script>
   </tool>
 
   <tool name="ExtractEach" label="ExtractEach" icon="SHELF_extract_object">
