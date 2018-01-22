@@ -215,19 +215,27 @@ float function_PennerEaseOutElastic(float x) {
 float function_PennerEaseInOutElastic (float x) {
   string functionName = "Penner's EaseInOut Elastic";
 
-  if (x==0) return 0; 
-  float x2 = x/0.5;
-  if (x2==2) return 1;
-  float p=(0.3*1.5);
-  float a=1;
-  float s=p/4;
+  if(x < 0.5){
+		return 0.5 * sin(13 * 2*M_PI * (2 * x)) * pow(2, 10 * ((2 * x) - 1));
+	}
+	else {
+		return 0.5 * (sin(-13 * 2*M_PI * ((2 * x - 1) + 1)) * pow(2, -10 * (2 * x - 1)) + 2);
+	}
 
-  if (x < 1) {
-    float postFix = pow(2, 10*(x2-1)); // postIncrement is evil
-    return -0.5*(postFix* sin( (x2-s)*(2*M_PI)/p ));
-  } 
-  float postFix = pow(2, -10*(x2-1)); // postIncrement is evil
-  return postFix * sin( (x2-s)*(2*M_PI)/p )*.5 + 1;
+  // Appears to be broken?
+  // if (x==0) return 0; 
+  // float x2 = x/0.5;
+  // if (x2==2) return 1;
+  // float p=(0.3*1.5);
+  // float a=1;
+  // float s=p/4;
+
+  // if (x < 1) {
+  //   float postFix = pow(2, 10*(x2-1)); // postIncrement is evil
+  //   return -0.5*(postFix* sin( (x2-s)*(2*M_PI)/p ));
+  // } 
+  // float postFix = pow(2, -10*(x2-1)); // postIncrement is evil
+  // return postFix * sin( (x2-s)*(2*M_PI)/p )*.5 + 1;
 }
 
 //------------------------------------------------------------------
@@ -1526,7 +1534,7 @@ float function_HannPoissonWindow (float x, a) {
   float EPS = 0.00001;
   float tau = 25.0 * max(a*a*a*a, EPS); // nice control
   
-  float hy = 0.5 * (1.0 - cos(TWO_PI*x));
+  float hy = 0.5 * (1.0 - cos(2*M_PI*x));
   float py = exp (0.0 - (abs(x - 0.5))*(1.0/tau));
   return (hy * py); 
 }
@@ -1540,7 +1548,7 @@ float function_HannPoissonWindowSliding (float x, a, b) {
   float tau = 25.0 * max(b*b*b*b, EPS); // nice range of control
   
   float newx = clamp(x + (0.5 - a), 0, 1); 
-  float hy = 0.5 * (1.0 - cos(TWO_PI*newx));
+  float hy = 0.5 * (1.0 - cos(2*M_PI*newx));
   float py = exp (0.0 - (abs(newx - 0.5))*(1.0/tau));
   return (hy * py); 
 }
