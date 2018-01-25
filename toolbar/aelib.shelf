@@ -218,32 +218,30 @@ for ind, node in enumerate(sel):
   <tool name="swap" label="Swap Nodes" icon="PLASMA_App">
     <script scriptType="python"><![CDATA[nodes = hou.selectedNodes()
 
-if len(nodes) == 2:
-    a = nodes[0]
-    b = nodes[1]
-    
-    ain = a.inputs()
-    aout = a.outputs()
-    bin = b.inputs()
-    bout = b.outputs() 
-    
-    # fix edge cases
+a = nodes[0]
+b = nodes[1]
 
-    if ain and ain[0] == b:
-        if bin: a.setInput(0, bin[0])
-        b.setInput(0, a)
-        if aout: aout[0].setInput(0, b)
-    elif bin and bin[0] == a:
-        if ain: b.setInput(0, ain[0])
-        a.setInput(0, b)       
-        if bout: bout[0].setInput(0, a)  
-    else:
-        if ain: b.setInput(0, ain[0])
-        if bin: a.setInput(0, bin[0])       
-        if aout: aout[0].setInput(0, b)
-        if bout: bout[0].setInput(0, a)  
+ain = a.inputs()
+aout = a.outputs()
+bin = b.inputs()
+bout = b.outputs() 
+# fix edge cases ?
 
-    a.moveToGoodPosition(True, False, True, True) 
-    b.moveToGoodPosition(True, False, True, True) ]]></script>
+if ain and ain[0] == b:
+    if bin: a.setInput(0, bin[0])
+    b.setInput(0, a)
+    if aout: aout[0].setInput(0, b)
+elif bin and bin[0] == a:
+    if ain: b.setInput(0, ain[0])
+    a.setInput(0, b)       
+    if bout: bout[0].setInput(0, a)  
+else:
+    if ain: b.setInput(0, ain[0])
+    if bin: a.setInput(0, bin[0])       
+    if aout: aout[0].setInput(0, b)
+    if bout: bout[0].setInput(0, a)  
+
+a.moveToGoodPosition(True, False, True, True) 
+b.moveToGoodPosition(True, False, True, True) ]]></script>
   </tool>
 </shelfDocument>
