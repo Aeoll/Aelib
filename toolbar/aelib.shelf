@@ -216,32 +216,44 @@ for ind, node in enumerate(sel):
   </tool>
 
   <tool name="swap" label="Swap Nodes" icon="PLASMA_App">
-    <script scriptType="python"><![CDATA[nodes = hou.selectedNodes()
+    <script scriptType="python"><![CDATA[# TODO 
+# Also swap multiple outputs (but keep inputs the same?)
 
+nodes = hou.selectedNodes()
 a = nodes[0]
 b = nodes[1]
-
 ain = a.inputs()
 aout = a.outputs()
 bin = b.inputs()
 bout = b.outputs() 
-# fix edge cases ?
 
-if ain and ain[0] == b:
-    if bin: a.setInput(0, bin[0])
+# set inputs/outputs
+AIN = ain[0] if ain else None
+AOUT = aout[0] if aout else None
+BIN = bin[0] if bin else None
+BOUT = bout[0] if bout else None
+
+# Swap, with cases for a and b being sequential. only first inputs/outputs modified at this time
+if AIN == b:
+    a.setInput(0, BIN)
     b.setInput(0, a)
-    if aout: aout[0].setInput(0, b)
-elif bin and bin[0] == a:
-    if ain: b.setInput(0, ain[0])
+    if AOUT: AOUT.setInput(0, b)
+elif BIN == a:
+    b.setInput(0, AIN)
     a.setInput(0, b)       
-    if bout: bout[0].setInput(0, a)  
-else:
-    if ain: b.setInput(0, ain[0])
-    if bin: a.setInput(0, bin[0])       
-    if aout: aout[0].setInput(0, b)
-    if bout: bout[0].setInput(0, a)  
+    if BOUT: BOUT.setInput(0, a)  
+else:     
+    b.setInput(0, AIN)
+    a.setInput(0, BIN)
+    if BOUT:
+        BOUT.setInput(0, a)
+    if AOUT:
+        AOUT.setInput(0, b)
 
-a.moveToGoodPosition(True, False, True, True) 
-b.moveToGoodPosition(True, False, True, True) ]]></script>
+# set positions
+apos = a.position()
+bpos = b.position()        
+b.setPosition(apos)
+a.setPosition(bpos)]]></script>
   </tool>
 </shelfDocument>
