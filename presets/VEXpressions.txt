@@ -38,6 +38,24 @@ attribwrangle/snippet
     @P += cen;
 
 attribwrangle/snippet
+    ae_nicks_distribution
+    float r = rand(@ptnum*555+888 + chi("sd"));
+    float a = chf("scale")/ (chf("max_limit") + pow( fit01(r, 0, 1) , chf("pow") ));
+
+attribwrangle/snippet
+    ae_multiattrib_modify
+    string str = chs("attribs");
+    string attrs[] = split(str);
+    foreach(string s; attrs){
+        if(haspointattrib(0, s) >= 0){
+            vector v = point(0, s, @ptnum);
+            // do something
+            v = normalize(v)*0.5;
+            setpointattrib(0, s, @ptnum, v);
+        }
+    }
+
+attribwrangle/snippet
     ae_intrinsic_xform
     matrix3 m = ident();
     float angle = @Time;
