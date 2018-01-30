@@ -155,13 +155,13 @@ merge.setCurrent(True, True)]]></script>
   </tool>
 
   <tool name="MultiReferenceCopy" label="MultiRefCopy" icon="SOP_duplicate">
-    <script scriptType="python"><![CDATA[sel = hou.selectedNodes()
+    <script scriptType="python"><![CDATA[# Creates ref copies of nodes with absolute path references so they can be moved outside the current parent
+
+sel = hou.selectedNodes()
 tup = tuple(sel)
 
 p = sel[0].parent()
-p.copyItems(tup, True)
-# p.copyItems(tup, True, False) # absolute ref doesnt work?
-# p.copyItems(tup, channel_reference_originals=False, relative_references=True)]]></script>
+p.copyItems(tup, True, False)]]></script>
   </tool>
 
   <tool name="merge" label="Merge" icon="PLASMA_App">
