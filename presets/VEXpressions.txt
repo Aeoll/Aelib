@@ -38,6 +38,13 @@ attribwrangle/snippet
     @P += cen;
 
 attribwrangle/snippet
+    ae_intrinsic_xform
+    matrix3 m = ident();
+    float angle = @Time;
+    rotate(m, angle, set(0,1,0));
+    setprimintrinsic(0, "transform", @primnum, m);
+
+attribwrangle/snippet
     ae_delprims  
     // remove prims
     if(rand(@primnum + 978.88) < 0.5){
