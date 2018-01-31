@@ -6,7 +6,6 @@
 // Full Attrib transfer for new prims
 // further algos (star bevel? aligned bevel?)
 
-
 // ==========================================
 // UTILITY
 // ==========================================
@@ -18,6 +17,12 @@ function void interpAttribs(int new; int a; int b; float wt){
     append(pts, b);
     append(wts, 1 - wt);
     append(wts, wt);
+    setpointattrib(0, "pts", new, pts, "set");
+    setpointattrib(0, "wts", new, wts, "set");    
+    setpointattrib(0, "newpt", new, 1, "set");
+}
+
+function void interpAttribsSet(int new; int pts[]; float wts[]){
     setpointattrib(0, "pts", new, pts, "set");
     setpointattrib(0, "wts", new, wts, "set");    
     setpointattrib(0, "newpt", new, 1, "set");
@@ -133,6 +138,14 @@ void cornerfull(int prim; vector cen; vector offset){
     int pts[] = primpoints(0, prim);
     int n = len(pts);
     int cpt = addpoint(0, cen+offset);
+
+    // set attrib interpolation weights?
+    float wts[];
+    foreach(int pt; pts){
+        append(wts, 1.0/n);
+    }
+    interpAttribsSet(cpt, pts, wts);
+
     // create new prims
     for(int i=0; i<n; i++){
         int p = addprim(0, "poly", pts[i], pts[(i+1)%n], cpt);
