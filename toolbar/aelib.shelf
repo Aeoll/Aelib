@@ -217,43 +217,45 @@ for ind, node in enumerate(sel):
 
   <tool name="swap" label="Swap Nodes" icon="PLASMA_App">
     <script scriptType="python"><![CDATA[# TODO 
-# Also swap multiple outputs (but keep inputs the same?)
+# Also swap multiple outputs .. messy
 
 nodes = hou.selectedNodes()
-a = nodes[0]
-b = nodes[1]
-ain = a.inputs()
-aout = a.outputs()
-bin = b.inputs()
-bout = b.outputs() 
 
-# set inputs/outputs
-AIN = ain[0] if ain else None
-AOUT = aout[0] if aout else None
-BIN = bin[0] if bin else None
-BOUT = bout[0] if bout else None
-
-# Swap, with cases for a and b being sequential. only first inputs/outputs modified at this time
-if AIN == b:
-    a.setInput(0, BIN)
-    b.setInput(0, a)
-    if AOUT: AOUT.setInput(0, b)
-elif BIN == a:
-    b.setInput(0, AIN)
-    a.setInput(0, b)       
-    if BOUT: BOUT.setInput(0, a)  
-else:     
-    b.setInput(0, AIN)
-    a.setInput(0, BIN)
-    if BOUT:
-        BOUT.setInput(0, a)
-    if AOUT:
-        AOUT.setInput(0, b)
-
-# set positions
-apos = a.position()
-bpos = b.position()        
-b.setPosition(apos)
-a.setPosition(bpos)]]></script>
+if(len(nodes) == 2):
+    a = nodes[0]
+    b = nodes[1]
+    ain = a.inputs()
+    aout = a.outputs()
+    bin = b.inputs()
+    bout = b.outputs() 
+    
+    # set inputs/outputs
+    AIN = ain[0] if ain else None
+    AOUT = aout[0] if aout else None
+    BIN = bin[0] if bin else None
+    BOUT = bout[0] if bout else None
+    
+    # Swap, with cases for a and b being sequential. only first inputs/outputs modified at this time
+    if AIN == b:
+        a.setInput(0, BIN)
+        b.setInput(0, a)
+        if AOUT: AOUT.setInput(0, b)
+    elif BIN == a:
+        b.setInput(0, AIN)
+        a.setInput(0, b)       
+        if BOUT: BOUT.setInput(0, a)  
+    else:     
+        b.setInput(0, AIN)
+        a.setInput(0, BIN)
+        if BOUT:
+            BOUT.setInput(0, a)
+        if AOUT:
+            AOUT.setInput(0, b)
+    
+    # set positions
+    apos = a.position()
+    bpos = b.position()        
+    b.setPosition(apos)
+    a.setPosition(bpos)]]></script>
   </tool>
 </shelfDocument>
