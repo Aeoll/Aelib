@@ -271,11 +271,29 @@ if len(nodes) == 2 or len(nodes) == 1:
   </tool>
 
   <tool name="snapshot_path" label="SaveSnapshot" icon="PLASMA_App">
-    <script scriptType="python"><![CDATA[from datetime import datetime
-# doesnt work with the ui so just use this as a shelf tool with hotkey?
-# doesnt seem to save at all??
-ipr = hou.ui.paneTabOfType(hou.paneTabType.IPRViewer)
+    <script scriptType="python"><![CDATA[#from datetime import datetime
+#
+## doesnt work with the ui so just use this as a shelf tool with hotkey?
+## doesnt seem to save at all??
+#
+#ipr = hou.ui.paneTabOfType(hou.paneTabType.IPRViewer)
+#
+#if ipr:
+#    #print ipr.autoSavePath()
+#    time = datetime.now().strftime("%H-%M-%S")
+#    path = "$HIP/ipr/$HIPNAME."+time+".png"
+#    path = '$TEMPCACHE/ipr/hi.exr'
+#    path = hou.expandString(path)
+#    
+#    #ipr.setAutoSavePath(path)
+#    #print path
+#    
+#    # get snap number to use rather than active render?
+#    # snap = hou.expandStringAtFrame('$SNAPNAME')
+#    ipr.saveFrame(path) 
+#    #ipr.saveFrame(path, snapshot=0, xres=-1, yres=-1, color='C', alpha='C', scope='*', lut='', gamma=1.0, convert=True)
 
+ipr = hou.ui.paneTabOfType(hou.paneTabType.IPRViewer)
 if ipr:
     time = datetime.now().strftime("%H-%M-%S")
     path = "$HIP/ipr/$HIPNAME.png"
