@@ -218,13 +218,27 @@ for ind, node in enumerate(sel):
 
   <tool name="swap" label="Swap Nodes" icon="PLASMA_App">
     <script scriptType="python"><![CDATA[# TODO 
-# Also swap multiple outputs .. messy
+# swap multiple outputs .. messy
 
 nodes = hou.selectedNodes()
 
-if(len(nodes) == 2):
-    a = nodes[0]
-    b = nodes[1]
+if len(nodes) == 2 or len(nodes) == 1:
+    # if 1 node selected, move up the graph if it has an input, otherwise move it down 
+    if(len(nodes) == 1):
+        b = nodes[0]
+        bin = b.inputs()
+        if bin:
+            a = bin[0]
+        else:
+            a, b = b, b.outputs()[0]
+    else:
+    # if 2 nodes selected, ensure a is always the higher node in the nodegraph 
+        a = nodes[0]
+        b = nodes[1]
+        a_anc = a.inputAncestors(True, False)
+        if b in a_anc:
+            a, b = b, a
+    
     ain = a.inputs()
     aout = a.outputs()
     bin = b.inputs()
@@ -236,12 +250,8 @@ if(len(nodes) == 2):
     BIN = bin[0] if bin else None
     BOUT = bout[0] if bout else None
     
-    # Swap, with cases for a and b being sequential. only first inputs/outputs modified at this time
-    if AIN == b:
-        a.setInput(0, BIN)
-        b.setInput(0, a)
-        if AOUT: AOUT.setInput(0, b)
-    elif BIN == a:
+    # Swap, with case for a and b sequential. only first inputs/outputs modified at this time
+    if BIN == a:
         b.setInput(0, AIN)
         a.setInput(0, b)       
         if BOUT: BOUT.setInput(0, a)  
@@ -268,14 +278,12 @@ ipr = hou.ui.paneTabOfType(hou.paneTabType.IPRViewer)
 
 if ipr:
     time = datetime.now().strftime("%H-%M-%S")
-    path = "$HIP/ipr/$HIPNAME."+time+".png"
-    path = '$TEMPCACHE/ipr/hi.exr'
+    path = "$HIP/ipr/$HIPNAME.png"
     path = hou.expandString(path)
-    ipr.setAutoSavePath(path)
     print path
     
     # get snap number to use rather than active render?
     # snap = hou.expandStringAtFrame('$SNAPNAME')
-    ipr.saveFrame(path, 0) ]]></script>
+    ipr.saveFrame(path) ]]></script>
   </tool>
 </shelfDocument>
