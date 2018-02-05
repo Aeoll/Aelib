@@ -1,4 +1,4 @@
-attribwrangle/snippet
+ attribwrangle/snippet
     ae_include
     include <aevex.vfl>
     include <ease.vfl>
@@ -15,6 +15,12 @@ attribwrangle/snippet
 attribwrangle/snippet
     ae_NFromP
     @N = normalize(@P);
+
+attribwrangle/snippet
+    ae_roundfloat
+    float step = 0.5;
+    float val = @P;
+    val = step * rint(val/step);
 
 attribwrangle/snippet
     ae_xyz_primuv  
