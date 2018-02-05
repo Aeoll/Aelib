@@ -271,8 +271,8 @@ if len(nodes) == 2 or len(nodes) == 1:
   </tool>
 
   <tool name="snapshot_path" label="SaveSnapshot" icon="PLASMA_App">
-    <script scriptType="python"><![CDATA[#from datetime import datetime
-#
+    <script scriptType="python"><![CDATA[from datetime import datetime
+
 ## doesnt work with the ui so just use this as a shelf tool with hotkey?
 ## doesnt seem to save at all??
 #
@@ -298,8 +298,8 @@ if ipr:
     time = datetime.now().strftime("%H-%M-%S")
     path = "$HIP/ipr/$HIPNAME.png"
     path = hou.expandString(path)
-    print path
     
+    # print path
     # get snap number to use rather than active render?
     # snap = hou.expandStringAtFrame('$SNAPNAME')
     ipr.saveFrame(path) ]]></script>
