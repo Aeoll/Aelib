@@ -16,6 +16,7 @@
     <memberTool name="swap"/>
     <memberTool name="merge"/>
     <memberTool name="wrangle"/>
+    <memberTool name="Init_RS"/>
   </toolshelf>
 
   <tool name="blast_to_split" label="Blast to Split" icon="OBJ_geo">
@@ -287,5 +288,14 @@ if ipr:
     
     # Broken. When it's fixed get the right snapshot?
     # ipr.saveFrame(path, snapshot=0, xres=-1, yres=-1, color='C', alpha='C', scope='*', lut='', gamma=1.0, convert=True)]]></script>
+  </tool>
+
+  <tool name="Init_RS" label="Init_RS" icon="ROP_Redshift_ROP">
+    <script scriptType="python"><![CDATA[import hou
+import aeutils as ae
+
+ae.init_RS()
+
+]]></script>
   </tool>
 </shelfDocument>
