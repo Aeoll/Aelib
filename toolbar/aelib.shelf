@@ -13,9 +13,9 @@
     <memberTool name="CombineAll"/>
     <memberTool name="MultiReferenceCopy"/>
     <memberTool name="snapshot_path"/>
+    <memberTool name="swap"/>
     <memberTool name="merge"/>
     <memberTool name="wrangle"/>
-    <memberTool name="swap"/>
   </toolshelf>
 
   <tool name="blast_to_split" label="Blast to Split" icon="OBJ_geo">
@@ -165,7 +165,7 @@ p = sel[0].parent()
 p.copyItems(tup, True, False)]]></script>
   </tool>
 
-  <tool name="merge" label="Merge" icon="PLASMA_App">
+  <tool name="merge" label="Merge" icon="hicon:/SVGIcons.index?SOP_merge.svg">
     <script scriptType="python"><![CDATA[nodes = hou.selectedNodes()
 parent = nodes[0].parent()
 merge = parent.createNode("merge")
@@ -180,7 +180,7 @@ merge.setDisplayFlag(True)
 merge.setRenderFlag(True) # turn this off if u want]]></script>
   </tool>
 
-  <tool name="wrangle" label="Wrangle" icon="PLASMA_App">
+  <tool name="wrangle" label="Wrangle" icon="hicon:/SVGIcons.index?SOP_attribwrangle.svg">
     <script scriptType="python"><![CDATA[# TODO insert into stream if the node has an ouput
 
 sel = hou.selectedNodes()
@@ -216,7 +216,7 @@ for ind, node in enumerate(sel):
 # o.setCurrent(True, True)]]></script>
   </tool>
 
-  <tool name="swap" label="Swap Nodes" icon="PLASMA_App">
+  <tool name="swap" label="Swap Nodes" icon="hicon:/SVGIcons.index?BUTTONS_cook.svg">
     <script scriptType="python"><![CDATA[# TODO 
 # swap multiple outputs .. messy
 
@@ -270,7 +270,7 @@ if len(nodes) == 2 or len(nodes) == 1:
     a.setPosition(bpos)]]></script>
   </tool>
 
-  <tool name="snapshot_path" label="SaveSnapshot" icon="PLASMA_App">
+  <tool name="snapshot_path" label="SaveSnapshot" icon="hicon:/SVGIcons.index?BUTTONS_render.svg">
     <script scriptType="python"><![CDATA[from datetime import datetime
 
 # ipr = hou.ui.paneTabOfType(hou.paneTabType.IPRViewer) # this doesnt actually work for some reason...There are 2 iprs?
