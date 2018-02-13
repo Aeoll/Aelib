@@ -307,12 +307,18 @@ ae.init_RS()
 import shutil
 import glob
 
-def collectProject():  
-    # save the file, then save it to the collection dir later?
-    hou.hipFile.save()
-    refs = hou.fileReferences()
-    
-    # create collection dir in $HIP and avoid overwriting existing
+IGNORE_BYPASSED = False
+IGNORE_PROXY = False
+COPY_NON_RELATIVE = False
+
+# TODO
+# Non-rel files
+# Overwrite check
+
+# ==============================================================
+# create collection dir in $HIP and avoid overwriting existing
+# ==============================================================
+def createCollectionDir():
     collectDir = '$HIP'+'/collect'
     counter = 1
     while os.path.exists(hou.expandString(collectDir)) :
@@ -320,58 +326,118 @@ def collectProject():
         counter = counter + 1
     collectDir = hou.expandString(collectDir)
     os.makedirs(collectDir)
+    return collectDir
+    
+    
+def collectProject():  
+    # save the file, then save it to the collection dir later?
+    hou.hipFile.save()
+    refs = hou.fileReferences()
+    collectDir = createCollectionDir()
     
     hipname = hou.hipFile.basename()
-    # ignore refs with these extensions (only if not in HIP maybe? TODO)
-    ignoredExt = ['.hda', '.hdalc', '.otl', '.pc']
+    
+    # do not copy archived/proxy files?
+    # proxy = ['.ifd', '.ass', '.rs']
     
     # Get refs to be copied
-    # Deal with duplicates? use a ref:[parm] dict? # if not any( ref[1] in rr for rr in toCopy )
     toCopy = []
+    toCopyMisc = [] # for non-HIP/JOB files to sort out
     for ref in refs:
         parm = ref[0]
+        r = ref[1]
         if parm:
-            fname, fext = os.path.splitext(ref[1])
-            if fext not in ignoredExt:
-                    toCopy.append(ref)      
-                    
-    # for c in toCopy:
-    #    print c
+            bypassed = parm.node().isGenericFlagSet(hou.nodeFlag.Bypass)
+            if IGNORE_BYPASSED and bypassed:
+                pass
+                # copy ref if bypass option is off or node isnt bypassed
+            else:
+                fname, fext = os.path.splitext(ref[1])
+                if not (r.startswith('$HIP') or r.startswith('$JOB')):
+                    if fext not in ignoredExt:
+                        toCopyMisc.append(ref)    
+                else:
+                    # if not any (ref[1] in rr for rr in toCopy): # dupes?
+                    toCopy.append(ref) 
                        
-    # Copy referenced files
+    # ==============================================================
+    # Copy Relative files HIP/JOB
+    # ==============================================================
     for ref in toCopy:
         r = ref[1]
-        n = re.search( '\$F.', r) # for no padding?
-        m = re.search( '\$F\d+', r)
-        if m or n:
-            pass
-            print "seq not copied"
-            # file sequence to copy...
-        else:
-            # if using JOB, just set JOB to new $HIP (collectDir) after copying is done? and copy as normal        
-            if r.startswith('$HIP') or r.startswith('$JOB'):
-                p = r[4:]
-                collectedPath = collectDir + p
-                
-                # ensure the subdir exists in collect dir
-                collectedDir = os.path.dirname(hou.expandString(collectedPath))
-                if not os.path.exists(collectedDir):
-                    os.makedirs(collectedDir)   
-                # copy file
-                shutil.copy(hou.expandString(r), collectedPath) 
-                print 
+        
+        # check if the the ref is linked to another channel. If so, expand that channel value instead (to fix $OS references?)
+        parm = ref[0]
+        for i in xrange(10): # hack since isRef is not implemented?
+            parm = parm.getReferencedParm() 
+        r = re.sub('\$OS', parm.node().name(), r)
+        print r
+        
+        p = r[4:]
+        collectedPath = collectDir + p  
+        # ensure the subdir exists in the collect dir        
+        collectedDir = os.path.dirname(hou.expandString(collectedPath))
+        if not os.path.exists(collectedDir):
+            os.makedirs(collectedDir)       
+            
+        # For Sequences
+        if re.search('\$F', r):
+            print "Sequence found"
+            s = re.sub('\$F\d+', '*', r)
+            s = re.sub('\$F', '*', s)
+            print hou.expandString(s)
+            seqFiles = glob.glob(hou.expandString(s))
+            if seqFiles:
+                for f in seqFiles:
+                    # do an overwrite check here (do not overwrite existing)
+                    try:
+                        shutil.copy(hou.expandString(f), collectedDir + '/' + os.path.basename(f)) 
+                    except:
+                        pass
             else:
-                # future: deal with non-$HIP refs by copying to collect/misc and then updating the parm?
+                print "Error Finding File Sequence"
+        # For Single Files
+        else:
+            # do an overwrite check here (do not overwrite existing)
+            try:
+                shutil.copy(hou.expandString(r), collectedPath) 
+            except:
                 pass
     
-    hou.hipFile.save(collectDir+'/'+hipname)
-    # save to new loc and sort the non-HIP/JOB refs after saving?
+    # save to new loc and sort the non-HIP/JOB refs after saving?   
+    hou.hipFile.save(collectDir+'/'+hipname)        
     
+    # ignore refs with these extensions for refs not in $HIP or $JOB
+    ignoredExt = ['.hda', '.hdalc', '.hdanc', '.otl', '.pc']    
+    
+    
+    # ==============================================================
+    # Copy NON Relative files and adjust their parms
+    # ==============================================================    
+    if COPY_NON_RELATIVE:
+        # TODO: deal with non-$HIP refs by copying to collect/misc and then updating the parm?        
+    #    for ref in toCopyMisc:
+    #        r = ref[1]
+    #        n = re.search( '\$F.', r) # for no padding?
+    #        m = re.search( '\$F\d+', r)
+    #        if m or n:
+    #            print "seq not copied"
+    #        else:    
+    #            collectedMisc = collectDir + '/misc'
+    #            if not os.path.exists(collectedMisc):
+    #                os.makedirs(collectedMisc)   
+    #            filename = os.path.basename(hou.expandString(r))
+    #            collectedMisc = collectedMisc + '/' + filename
+    #            shutil.copy(hou.expandString(r), collectedMisc) 
+    #            parm = ref[0]
+            
+            
+    # set JOB to new HIP loc
     hou.putenv('$JOB', collectDir)
 
+    
 # Try FileCopyProgress. Maybe just show the filename being copied for simplicity?
 # QtProgressBar? Could be fun
-
 # sequence globbing from ffmpegify
 #    preframepart = stem[0:sp2[0]]
 #    frames = sorted(file.parent.glob(preframepart + '*'))
