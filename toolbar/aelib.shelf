@@ -307,13 +307,30 @@ ae.init_RS()
 import shutil
 import glob
 
+from PySide2 import QtGui
+from PySide2 import QtWidgets
+from PySide2 import QtCore
+
+# ===================
+# UI Tests
+class helloWindow(QWidget):
+    def __init__(self, parent=None):
+        QWidget.__init__(self, parent, Qt.WindowStaysOnTopHint)        
+        label = QLabel("Hello World",self)
+        
+dialog = helloWindow()
+dialog.show()
+# Try FileCopyProgress. Maybe just show the filename being copied for simplicity?
+# ===================
+
 IGNORE_BYPASSED = False
 IGNORE_PROXY = False
 COPY_NON_RELATIVE = False
 
 # TODO
-# Non-rel files
+# Non-relative files
 # Overwrite check
+# UI for options + QProgressBar for copies?
 
 # ==============================================================
 # create collection dir in $HIP and avoid overwriting existing
@@ -336,9 +353,9 @@ def collectProject():
     collectDir = createCollectionDir()
     
     hipname = hou.hipFile.basename()
-    
+        
     # do not copy archived/proxy files?
-    # proxy = ['.ifd', '.ass', '.rs']
+    proxy = ['.ifd', '.ass', '.rs']
     
     # Get refs to be copied
     toCopy = []
@@ -351,6 +368,8 @@ def collectProject():
             if IGNORE_BYPASSED and bypassed:
                 pass
                 # copy ref if bypass option is off or node isnt bypassed
+            elif IGNORE_PROXY and os.path.splitext(r)[1] in proxy:
+                pass
             else:
                 fname, fext = os.path.splitext(ref[1])
                 if not (r.startswith('$HIP') or r.startswith('$JOB')):
@@ -434,14 +453,6 @@ def collectProject():
             
     # set JOB to new HIP loc
     hou.putenv('$JOB', collectDir)
-
-    
-# Try FileCopyProgress. Maybe just show the filename being copied for simplicity?
-# QtProgressBar? Could be fun
-# sequence globbing from ffmpegify
-#    preframepart = stem[0:sp2[0]]
-#    frames = sorted(file.parent.glob(preframepart + '*'))
-#    start_num = int(frames[0].name[sp2[0]:sp2[1]])
 
 collectProject()]]></script>
   </tool>
