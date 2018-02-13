@@ -17,6 +17,7 @@
     <memberTool name="merge"/>
     <memberTool name="wrangle"/>
     <memberTool name="Init_RS"/>
+    <memberTool name="CollectProject"/>
   </toolshelf>
 
   <tool name="blast_to_split" label="Blast to Split" icon="OBJ_geo">
@@ -299,5 +300,83 @@ import aeutils as ae
 ae.init_RS()
 
 ]]></script>
+  </tool>
+
+  <tool name="CollectProject" label="Collect Project" icon="PLASMA_App">
+    <script scriptType="python"><![CDATA[import hou, os, re
+import shutil
+import glob
+
+def collectProject():  
+    # save the file, then save it to the collection dir later?
+    hou.hipFile.save()
+    refs = hou.fileReferences()
+    
+    # create collection dir in $HIP and avoid overwriting existing
+    collectDir = '$HIP'+'/collect'
+    counter = 1
+    while os.path.exists(hou.expandString(collectDir)) :
+        collectDir = '$HIP'+'/collect' + str(counter)
+        counter = counter + 1
+    collectDir = hou.expandString(collectDir)
+    os.makedirs(collectDir)
+    
+    hipname = hou.hipFile.basename()
+    # ignore refs with these extensions (only if not in HIP maybe? TODO)
+    ignoredExt = ['.hda', '.hdalc', '.otl', '.pc']
+    
+    # Get refs to be copied
+    # Deal with duplicates? use a ref:[parm] dict? # if not any( ref[1] in rr for rr in toCopy )
+    toCopy = []
+    for ref in refs:
+        parm = ref[0]
+        if parm:
+            fname, fext = os.path.splitext(ref[1])
+            if fext not in ignoredExt:
+                    toCopy.append(ref)      
+                    
+    # for c in toCopy:
+    #    print c
+                       
+    # Copy referenced files
+    for ref in toCopy:
+        r = ref[1]
+        n = re.search( '\$F.', r) # for no padding?
+        m = re.search( '\$F\d+', r)
+        if m or n:
+            pass
+            print "seq not copied"
+            # file sequence to copy...
+        else:
+            # if using JOB, just set JOB to new $HIP (collectDir) after copying is done? and copy as normal        
+            if r.startswith('$HIP') or r.startswith('$JOB'):
+                p = r[4:]
+                collectedPath = collectDir + p
+                
+                # ensure the subdir exists in collect dir
+                collectedDir = os.path.dirname(hou.expandString(collectedPath))
+                if not os.path.exists(collectedDir):
+                    os.makedirs(collectedDir)   
+                # copy file
+                shutil.copy(hou.expandString(r), collectedPath) 
+                print 
+            else:
+                # future: deal with non-$HIP refs by copying to collect/misc and then updating the parm?
+                pass
+    
+    hou.hipFile.save(collectDir+'/'+hipname)
+    # save to new loc and sort the non-HIP/JOB refs after saving?
+    
+    hou.putenv('$JOB', collectDir)
+
+# Try FileCopyProgress. Maybe just show the filename being copied for simplicity?
+# QtProgressBar? Could be fun
+
+# sequence globbing from ffmpegify
+#    preframepart = stem[0:sp2[0]]
+#    frames = sorted(file.parent.glob(preframepart + '*'))
+#    start_num = int(frames[0].name[sp2[0]:sp2[1]])
+
+collectProject()]]></script>
   </tool>
 </shelfDocument>
