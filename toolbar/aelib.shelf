@@ -18,6 +18,7 @@
     <memberTool name="wrangle"/>
     <memberTool name="Init_RS"/>
     <memberTool name="CollectProject"/>
+    <memberTool name="UITesting"/>
   </toolshelf>
 
   <tool name="blast_to_split" label="Blast to Split" icon="OBJ_geo">
@@ -307,30 +308,36 @@ ae.init_RS()
 import shutil
 import glob
 
-from PySide2 import QtGui
-from PySide2 import QtWidgets
-from PySide2 import QtCore
+#from PySide2 import QtGui
+#from PySide2 import QtWidgets
+#from PySide2 import QtCore
+from PySide2.QtCore import *
+from PySide2.QtGui import *
+from PySide2.QtWidgets import *
+
+# TODO
+# Attempt to fix Non-relative files
+# Overwrite check before copying 
+# UI for options + QProgressBar for copies?
+# -- Open initial UI to capture settings
+# -- Show QProgressBar while copying. Initially just show ref path
 
 # ===================
 # UI Tests
 class helloWindow(QWidget):
     def __init__(self, parent=None):
         QWidget.__init__(self, parent, Qt.WindowStaysOnTopHint)        
-        label = QLabel("Hello World",self)
-        
-dialog = helloWindow()
+        label = QLabel("Hello World", self)
+                
+dialog = hou.qt.createDialog()
+label = QLabel("Hello World", dialog)
 dialog.show()
-# Try FileCopyProgress. Maybe just show the filename being copied for simplicity?
 # ===================
 
 IGNORE_BYPASSED = False
 IGNORE_PROXY = False
 COPY_NON_RELATIVE = False
 
-# TODO
-# Non-relative files
-# Overwrite check
-# UI for options + QProgressBar for copies?
 
 # ==============================================================
 # create collection dir in $HIP and avoid overwriting existing
@@ -424,7 +431,7 @@ def collectProject():
                 pass
     
     # save to new loc and sort the non-HIP/JOB refs after saving?   
-    hou.hipFile.save(collectDir+'/'+hipname)        
+    # hou.hipFile.save(collectDir+'/'+hipname)        
     
     # ignore refs with these extensions for refs not in $HIP or $JOB
     ignoredExt = ['.hda', '.hdalc', '.hdanc', '.otl', '.pc']    
@@ -434,6 +441,7 @@ def collectProject():
     # Copy NON Relative files and adjust their parms
     # ==============================================================    
     if COPY_NON_RELATIVE:
+        pass
         # TODO: deal with non-$HIP refs by copying to collect/misc and then updating the parm?        
     #    for ref in toCopyMisc:
     #        r = ref[1]
@@ -455,5 +463,49 @@ def collectProject():
     hou.putenv('$JOB', collectDir)
 
 collectProject()]]></script>
+  </tool>
+
+  <tool name="UITesting" label="UITests" icon="PLASMA_App">
+    <script scriptType="python"><![CDATA[# =====
+# Testing PySide2 Widgets etc
+# =====
+
+from PySide2 import QtCore
+from PySide2 import QtWidgets
+
+class FontDemo(QtWidgets.QWidget):
+    def __init__(self, parent=None):
+        QtWidgets.QWidget.__init__(self, parent)
+
+        hbox = QtWidgets.QHBoxLayout()
+        self.setGeometry(500, 300, 250, 110)
+        self.setWindowTitle('Collect Project Settings')        
+        
+        ## 
+        self.b1 = QtWidgets.QCheckBox("Toggle_1")
+        self.b1.setChecked(True)
+        hbox.addWidget(self.b1)        
+
+        button = QtWidgets.QPushButton('Accept', self)
+        button.setFocusPolicy(QtCore.Qt.NoFocus)
+        button.move(20, 20)
+        hbox.addWidget(button)
+
+        self.connect(button, QtCore.SIGNAL('clicked()'), self.showDialog)
+
+        self.label = QtWidgets.QLabel('This is some sample text', self)
+        self.label.move(130, 20)
+
+        hbox.addWidget(self.label, 1)
+        self.setLayout(hbox)
+
+    def showDialog(self):
+        font, ok = QtWidgets.QFontDialog.getFont()
+        if ok:
+            self.label.setFont(font)
+
+            
+dialog = FontDemo()
+dialog.show()]]></script>
   </tool>
 </shelfDocument>
