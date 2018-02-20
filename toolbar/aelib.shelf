@@ -18,6 +18,7 @@
     <memberTool name="Init_RS"/>
     <memberTool name="ae_HipVersionIncrementer"/>
     <memberTool name="CollectProject"/>
+    <memberTool name="NameTextures"/>
   </toolshelf>
 
   <tool name="blast_to_split" label="Blast to Split" icon="OBJ_geo">
@@ -535,5 +536,9 @@ if dialog.result() == 1:
     collectProject(settings[0], settings[1], settings[2])    
 else:
     print "Collect Project Cancelled"]]></script>
+  </tool>
+
+  <tool name="NameTextures" label="Name Textures" icon="PLASMA_App">
+    <script scriptType="python"><![CDATA[# Set name of any nodes containing image file refs to the texture basename?]]></script>
   </tool>
 </shelfDocument>
