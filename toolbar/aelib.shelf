@@ -15,9 +15,9 @@
     <memberTool name="merge"/>
     <memberTool name="wrangle"/>
     <memberTool name="snapshot_path"/>
-    <memberTool name="Init_RS"/>
     <memberTool name="ae_HipVersionIncrementer"/>
     <memberTool name="CollectProject"/>
+    <memberTool name="Init_RS"/>
     <memberTool name="NameTextures"/>
   </toolshelf>
 
@@ -344,7 +344,7 @@ class collectSettingsDialog(QtWidgets.QDialog):
         self.ch_c.setChecked(True)
         layout.addWidget(self.ch_c)   
         
-        self.ch_d = QtWidgets.QCheckBox("Ignore References inside non-Displayed OBJ nodes and delete")
+        self.ch_d = QtWidgets.QCheckBox("Delete non-Displayed OBJ nodes")
         self.ch_d.setChecked(False)
         layout.addWidget(self.ch_d)             
                                    
@@ -413,11 +413,12 @@ def collectProject(IGNORE_BYPASSED, COPY_NON_RELATIVE, IGNORE_PROXY, IGNORE_NOND
             if isinstance(parm.node(), hou.SopNode):
                 top = getObjParent(parm.node())
                 if top:
-                    disp = top.isGenericFlagSet(hou.nodeFlag.Display)                        
+                    disp = top.isGenericFlagSet(hou.nodeFlag.Display)  
+            ##
             if IGNORE_NONDISPLAY and not disp:
                 toDel.append(top)
             # copy ref if bypass option is off or node isnt bypassed                  
-            if IGNORE_BYPASSED and bypassed:
+            elif IGNORE_BYPASSED and bypassed:
                 pass
             # copy ref if proxy filter off or ref extension isnt a render proxy                
             elif IGNORE_PROXY and os.path.splitext(r)[1] in proxy:
@@ -426,8 +427,8 @@ def collectProject(IGNORE_BYPASSED, COPY_NON_RELATIVE, IGNORE_PROXY, IGNORE_NOND
                 fname, fext = os.path.splitext(ref[1])
                 if not (r.startswith('$HIP') or r.startswith('$JOB')):
                     if COPY_NON_RELATIVE and fext not in ignoredExt:
-                        # Ignore Dop Nodes for now?
-                        if not isinstance(parm.node(), hou.DopNode):
+                        # Ignore Dop Nodes for now? Also ignore op: refs?
+                        if (not isinstance(parm.node(), hou.DopNode)) and (not r.startswith('op')):
                             toCopyMisc.append(ref)    
                 else:
                     # if not any (ref[1] in rr for rr in toCopy): # we could ignore duplicates here as the parms are not changed?
@@ -435,7 +436,8 @@ def collectProject(IGNORE_BYPASSED, COPY_NON_RELATIVE, IGNORE_PROXY, IGNORE_NOND
     
     # Delete Non-Displayed
     if IGNORE_NONDISPLAY:
-        hou.Node.deleteItems(toDel)
+        randomNode = hou.node("/").children()[0]
+        randomNode.deleteItems(toDel)
                     
     # Create Progress Bar
     numToCopy = len(toCopy) + len(toCopyMisc)
