@@ -428,7 +428,7 @@ def collectProject(IGNORE_BYPASSED, COPY_NON_RELATIVE, IGNORE_PROXY, IGNORE_NOND
                 if not (r.startswith('$HIP') or r.startswith('$JOB')):
                     if COPY_NON_RELATIVE and fext not in ignoredExt:
                         # Ignore Dop Nodes for now? Also ignore op: refs?
-                        if (not isinstance(parm.node(), hou.DopNode)) and (not r.startswith('op')):
+                        if not isinstance(parm.node(), hou.DopNode) and not r.startswith('op'):
                             toCopyMisc.append(ref)    
                 else:
                     # if not any (ref[1] in rr for rr in toCopy): # we could ignore duplicates here as the parms are not changed?
@@ -498,8 +498,9 @@ def collectProject(IGNORE_BYPASSED, COPY_NON_RELATIVE, IGNORE_PROXY, IGNORE_NOND
                 print "$HIP/$JOB File found:" + str(r)
                 if not os.path.exists(collectedPath):
                     shutil.copy(hou.expandString(r), collectedPath)             
-            except:
+            except Exception as e:
                 pass
+                # print(e)   
     
     # save to new loc and sort the non-HIP/JOB refs after saving?   
     hou.hipFile.save(collectDir+'/'+hipname)        
@@ -554,7 +555,7 @@ def collectProject(IGNORE_BYPASSED, COPY_NON_RELATIVE, IGNORE_PROXY, IGNORE_NOND
             # Copy Single Files
             else:
                 filename = os.path.basename(hou.expandString(r))
-                collectedMisc = collectedMisc + '/' + filename  
+                collectedMiscTemp = collectedMisc + '/' + filename  
                 # try to set new parm value
                 try:
                     parm.set('$HIP/misc/'+filename)
@@ -562,11 +563,12 @@ def collectProject(IGNORE_BYPASSED, COPY_NON_RELATIVE, IGNORE_PROXY, IGNORE_NOND
                     print "unable to change parm: "+parm.path()
                 try:
                     print "Non-$HIP/$JOB File found:" + str(r)                 
-                    if not os.path.exists(collectedMisc):
-                        shutil.copy(hou.expandString(r), collectedMisc)             
-                except:
+                    if not os.path.exists(collectedMiscTemp):
+                        print collectedMiscTemp
+                        shutil.copy(hou.expandString(r), collectedMiscTemp)             
+                except Exception as e:
                     pass
-       
+                    # print(e)          
     # set JOB to new HIP loc
     hou.putenv('$JOB', collectDir)
 
