@@ -11,9 +11,9 @@
     <memberTool name="ExtractEach"/>
     <memberTool name="CombineAll"/>
     <memberTool name="MultiReferenceCopy"/>
-    <memberTool name="swap"/>
     <memberTool name="merge"/>
     <memberTool name="wrangle"/>
+    <memberTool name="swap"/>
     <memberTool name="snapshot_path"/>
     <memberTool name="ae_HipVersionIncrementer"/>
     <memberTool name="CollectProject"/>
