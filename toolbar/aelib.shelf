@@ -18,6 +18,7 @@
     <memberTool name="ae_HipVersionIncrementer"/>
     <memberTool name="CollectProject"/>
     <memberTool name="Init_RS"/>
+    <memberTool name="openhip"/>
     <memberTool name="NameTextures"/>
   </toolshelf>
 
@@ -605,5 +606,24 @@ if isinstance(n, hou.SopNode):
     top = getObjParent(n)
     disp = top.isGenericFlagSet(hou.nodeFlag.Display)
 print top]]></script>
+  </tool>
+
+  <tool name="openhip" label="Open HIP Folder" icon="PLASMA_App">
+    <script scriptType="python"><![CDATA[import os
+import hou
+import sys
+import subprocess
+
+hip = hou.getenv('HIP')
+
+platform = sys.platform
+if platform == "win32":
+    # subprocess.Popen(["explorer", self.job])
+    os.startfile(hip)
+elif platform == "darwin": #osx
+    subprocess.Popen(["open", hip])
+else: #linux
+    subprocess.Popen(["xdg-open", hip])
+]]></script>
   </tool>
 </shelfDocument>
