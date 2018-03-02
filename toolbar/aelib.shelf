@@ -608,7 +608,7 @@ if isinstance(n, hou.SopNode):
 print top]]></script>
   </tool>
 
-  <tool name="openhip" label="Open HIP Folder" icon="PLASMA_App">
+  <tool name="openhip" label="Open HIP Folder" icon="hicon:/SVGIcons.index?DATATYPES_bundle.svg">
     <script scriptType="python"><![CDATA[import os
 import hou
 import sys
