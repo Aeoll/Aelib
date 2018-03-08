@@ -18,6 +18,7 @@
     <memberTool name="ae_HipVersionIncrementer"/>
     <memberTool name="CollectProject"/>
     <memberTool name="Init_RS"/>
+    <memberTool name="Clear_RS"/>
     <memberTool name="openhip"/>
     <memberTool name="NameTextures"/>
   </toolshelf>
@@ -625,5 +626,31 @@ elif platform == "darwin": #osx
 else: #linux
     subprocess.Popen(["xdg-open", hip])
 ]]></script>
+  </tool>
+
+  <tool name="Clear_RS" label="Clear RS" icon="hicon:/SVGIcons.index?PARTS_delete_x.svg">
+    <script scriptType="python"><![CDATA[import hou
+
+rem = ['Redshift', 'redshift', 'RS_', 'rs_']
+
+allNodes = hou.node('/').allSubChildren()
+for n in allNodes:
+    try:
+        type = n.type().name()
+        if any (x in type for x in rem):
+            try:
+                n.destroy()
+            except: pass
+                # print "couldnt delete node as inside locked parent"
+    except: pass
+        # print "node has destroyed already by parent deletion"
+
+        
+# Still can't get the RS hscript commands working from python
+#objnodes = hou.node('/obj').children()
+#for o in objnodes:
+#    n.setCurrent(True, True)
+#    rs = hou.hscript('Redshift_removeObjectSpareParameters')
+#    print rs]]></script>
   </tool>
 </shelfDocument>
