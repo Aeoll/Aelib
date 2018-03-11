@@ -348,7 +348,12 @@ class collectSettingsDialog(QtWidgets.QDialog):
         
         self.ch_d = QtWidgets.QCheckBox("Delete non-Displayed OBJ nodes")
         self.ch_d.setChecked(False)
-        layout.addWidget(self.ch_d)             
+        layout.addWidget(self.ch_d)    
+        
+#        self.list_lab = QtWidgets.QLabel("File Types to collect")
+#        layout.addWidget(self.list_lab)   
+#        self.list_exts = QtWidgets.QLineEdit()
+#        layout.addWidget(self.list_exts)          
                                    
         # ButtonBox
         bbox = QtWidgets.QDialogButtonBox(QtWidgets.QDialogButtonBox.Ok | QtWidgets.QDialogButtonBox.Cancel)    
