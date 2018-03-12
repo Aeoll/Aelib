@@ -309,55 +309,75 @@ ae.init_RS()
     <script scriptType="python"><![CDATA[import hou, os, re
 import shutil
 import glob
-from PySide2 import QtGui
-from PySide2 import QtWidgets
-from PySide2 import QtCore
+from PySide2.QtGui import *
+from PySide2.QtWidgets import *
+from PySide2.QtCore import *
 
 # TODO
 # Currently this will ignore non-HIP/JOB refs on DOP nodes
 # For non-rel files, place images in /tex, geometry in /geo etc rather than /misc?
-# Won't currently work with $WEDGE/$WEDGENUM and probably $TAKE/$TAKENUM
-# QProgressDialog?
+# Won't work with $WEDGE/$WEDGENUM and probably $ACTIVETAKE
 
 # ===========================================
 # Initial Settings Dialog
 # ===========================================
-class collectSettingsDialog(QtWidgets.QDialog):
+class collectSettingsDialog(QDialog):
     def __init__(self, parent=None):
         super(collectSettingsDialog, self).__init__()
         self.setWindowTitle("Project Collection Settings")     
+        # self.setStyle(QStyleFactory.create('Fusion'))
         self.setStyleSheet(hou.ui.qtStyleSheet())        
-        self.setGeometry(300, 300, 350, 300)
+        self.setGeometry(300, 300, 400, 100)
         
-        layout = QtWidgets.QVBoxLayout()     
-        layout.setSpacing(6)        
-        layout.setSizeConstraint(QtWidgets.QLayout.SetMaximumSize)
+        layout = QVBoxLayout()     
+        layout.setSpacing(5)        
+        layout.setSizeConstraint(QLayout.SetMinimumSize)
 
         # Checkboxes
-        self.ch_a = QtWidgets.QCheckBox("Ignore References on Bypassed Nodes")
+        self.ch_a = QCheckBox("Ignore References on Bypassed Nodes")
         self.ch_a .setChecked(True)
         layout.addWidget(self.ch_a)
         
-        self.ch_b = QtWidgets.QCheckBox("Resolve references outside $HIP/$JOB")
+        self.ch_b = QCheckBox("Resolve references outside $HIP/$JOB")
         self.ch_b.setChecked(True)
         layout.addWidget(self.ch_b)             
         
-        self.ch_c = QtWidgets.QCheckBox("Ignore render proxies (.ifd/.ass/.rs)")
+        self.ch_c = QCheckBox("Ignore render proxies (.ifd/.ass/.rs)")
         self.ch_c.setChecked(True)
         layout.addWidget(self.ch_c)   
         
-        self.ch_d = QtWidgets.QCheckBox("Delete non-Displayed OBJ nodes")
+        self.ch_d = QCheckBox("Delete non-Displayed OBJ nodes")
         self.ch_d.setChecked(False)
         layout.addWidget(self.ch_d)    
         
-#        self.list_lab = QtWidgets.QLabel("File Types to collect")
-#        layout.addWidget(self.list_lab)   
-#        self.list_exts = QtWidgets.QLineEdit()
-#        layout.addWidget(self.list_exts)          
-                                   
+        # Extras TODO
+        # Splitter
+        line = QFrame();
+        line.setFrameShape(QFrame.HLine);
+        line.setMinimumSize(0, 20)             
+        layout.addWidget(line)      
+        
+        # Disable archiving
+        self.ch_archive = QCheckBox("Disable archival (Non-HIP/JOB files are copied to $HIP directory)")
+        self.ch_archive.setChecked(False)
+        layout.addWidget(self.ch_archive)    
+        
+        # File type list
+        self.ch_filetype = QCheckBox("File Type Filter")
+        self.ch_filetype.setChecked(False)         
+
+        layout_form = QFormLayout();    
+        self.ext = QLineEdit("jpg png exr hdr tiff")
+        layout_form.addRow(self.ch_filetype, self.ext);
+        self.ext.setEnabled(False)
+        layout.addLayout(layout_form)
+        # Connect enable/disable to the checkbox
+        self.ch_filetype.toggled.connect(self.ext.setEnabled)
+                                                
         # ButtonBox
-        bbox = QtWidgets.QDialogButtonBox(QtWidgets.QDialogButtonBox.Ok | QtWidgets.QDialogButtonBox.Cancel)    
+        bbox = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)    
         bbox.setCenterButtons(True)
+        bbox.setMinimumSize(0, 40)   
         bbox.accepted.connect(self.accept)
         bbox.rejected.connect(self.reject)
         layout.addWidget(bbox)
@@ -365,7 +385,7 @@ class collectSettingsDialog(QtWidgets.QDialog):
         self.setLayout(layout)      
         
     def getValues(self):
-        return [self.ch_a.isChecked(), self.ch_b.isChecked(), self.ch_c.isChecked(), self.ch_d.isChecked()]   
+        return [self.ch_a.isChecked(), self.ch_b.isChecked(), self.ch_c.isChecked(), self.ch_d.isChecked(), self.ch_archive.isChecked(), self.ch_filetype.isChecked(), self.ext.text()]   
         
 # ==============================================================
 # Create collection dir in $HIP and avoid overwriting existing
@@ -388,7 +408,15 @@ def getObjParent(node):
         return None
     return getObjParent(parent)
     
-def collectProject(IGNORE_BYPASSED, COPY_NON_RELATIVE, IGNORE_PROXY, IGNORE_NONDISPLAY):     
+def collectProject(settings):
+    IGNORE_BYPASSED = settings[0]
+    COPY_NON_RELATIVE = settings[1]
+    IGNORE_PROXY = settings[2]
+    IGNORE_NONDISPLAY = settings[3]
+    DISABLE_ARCHIVE = settings[4]
+    FILETYPE_FILTER = settings[5]
+    FILETYPES = settings[6]
+    
     # save the file, then save it to the collection dir later?
     hou.setUpdateMode(hou.updateMode.Manual)        
     hou.setFrame(hou.playbar.playbackRange()[0])    
@@ -396,13 +424,20 @@ def collectProject(IGNORE_BYPASSED, COPY_NON_RELATIVE, IGNORE_PROXY, IGNORE_NOND
     hou.hipFile.save()
     hipname = hou.hipFile.basename()    
     refs = hou.fileReferences()
-    collectDir = createCollectionDir()
-        
+    
+    if DISABLE_ARCHIVE:
+        collectDir = '$HIP'
+    else:
+        collectDir = createCollectionDir()
+    
     # ignore archived/proxy files
     proxy = ['.ifd', '.ass', '.rs']
     # ignore refs with these extensions for refs not in $HIP or $JOB
     ignoredExt = ['.hda', '.hdalc', '.hdanc', '.otl', '.pc', '.pmap']       
-
+    # filetype whitelist 
+    if FILETYPE_FILTER:
+        extfilter = ['.' + x for x in FILETYPES.split()]
+        
     # TODO Also delete non-displayed OBJ nodes when they are ignored?
     toDel = []
     # Get refs to be copied
@@ -421,7 +456,7 @@ def collectProject(IGNORE_BYPASSED, COPY_NON_RELATIVE, IGNORE_PROXY, IGNORE_NOND
                 top = getObjParent(parm.node())
                 if top:
                     disp = top.isGenericFlagSet(hou.nodeFlag.Display)  
-            ##
+            #
             if IGNORE_NONDISPLAY and not disp:
                 toDel.append(top)
             # copy ref if bypass option is off or node isnt bypassed                  
@@ -432,14 +467,15 @@ def collectProject(IGNORE_BYPASSED, COPY_NON_RELATIVE, IGNORE_PROXY, IGNORE_NOND
                 pass
             else:
                 fname, fext = os.path.splitext(ref[1])
-                if not (r.startswith('$HIP') or r.startswith('$JOB')):
-                    if COPY_NON_RELATIVE and fext not in ignoredExt:
-                        # Ignore Dop Nodes for now? Also ignore op: refs?
-                        if not isinstance(parm.node(), hou.DopNode) and not r.startswith('op'):
-                            toCopyMisc.append(ref)    
-                else:
-                    # if not any (ref[1] in rr for rr in toCopy): # we could ignore duplicates here as the parms are not changed?
-                    toCopy.append(ref) 
+                # check for file extension filter
+                if extfilter and fext in extfilter:
+                    if not (r.startswith('$HIP') or r.startswith('$JOB')):
+                        if COPY_NON_RELATIVE and fext not in ignoredExt:
+                            # Ignore Dop Nodes for now? Also ignore op: refs?
+                            if not isinstance(parm.node(), hou.DopNode) and not r.startswith('op'):
+                                toCopyMisc.append(ref)    
+                    elif not DISABLE_ARCHIVE:
+                        toCopy.append(ref) 
     
     # Delete Non-Displayed
     if IGNORE_NONDISPLAY:
@@ -448,66 +484,67 @@ def collectProject(IGNORE_BYPASSED, COPY_NON_RELATIVE, IGNORE_PROXY, IGNORE_NOND
                     
     # Create Progress Bar
     numToCopy = len(toCopy) + len(toCopyMisc)
-    pbar = QtWidgets.QProgressDialog("Copying Files", "Abort", 0, numToCopy);
+    pbar = QProgressDialog("Copying Files", "Abort", 0, numToCopy);
     pbar.setWindowTitle("Collect Progress")  
-    pbar.setWindowModality(QtCore.Qt.WindowModal);        
+    pbar.setWindowModality(Qt.WindowModal);        
     pbar.setStyleSheet(hou.ui.qtStyleSheet())
     l = pbar.layout()
     if l:
-        l.setSizeConstraint(QtWidgets.QLayout.SetMaximumSize)
+        l.setSizeConstraint(QLayout.SetMaximumSize)
     pbar.setValue(0)        
     pbar.forceShow()
                        
     # ==============================================================
     # Copy Relative files HIP/JOB
     # ==============================================================
-    for ref in toCopy:
-        r = ref[1]
-        
-        # Increment Progress bar. This seems to show the previous item??
-        pbar.setValue(pbar.value()+1)
-        pbar.setLabelText(r)
-        if pbar.wasCanceled():
-            break        
-        
-        # Check if the the ref is linked to another channel. If so, expand that channel value instead (to fix $OS references?)
-        parm = ref[0]
-        for i in xrange(10): # hack since isRef is not implemented?
-            parm = parm.getReferencedParm() 
-        r = re.sub('\$OS', parm.node().name(), r)
-        
-        p = r[4:]
-        collectedPath = collectDir + p  
-        # ensure the subdir exists in the collect dir        
-        collectedDir = os.path.dirname(hou.expandString(collectedPath))
-        if not os.path.exists(collectedDir):
-            os.makedirs(collectedDir)       
-                 
-        # Copy Sequences
-        if re.search('\$F', r):
-            s = re.sub('\$F\d+', '*', r)
-            s = re.sub('\$F', '*', s)
-            print "$HIP/$JOB Sequence found:" + hou.expandString(s) 
-            seqFiles = glob.glob(hou.expandString(s))
-            if seqFiles:
-                for f in seqFiles:
-                    try:
-                        copiedFilePath = collectedDir + '/' + os.path.basename(f)                    
-                        if not os.path.exists(copiedFilePath):
-                            shutil.copy(hou.expandString(f), copiedFilePath) 
-                    except:
-                        pass
+    if not DISABLE_ARCHIVE:
+        for ref in toCopy:
+            r = ref[1]
+            
+            # Increment Progress bar. This seems to show the previous item??
+            pbar.setValue(pbar.value()+1)
+            pbar.setLabelText(r)
+            if pbar.wasCanceled():
+                break        
+            
+            # Check if the the ref is linked to another channel. If so, expand that channel value instead (to fix $OS references?)
+            parm = ref[0]
+            for i in xrange(10): # hack since isRef is not implemented?
+                parm = parm.getReferencedParm() 
+            r = re.sub('\$OS', parm.node().name(), r)
+            
+            p = r[4:]
+            collectedPath = collectDir + p  
+            # ensure the subdir exists in the collect dir        
+            collectedDir = os.path.dirname(hou.expandString(collectedPath))
+            if not os.path.exists(collectedDir):
+                os.makedirs(collectedDir)       
+                     
+            # Copy Sequences
+            if re.search('\$F', r):
+                s = re.sub('\$F\d+', '*', r)
+                s = re.sub('\$F', '*', s)
+                print "$HIP/$JOB Sequence found:" + hou.expandString(s) 
+                seqFiles = glob.glob(hou.expandString(s))
+                if seqFiles:
+                    for f in seqFiles:
+                        try:
+                            copiedFilePath = collectedDir + '/' + os.path.basename(f)                    
+                            if not os.path.exists(copiedFilePath):
+                                shutil.copy(hou.expandString(f), copiedFilePath) 
+                        except:
+                            pass
+                else:
+                    print "Error Finding File Sequence - No items copied"
+            # Copy Single Files
             else:
-                print "Error Finding File Sequence - No items copied"
-        # Copy Single Files
-        else:
-            try:
-                print "$HIP/$JOB File found:" + str(r)
-                if not os.path.exists(collectedPath):
-                    shutil.copy(hou.expandString(r), collectedPath)             
-            except Exception as e:
-                pass
-                # print(e)   
+                try:
+                    print "$HIP/$JOB File found:" + str(r)
+                    if not os.path.exists(collectedPath):
+                        shutil.copy(hou.expandString(r), collectedPath)             
+                except Exception as e:
+                    pass
+                    # print(e)   
     
     # save to new loc and sort the non-HIP/JOB refs after saving?   
     hou.hipFile.save(collectDir+'/'+hipname)        
@@ -583,7 +620,7 @@ dialog = collectSettingsDialog()
 dialog.exec_()
 if dialog.result() == 1:
     settings = dialog.getValues()
-    collectProject(settings[0], settings[1], settings[2], settings[3])    
+    collectProject(settings)    
 else:
     pass
     # print "Collect Project Cancelled"]]></script>
