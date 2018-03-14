@@ -324,10 +324,11 @@ from PySide2.QtCore import *
 class collectSettingsDialog(QDialog):
     def __init__(self, parent=None):
         super(collectSettingsDialog, self).__init__()
-        self.setWindowTitle("Project Collection Settings")     
-        # self.setStyle(QStyleFactory.create('Fusion'))
-        self.setStyleSheet(hou.ui.qtStyleSheet())        
+        self.setWindowTitle("Project Collection Settings")             
         self.setGeometry(300, 300, 400, 100)
+        
+        sh = hou.ui.qtStyleSheet()
+        self.setStyleSheet(sh)
         
         layout = QVBoxLayout()     
         layout.setSpacing(5)        
@@ -352,18 +353,18 @@ class collectSettingsDialog(QDialog):
         
         # Extras TODO
         # Splitter
-        line = QFrame();
-        line.setFrameShape(QFrame.HLine);
+        line = QFrame()
+        line.setFrameShape(QFrame.HLine)
         line.setMinimumSize(0, 20)             
         layout.addWidget(line)      
         
         # Disable archiving
-        self.ch_archive = QCheckBox("Disable archival (Non-HIP/JOB files are copied to $HIP directory)")
+        self.ch_archive = QCheckBox("Disable Archival (Non-HIP/JOB files are just copied to $HIP/misc)")
         self.ch_archive.setChecked(False)
         layout.addWidget(self.ch_archive)    
         
         # File type list
-        self.ch_filetype = QCheckBox("File Type Filter")
+        self.ch_filetype = QCheckBox("File Type Filter (Whitelist)")
         self.ch_filetype.setChecked(False)         
 
         layout_form = QFormLayout();    
@@ -381,9 +382,17 @@ class collectSettingsDialog(QDialog):
         bbox.accepted.connect(self.accept)
         bbox.rejected.connect(self.reject)
         layout.addWidget(bbox)
-        
+                      
         self.setLayout(layout)      
-        
+                
+        # Style all checkboxes test
+        cbs = self.findChildren(QCheckBox)        
+        for w in cbs:
+                w.setStyleSheet("""QCheckBox::checked {
+                color: #00FF00;
+                }""")        
+                
+                     
     def getValues(self):
         return [self.ch_a.isChecked(), self.ch_b.isChecked(), self.ch_c.isChecked(), self.ch_d.isChecked(), self.ch_archive.isChecked(), self.ch_filetype.isChecked(), self.ext.text()]   
         
