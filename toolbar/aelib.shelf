@@ -386,11 +386,11 @@ class collectSettingsDialog(QDialog):
         self.setLayout(layout)      
                 
         # Style all checkboxes test
-        cbs = self.findChildren(QCheckBox)        
-        for w in cbs:
-                w.setStyleSheet("""QCheckBox::checked {
-                color: #00FF00;
-                }""")        
+#        cbs = self.findChildren(QCheckBox)        
+#        for w in cbs:
+#                w.setStyleSheet("""QCheckBox::checked {
+#                color: #00FF00;
+#                }""")        
                 
                      
     def getValues(self):
@@ -477,7 +477,7 @@ def collectProject(settings):
             else:
                 fname, fext = os.path.splitext(ref[1])
                 # check for file extension filter
-                if extfilter and fext in extfilter:
+                if not FILETYPE_FILTER or fext in extfilter:
                     if not (r.startswith('$HIP') or r.startswith('$JOB')):
                         if COPY_NON_RELATIVE and fext not in ignoredExt:
                             # Ignore Dop Nodes for now? Also ignore op: refs?
