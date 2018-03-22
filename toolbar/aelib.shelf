@@ -682,13 +682,15 @@ else: #linux
   <tool name="Clear_RS" label="Clear RS" icon="hicon:/SVGIcons.index?PARTS_delete_x.svg">
     <script scriptType="python"><![CDATA[import hou
 
-rem = ['Redshift', 'redshift', 'RS_', 'rs_']
+rem = ['Redshift', 'redshift', 'RS', 'rs']
 
 allNodes = hou.node('/').allSubChildren()
 for n in allNodes:
     try:
         type = n.type().name()
-        if any (x in type for x in rem):
+        # print type
+        # if any (x in type for x in rem):
+        if any (type.startswith(x) for x in rem):
             try:
                 n.destroy()
             except: pass
