@@ -417,6 +417,12 @@ def getObjParent(node):
         return None
     return getObjParent(parent)
     
+# copying with larger buffer for better performance?    
+def fastCopy(src, dst):
+    with open(src, 'rb') as fin:
+        with open(dst, 'wb') as fout:
+            shutil.copyfileobj(fin, fout, 128*1024)
+    
 def collectProject(settings):
     IGNORE_BYPASSED = settings[0]
     COPY_NON_RELATIVE = settings[1]
@@ -427,7 +433,7 @@ def collectProject(settings):
     FILETYPES = settings[6]
     
     # save the file, then save it to the collection dir later?
-    hou.setUpdateMode(hou.updateMode.Manual)        
+    # hou.setUpdateMode(hou.updateMode.Manual)        
     hou.setFrame(hou.playbar.playbackRange()[0])    
     
     hou.hipFile.save()
@@ -435,14 +441,14 @@ def collectProject(settings):
     refs = hou.fileReferences()
     
     if DISABLE_ARCHIVE:
-        collectDir = '$HIP'
+        collectDir = hou.expandString('$HIP')
     else:
         collectDir = createCollectionDir()
     
     # ignore archived/proxy files
     proxy = ['.ifd', '.ass', '.rs']
     # ignore refs with these extensions for refs not in $HIP or $JOB
-    ignoredExt = ['.hda', '.hdalc', '.hdanc', '.otl', '.pc', '.pmap']       
+    ignoredExt = ['.hda', '.hdalc', '.hdanc', '.otl', '.pc', '.pmap', '.simdata', '.h']       
     # filetype whitelist 
     if FILETYPE_FILTER:
         extfilter = ['.' + x for x in FILETYPES.split()]
@@ -561,7 +567,14 @@ def collectProject(settings):
     # ==============================================================
     # Copy NON Relative files and adjust their parms
     # ==============================================================   
-    if COPY_NON_RELATIVE:
+    
+    # Debugging
+    DEBUG = False
+    if DEBUG:
+        print toCopyMisc
+        print collectDir
+    
+    if COPY_NON_RELATIVE and not DEBUG:
         # Create misc dir
         collectedMisc = ""
         if toCopyMisc:
@@ -617,8 +630,15 @@ def collectProject(settings):
                 try:
                     print "Non-$HIP/$JOB File found:" + str(r)                 
                     if not os.path.exists(collectedMiscTemp):
-                        print collectedMiscTemp
-                        shutil.copy(hou.expandString(r), collectedMiscTemp)             
+                        # print collectedMiscTemp
+                        #fastCopy(hou.expandString(r), collectedMiscTemp)
+                        #shutil.copy(hou.expandString(r), collectedMiscTemp)       
+                        
+                        # use system / subprocess?
+                        if sys.platform == 'win32':
+                            os.system('xcopy "%s" "%s"' % (hou.expandString(r), collectedMiscTemp))
+                        else:
+                            shutil.copy(hou.expandString(r), collectedMiscTemp)
                 except Exception as e:
                     pass
                     # print(e)          
