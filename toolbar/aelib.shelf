@@ -306,7 +306,7 @@ ae.init_RS()
   </tool>
 
   <tool name="CollectProject" label="Collect Project" icon="hicon:/SVGIcons.index?NETVIEW_vex_cached_badge.svg">
-    <script scriptType="python"><![CDATA[import hou, os, re
+    <script scriptType="python"><![CDATA[import hou, os, re, sys
 import shutil
 import glob
 from PySide2.QtGui import *
@@ -630,15 +630,14 @@ def collectProject(settings):
                 try:
                     print "Non-$HIP/$JOB File found:" + str(r)                 
                     if not os.path.exists(collectedMiscTemp):
-                        # print collectedMiscTemp
-                        #fastCopy(hou.expandString(r), collectedMiscTemp)
-                        #shutil.copy(hou.expandString(r), collectedMiscTemp)       
-                        
+                        fastCopy(hou.expandString(r), collectedMiscTemp)
+                        #shutil.copy(hou.expandString(r), collectedMiscTemp)  
                         # use system / subprocess?
-                        if sys.platform == 'win32':
-                            os.system('xcopy "%s" "%s"' % (hou.expandString(r), collectedMiscTemp))
-                        else:
-                            shutil.copy(hou.expandString(r), collectedMiscTemp)
+#                        if sys.platform == 'win32':
+#                            # this pops up a window for some reason..?
+#                            os.system('xcopy "%s" "%s"' % (hou.expandString(r), collectedMiscTemp))
+#                        else:
+#                            shutil.copy(hou.expandString(r), collectedMiscTemp)
                 except Exception as e:
                     pass
                     # print(e)          
