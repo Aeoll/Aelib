@@ -173,16 +173,24 @@ p.copyItems(tup, True, False)]]></script>
   <tool name="merge" label="Merge" icon="hicon:/SVGIcons.index?SOP_merge.svg">
     <script scriptType="python"><![CDATA[nodes = hou.selectedNodes()
 parent = nodes[0].parent()
+
 merge = parent.createNode("merge")
 
 for node in nodes:
     if(node.type().category() == hou.sopNodeTypeCategory()):
         merge.setNextInput(node)
+    elif(node.type().category() == hou.dopNodeTypeCategory()):
+        merge.setNextInput(node)
     
 merge.moveToGoodPosition(True, False, True, True) 
-merge.setSelected(True, True, False)   
-merge.setDisplayFlag(True)
-merge.setRenderFlag(True) # turn this off if u want]]></script>
+
+try:
+    merge.setSelected(True, True, False)   
+    merge.setRenderFlag(True) # turn this off if u want
+    merge.setDisplayFlag(True)
+except:
+    merge.setDisplayFlag(False)
+    pass # dop merge case]]></script>
   </tool>
 
   <tool name="wrangle" label="Wrangle" icon="hicon:/SVGIcons.index?SOP_attribwrangle.svg">
