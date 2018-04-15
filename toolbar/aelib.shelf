@@ -20,7 +20,7 @@
     <memberTool name="Init_RS"/>
     <memberTool name="Clear_RS"/>
     <memberTool name="openhip"/>
-    <memberTool name="NameTextures"/>
+    <memberTool name="lazyproject"/>
   </toolshelf>
 
   <tool name="blast_to_split" label="Blast to Split" icon="OBJ_geo">
@@ -662,31 +662,6 @@ else:
     # print "Collect Project Cancelled"]]></script>
   </tool>
 
-  <tool name="NameTextures" label="Name Textures" icon="PLASMA_App">
-    <script scriptType="python"><![CDATA[# Set name of any nodes containing image file refs to the texture basename?
-# TODO
-
-
-# Random NodeType test..
-def getObjParent(node):
-    if isinstance(node, hou.ObjNode):
-        return node
-    parent = node.parent()
-    if not parent:
-        return None
-    return findParentObject(parent)
-
-ns = hou.selectedNodes()
-n = ns[0]
-print n.type()
-
-top = None
-if isinstance(n, hou.SopNode):
-    top = getObjParent(n)
-    disp = top.isGenericFlagSet(hou.nodeFlag.Display)
-print top]]></script>
-  </tool>
-
   <tool name="openhip" label="Open HIP Folder" icon="hicon:/SVGIcons.index?DATATYPES_bundle.svg">
     <script scriptType="python"><![CDATA[import os
 import hou
@@ -732,5 +707,55 @@ for n in allNodes:
 #    n.setCurrent(True, True)
 #    rs = hou.hscript('Redshift_removeObjectSpareParameters')
 #    print rs]]></script>
+  </tool>
+
+  <tool name="lazyproject" label="Lazy Project Create" icon="hicon:/SVGIcons.index?DATATYPES_bundle.svg">
+    <script scriptType="python"><![CDATA[import hou, os, re, sys
+import shutil
+import glob
+from PySide2.QtGui import *
+from PySide2.QtWidgets import *
+from PySide2.QtCore import *
+
+# Create Dirs at HIP if they dont exist
+class Lazyproj(QDialog):
+    def __init__(self, parent=None):
+        super(Lazyproj, self).__init__()
+        self.setWindowTitle("Project Collection Settings")             
+        self.setGeometry(400, 200, 400, 100)
+        
+        self.setStyleSheet(hou.ui.qtStyleSheet())
+        layout = QVBoxLayout()        
+        layout.setSizeConstraint(QLayout.SetMinimumSize)
+        
+        # File type list
+        self.label_dirs = QLabel("Directories to Create")      
+        self.dirs = QLineEdit("abc geo tex render flip comp")
+        layout_form = QFormLayout()        
+        layout_form.addRow(self.label_dirs, self.dirs)
+        layout.addLayout(layout_form)
+  
+        # ButtonBox
+        bbox = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)    
+        bbox.setCenterButtons(True)
+        bbox.setMinimumSize(0, 40)   
+        bbox.accepted.connect(self.makeDirs)
+        bbox.rejected.connect(self.reject)
+        layout.addWidget(bbox)
+                      
+        self.setLayout(layout)              
+        
+    def makeDirs(self):
+        createdirs = [x for x in self.dirs.text().split()]        
+        hip = hou.expandString('$HIP')
+        for d in createdirs:
+            dd = hip + "/" + d
+            if not os.path.exists(dd):
+                os.makedirs(dd)         
+        hou.putenv('$JOB', hip)        
+        super(Lazyproj, self).accept()                              
+                        
+dialog = Lazyproj()
+dialog.exec_()        ]]></script>
   </tool>
 </shelfDocument>
