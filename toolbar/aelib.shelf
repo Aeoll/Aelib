@@ -298,9 +298,9 @@ if ipr:
     time2 = datetime.now().strftime("%y%m%d-%H%M%S")
     # path = "$HIP/ipr/$HIPNAME-" + time + ".png"
     path = "$HIP/ipr/" + time2 + "-$HIPNAME-" + ".png"
-    
     path = hou.expandString(path)
     save = ipr.saveFrame(path)
+
     # Broken. When it's fixed get the right snapshot?
     # ipr.saveFrame(path, snapshot=0, xres=-1, yres=-1, color='C', alpha='C', scope='*', lut='', gamma=1.0, convert=True)]]></script>
   </tool>
