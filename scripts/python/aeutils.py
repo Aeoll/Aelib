@@ -13,19 +13,19 @@ def init_RS():
     autoNode.createRedshiftIPR(out)
 
     # Default materials with AE Gallery application?
-    shop = hou.node("/shop")
-    mat = shop.createNode("RS_Material", "Base")
-    entries = hou.galleries.galleryEntries(node_type=hou.nodeType(hou.shopNodeTypeCategory(), "RS_Material"))
-    if entries:
-        for entry in entries:
-            entry.applyToNode(mat)
+    # shop = hou.node("/shop")
+    # mat = shop.createNode("RS_Material", "Base")
+    # entries = hou.galleries.galleryEntries(node_type=hou.nodeType(hou.shopNodeTypeCategory(), "RS_Material"))
+    # if entries:
+    #     for entry in entries:
+    #         entry.applyToNode(mat)
 
-    inc = shop.createNode("rs_incandescent", "Solid")
-    inc.move(hou.Vector2(0, 1))
-    entries = hou.galleries.galleryEntries(node_type=hou.nodeType(hou.shopNodeTypeCategory(), "rs_incandescent"))
-    if entries:
-        for entry in entries:
-            entry.applyToNode(inc)
+    # inc = shop.createNode("rs_incandescent", "Solid")
+    # inc.move(hou.Vector2(0, 1))
+    # entries = hou.galleries.galleryEntries(node_type=hou.nodeType(hou.shopNodeTypeCategory(), "rs_incandescent"))
+    # if entries:
+    #     for entry in entries:
+    #         entry.applyToNode(inc)
 
     # Default camera
     obj = hou.node("/obj")
