@@ -63,6 +63,7 @@ float function_PennerEaseOutQuadratic (float x) {
 //------------------------------------------------------------------
 float function_PennerEaseInOutQuadratic (float x) {
   string functionName = "Penner's EaseInOut Quadratic";
+  // if ((x/=1.f/2) < 1) return 1.f/2*x*x;
   if ((x/=1.f/2) < 1) return 1.f/2*x*x;
   return -1.f/2 * ((--x)*(x-2) - 1);
 }
@@ -1938,15 +1939,33 @@ float function_QuadraticBezier (float x, a, b){
 
 
 //------------------------------------------------------------------
+//==========================================================
+float slopeFromT (float t, A, B, C){
+  float dtdx = 1.0/(3.0*A*t*t + 2.0*B*t + C); 
+  return dtdx;
+}
+//==========================================================
+float xFromT (float t, A, B, C, D){
+  float x = A*(t*t*t) + B*(t*t) + C*t + D;
+  return x;
+}
+//==========================================================
+float yFromT (float t, E, F, G, H){
+  float y = E*(t*t*t) + F*(t*t) + G*t + H;
+  return y;
+}
+
 float function_CubicBezier (float x, a, b, c, d){
   string functionName = "Cubic Bezier";
+  // float EPSILON = M_E;
+  float EPSILON = 0.0001;
 
-  float min_param_a = 0.0 + M_E;
-  float max_param_a = 1.0 - M_E;
+  float min_param_a = 0.0 + EPSILON ;
+  float max_param_a = 1.0 - EPSILON ;
   float min_param_b = 0.0;
   float max_param_b = 1.0;
-  float min_param_c = 0.0 + M_E;
-  float max_param_c = 1.0 - M_E;
+  float min_param_c = 0.0 + EPSILON ;
+  float max_param_c = 1.0 - EPSILON ;
   float min_param_d = 0.0;
   float max_param_d = 1.0;
   float aa = clamp(a, min_param_a, max_param_a); 
@@ -1979,8 +1998,8 @@ float function_CubicBezier (float x, a, b, c, d){
   float currentt = x;
   int nRefinementIterations = 5;
   for (int i=0; i<nRefinementIterations; i++){
-    float currentx = xFromT (currentt, A,B,C,D); 
-    float currentslope = slopeFromT (currentt, A,B,C);
+    float currentx = xFromT(currentt, A,B,C,D); 
+    float currentslope = slopeFromT(currentt, A,B,C);
     currentt -= (currentx - x)*(currentslope);
     currentt = clamp(currentt, 0,1.0);
   } 
@@ -1990,22 +2009,6 @@ float function_CubicBezier (float x, a, b, c, d){
   return y;
 }
 
-
-//==========================================================
-float slopeFromT (float t, A, B, C){
-  float dtdx = 1.0/(3.0*A*t*t + 2.0*B*t + C); 
-  return dtdx;
-}
-//==========================================================
-float xFromT (float t, A, B, C, D){
-  float x = A*(t*t*t) + B*(t*t) + C*t + D;
-  return x;
-}
-//==========================================================
-float yFromT (float t, E, F, G, H){
-  float y = E*(t*t*t) + F*(t*t) + G*t + H;
-  return y;
-}
 // Parabola (Quadratic) Through a Point
 //------------------------------------------------------------------
 float function_ParabolaThroughAPoint (float x, a, b){
