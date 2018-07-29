@@ -23,6 +23,7 @@
     <memberTool name="lazyproject"/>
     <memberTool name="Compiled_CopyToPoints"/>
     <memberTool name="OGL+FFmpeg+Wedge"/>
+    <memberTool name="QuickScrub"/>
   </toolshelf>
 
   <tool name="blast_to_split" label="Blast to Split" icon="OBJ_geo">
