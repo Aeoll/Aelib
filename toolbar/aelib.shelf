@@ -19,11 +19,11 @@
     <memberTool name="CollectProject"/>
     <memberTool name="Init_RS"/>
     <memberTool name="Clear_RS"/>
+    <memberTool name="Focused_RS_Cam"/>
     <memberTool name="openhip"/>
     <memberTool name="lazyproject"/>
     <memberTool name="Compiled_CopyToPoints"/>
     <memberTool name="OGL+FFmpeg+Wedge"/>
-    <memberTool name="QuickScrub"/>
   </toolshelf>
 
   <tool name="blast_to_split" label="Blast to Split" icon="OBJ_geo">
@@ -762,7 +762,7 @@ dialog = Lazyproj()
 dialog.exec_()        ]]></script>
   </tool>
 
-  <tool name="Compiled_CopyToPoints" label="Compiled_CopyToPoints" icon="MISC_generic">
+  <tool name="Compiled_CopyToPoints" label="Compiled_CopyToPoints" icon="hicon:/SVGIcons.index?SOP_foreach.svg">
     <toolMenuContext name="network">
       <contextOpType>Sop/compile_begin</contextOpType>
     </toolMenuContext>
