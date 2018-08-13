@@ -19,7 +19,6 @@
     <memberTool name="CollectProject"/>
     <memberTool name="Init_RS"/>
     <memberTool name="Clear_RS"/>
-    <memberTool name="Focused_RS_Cam"/>
     <memberTool name="openhip"/>
     <memberTool name="lazyproject"/>
     <memberTool name="Compiled_CopyToPoints"/>
@@ -615,11 +614,15 @@ def collectProject(settings):
                 print "Non-$HIP/$JOB Sequence found:" + hou.expandString(s) 
                 seqFiles = glob.glob(hou.expandString(s))
                 if seqFiles:
-                    # set new parm value (with correct unexpanded $F string?)
                     try:
-                        parm.set('$HIP/misc/'+ os.path.basename(r))                
+                        l = parm.expression()
+                        # set new parm value (with correct unexpanded $F string?)
+                        try:
+                            parm.set('$HIP/misc/'+ os.path.basename(r))                
+                        except:
+                            print "unable to change parm: "+parm.path()                        
                     except:
-                        print "unable to change parm: "+parm.path()
+                        print "not adjusting parm value as it contains an expression"                    
                     for f in seqFiles:
                         try:
                             copiedFilePath = collectedMisc + '/' + os.path.basename(f)                    
@@ -635,9 +638,13 @@ def collectProject(settings):
                 collectedMiscTemp = collectedMisc + '/' + filename  
                 # try to set new parm value
                 try:
-                    parm.set('$HIP/misc/'+filename)
+                    l = parm.expression()                
+                    try:
+                        parm.set('$HIP/misc/'+filename)
+                    except:
+                        print "unable to change parm: "+parm.path()
                 except:
-                    print "unable to change parm: "+parm.path()
+                    print "not adjusting parm value as it contains an expression"                        
                 try:
                     print "Non-$HIP/$JOB File found:" + str(r)                 
                     if not os.path.exists(collectedMiscTemp):
