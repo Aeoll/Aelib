@@ -24,6 +24,7 @@
     <memberTool name="lazyproject"/>
     <memberTool name="Compiled_CopyToPoints"/>
     <memberTool name="OGL+FFmpeg+Wedge"/>
+    <memberTool name="Scope All"/>
   </toolshelf>
 
   <tool name="blast_to_split" label="Blast to Split" icon="OBJ_geo">
@@ -260,6 +261,12 @@ if len(nodes) == 2 or len(nodes) == 1:
     bin = b.inputs()
     bout = b.outputs() 
     
+    # get output connections of A/B which will be swapped    
+    aout_conn = a.outputConnections()
+    consa = [[c.outputNode(), c.inputIndex()] for c in aout_conn]     
+    bout_conn = b.outputConnections()
+    consb = [[c.outputNode(), c.inputIndex()] for c in bout_conn] 
+        
     # set inputs/outputs
     AIN = ain[0] if ain else None
     AOUT = aout[0] if aout else None
@@ -269,17 +276,24 @@ if len(nodes) == 2 or len(nodes) == 1:
     # Swap, with case for a and b sequential. only first inputs/outputs modified at this time
     if BIN == a:
         b.setInput(0, AIN)
-        a.setInput(0, b)       
-        if BOUT: BOUT.setInput(0, a)  
+        a.setInput(0, b)    
+        #if BOUT: BOUT.setInput(0, a)          
+        for it in consb:
+            it[0].setInput(it[1], a)
+            # print it[0].name() + "__" + it[1]
     else:     
         b.setInput(0, AIN)
         a.setInput(0, BIN)
         if BOUT:
             BOUT.setInput(0, a)
+            for it in consb:
+                it[0].setInput(it[1], a)           
         if AOUT:
             AOUT.setInput(0, b)
-    
-    # set positions
+            for it in consa:
+                it[0].setInput(it[1], a)                    
+           
+    # set node positions
     apos = a.position()
     bpos = b.position()        
     b.setPosition(apos)
@@ -1448,5 +1462,22 @@ opcf $saved_path
 '''
 hou.hscript(h_preamble + h_extra_args + h_cmd)
 ]]></script>
+  </tool>
+
+  <tool name="Scope All" label="Scope All" icon="hicon:/SVGIcons.index?CHANNELS_multi_graph_0.svg">
+    <helpText><![CDATA[Scope appends all parameters on the selected nodes and all subchildren of these nodes]]></helpText>
+    <script scriptType="python"><![CDATA[import hou
+
+def scopeChildren():
+    ns = hou.selectedNodes()
+    for n in ns:
+        for p in n.allParms():
+            if len(p.keyframes()) > 0:
+                try:
+                    p.setScope(True)
+                except:
+                    print "problem appending parm to scope"
+                    
+scopeChildren()]]></script>
   </tool>
 </shelfDocument>
