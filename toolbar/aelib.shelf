@@ -631,13 +631,13 @@ def collectProject(settings):
                 if seqFiles:
                     try:
                         l = parm.expression()
+                        print "not adjusting parm value as it contains an expression"                             
                         # set new parm value (with correct unexpanded $F string?)
+                    except:
                         try:
                             parm.set('$HIP/misc/'+ os.path.basename(r))                
                         except:
-                            print "unable to change parm: "+parm.path()                        
-                    except:
-                        print "not adjusting parm value as it contains an expression"                    
+                            print "unable to change parm: "+parm.path()                   
                     for f in seqFiles:
                         try:
                             copiedFilePath = collectedMisc + '/' + os.path.basename(f)                    
@@ -653,13 +653,13 @@ def collectProject(settings):
                 collectedMiscTemp = collectedMisc + '/' + filename  
                 # try to set new parm value
                 try:
-                    l = parm.expression()                
+                    l = parm.expression()        
+                    print "not adjusting parm value as it contains an expression"                              
+                except:
                     try:
                         parm.set('$HIP/misc/'+filename)
                     except:
                         print "unable to change parm: "+parm.path()
-                except:
-                    print "not adjusting parm value as it contains an expression"                        
                 try:
                     print "Non-$HIP/$JOB File found:" + str(r)                 
                     if not os.path.exists(collectedMiscTemp):
