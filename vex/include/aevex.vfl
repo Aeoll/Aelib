@@ -169,6 +169,13 @@ int randint(int a; int b; int seed){
     return int(fit01(rand(seed), a, b+1));
 }
 
+vector randint(int a; int b; int seed){
+    int aa = int(fit01(rand(seed), a, b+1));
+    int bb = int(fit01(rand(seed*3+1122), a, b+1));
+    int cc = int(fit01(rand(seed*7-944), a, b+1));
+    return set(aa,bb,cc);
+}
+
 float randuniform(float a; float b){
     int sd = random_shash(__DATE__+__TIME__);
     return fit01(rand(sd), a, b+1);

@@ -105,6 +105,7 @@ struct array3d {
 				}
 			}	
 		}
+		sub->resize(r,c,s);
 		return sub;
 	}
 	
@@ -155,16 +156,25 @@ struct array3d {
 		// 			printf("%g)\t%8d\n ", i + 1, slice(f, y, x));
 		// 	}
 		// }
-		for (int i = 0; i < rows; i++) {
+		for (int k = 0; k < slices; k++) {
+			for (int i = 0; i < rows; i++) {
 			for (int j = 0; j < cols; j++) {
-				for (int k = 0; k < slices; k++) {
 					float val = this->getf(i,j,k);
 					printf("%d", val);
 				}
+				printf("_\n");
 			}
+			printf("____\n");
 		}
 		printf("\n");
 	}
+
+	void printsize() {
+		printf("%d", set(rows,cols,slices));
+		printf("\n%d", len(f));
+		//printf("\n%d", f);
+		printf("\n");
+	}	
 };
 
 #endif
