@@ -164,9 +164,10 @@ int randint(int a; int b){
     int sd = random_shash(__DATE__+__TIME__);
     return int(fit01(rand(sd), a, b+1));
 }
-
+ 
 int randint(int a; int b; int seed){
-    return int(fit01(rand(seed), a, b+1));
+    // return int(fit01(rand(seed), a, b+1));
+    return int(fit01(rand(seed), 0, b+1-a))+a;
 }
 
 vector randint(int a; int b; int seed){

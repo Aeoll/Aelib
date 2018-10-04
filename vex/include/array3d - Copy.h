@@ -55,8 +55,8 @@ struct array3d {
 	// Utility
 	// =======================================
 	void resize(int r; int c; int s) {
-		cols = c;
 		rows = r;
+		cols = c;
 		slices = s;
 		resize(f, rows*cols*slices);
 	}
@@ -73,6 +73,7 @@ struct array3d {
 	}
 	
 	int index(vector xyz){
+		// return int(xy.x*cols) + int(xy.y); // old
 		return int(xyz.x) + int(xyz.y*cols) + int(xyz.z * rows * cols);
 	}
 
@@ -93,12 +94,12 @@ struct array3d {
 	// TODO still not working?
 	array3d subarray(int x_min; int x_max; int y_min; int y_max; int z_min; int z_max) {
 		array3d sub;
-		int c = x_max-x_min;
-		int r = y_max-y_min;
+		int r = x_max-x_min;
+		int c = y_max-y_min;
 		int s = z_max-z_min;
 		sub->init(r, c, s);
-		for(int i = 0; i < c; i++){
-			for(int j = 0; j < r; j++){
+		for(int i = 0; i < r; i++){
+			for(int j = 0; j < c; j++){
 				for(int k = 0; k < s; k++){
 					float v = this->getf(x_min+i, y_min+j, z_min+k);
 					sub->setf(i, j, k, v);
@@ -112,11 +113,11 @@ struct array3d {
 	// sets all values of the array3d subarray to val
 	// TODO not working atm...
 	void setSubarray(int x_min; int x_max; int y_min; int y_max; int z_min; int z_max; float val){
-		int c = x_max - x_min;
-		int r = y_max - y_min;
+		int r = x_max - x_min;
+		int c = y_max - y_min;
 		int s = z_max - z_min;
-		for(int i = 0; i < c; i++){
-			for(int j = 0; j < r; j++){
+		for(int i = 0; i < r; i++){
+			for(int j = 0; j < c; j++){
 					for(int k = 0; l < s; k++){
 					this->setf(x_min+i, y_min+j, z_min+k, val);
 				}
@@ -159,8 +160,8 @@ struct array3d {
 		// }
 		printf("array: \n");
 		for (int k = 0; k < slices; k++) {
-			for (int i = 0; i < cols; i++) {
-				for (int j = 0; j < rows; j++) {
+			for (int i = 0; i < rows; i++) {
+				for (int j = 0; j < cols; j++) {
 					float val = this->getf(i,j,k);
 					printf("%d", val);
 				}
