@@ -93,7 +93,13 @@ def hipIncrementVersion():
     newhip = orighip.replace(oldVersion, newVersion)
     if debug:    
         print "New file: " + newhip
-
+        
+    # ===================================
+    # set MVSM_VERSION
+    # ===================================
+    newver = str(int(versionNumber)+1).zfill(3)
+    hou.putenv('MVSM_VERSION', newver)
+        
     # Save the file
     confirm = 0
     if os.path.isfile(newhip) :
@@ -108,9 +114,8 @@ def hipIncrementVersion():
         if (setToFirstFrame):
             # hou.setFrame(1)
             hou.setFrame(hou.playbar.playbackRange()[0])
-
+            
         hou.hipFile.save(newhip)
-        
         # reset update mode and frame
         hou.setUpdateMode(updateMode)
         hou.setFrame(frame)
