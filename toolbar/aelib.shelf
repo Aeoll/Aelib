@@ -131,7 +131,10 @@ hipIncrementVersion()]]></script>
 pname = sel[0].parent().name()
 
 geo = hou.node('/obj').createNode('geo', pname+'_extraction')
-geo.node('file1').destroy()
+try:
+    geo.node('file1').destroy()
+except:
+    pass
 geo.moveToGoodPosition()
 
 merge = geo.createNode('merge', 'MERGE')
@@ -154,7 +157,10 @@ merge.setCurrent(True, True)]]></script>
 objnodes = node_type.instances()
 
 geo = hou.node('/obj').createNode('geo', 'CombineAll')
-geo.node('file1').destroy()
+try:
+    geo.node('file1').destroy()
+except:
+    pass
 geo.moveToGoodPosition()
 merge = geo.createNode('merge', 'MERGE')
 
@@ -229,7 +235,10 @@ for ind, node in enumerate(sel):
     pn = node.parent().name()
     
     geo = hou.node('/obj').createNode('geo', pn + '_' + null.name() + '_extraction')
-    geo.node('file1').destroy()
+    try:
+        geo.node('file1').destroy()
+    except:
+        pass
     geo.moveToGoodPosition()    
     
     o = geo.createNode('object_merge', pn + "_" + null.name())
