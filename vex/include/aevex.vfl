@@ -119,15 +119,15 @@ vector cmyktorgb(vector4 cmyk){
     return rgb;
 }
 
-float bias(float t, bias){
+float aebias(float t, bias){
     return (t / ((((1.0/bias) - 2.0)*(1.0 - t))+1.0));
 }
 
-vector bias(vector t, bias){
+vector aebias(vector t, bias){
     return set(bias(t.x),bias(t.y),bias(t.z));
 }
 
-float gain(float t, gain){
+float aegain(float t, gain){
     if(t < 0.5) {
         return bias(t * 2.0,gain)/2.0;
     }   
@@ -136,7 +136,7 @@ float gain(float t, gain){
     }
 }
 
-vector gain(vector t, gain){
+vector aegain(vector t, gain){
     if(t < 0.5) {
         return bias(t * 2.0,gain)/2.0;
     }   

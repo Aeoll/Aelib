@@ -25,7 +25,6 @@
     <memberTool name="lazyproject"/>
     <memberTool name="Compiled_CopyToPoints"/>
     <memberTool name="Scope All"/>
-    <memberTool name="AutoCompFusion"/>
   </toolshelf>
 
   <tool name="blast_to_split" label="Blast to Split" icon="OBJ_geo">
@@ -2506,16 +2505,5 @@ opcf $saved_path
 '''
 hou.hscript(h_preamble + h_extra_args + h_cmd)
 ]]></script>
-  </tool>
-
-  <tool name="AutoCompFusion" label="AutoComp Fusion" icon="opdef:/ae::Sop/AccumulationSolver::1?IconSVG">
-    <script scriptType="python"><![CDATA[import os
-import sys
-import time
-import AutoCompFusion
-
-## TODO Convert the nuke version to fusion..
-
-AutoCompFusion.run()]]></script>
   </tool>
 </shelfDocument>
