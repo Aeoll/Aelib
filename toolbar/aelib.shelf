@@ -25,6 +25,7 @@
     <memberTool name="lazyproject"/>
     <memberTool name="Compiled_CopyToPoints"/>
     <memberTool name="Scope All"/>
+    <memberTool name="CompareNetworks"/>
   </toolshelf>
 
   <tool name="blast_to_split" label="Blast to Split" icon="OBJ_geo">
@@ -2505,5 +2506,121 @@ opcf $saved_path
 '''
 hou.hscript(h_preamble + h_extra_args + h_cmd)
 ]]></script>
+  </tool>
+
+  <tool name="CompareNetworks" label="Compare Networks" icon="PLASMA_App">
+    <script scriptType="python"><![CDATA[# https://forums.odforce.net/topic/24410-compare-difference-between-two-networks/
+# or use node.ascode and diff ??
+
+# still not working...
+
+# Houdini Python shelf tool for comparing node networks
+# Prints changes in networks followed by changes in parameters
+
+# Usage: Select first network, shift-select second network, launch tool
+
+# Network comparison functions
+
+def get_node_names(networks):
+    node_lists = ()
+
+    for network in networks:
+        nodes = network.children()
+        node_lists += (set([node.name() for node in nodes]),)
+
+    return node_lists
+
+def print_added_or_removed_nodes(a_or_r):
+    if a_or_r == 'added':
+        nodes = list(network_b.difference(network_a))
+        message = "Nodes added to '{}': \n\n".format(net_b_name)
+    else:
+        nodes = list(network_a.difference(network_b))
+        message = "Nodes removed in '{}': \n\n".format(net_b_name)
+
+    if nodes != []:
+       nodes.sort()
+
+    for node in nodes:
+        message += "    " + node + '\n'
+
+    return message
+
+def print_added_and_removed_nodes():
+    message = print_added_or_removed_nodes(a) + '\n' + \
+              print_added_or_removed_nodes(r)
+
+    return message
+
+# Parameter comparison functions
+
+def get_parms(networks, shared_nodes):
+    parm_dicts = ()
+
+    for network in networks:
+        node_parms = {}
+        nodes = network.children()
+        for node in nodes:
+            if node.name() in shared_nodes:
+                parm_tuple = [(node.name(), node.parmTuples())]
+                node_parms.update(parm_tuple)
+        parm_dicts += (node_parms,)
+
+    return parm_dicts
+
+def compare_parms(parm_dicts, shared_nodes):
+    message = ""
+    a_parms, b_parms = parm_dicts
+
+    for node in shared_nodes:
+        a_parm_vals = []
+        b_parm_vals = []
+        parm_labels = []
+
+        for parm_tuple in a_parms[node]:
+            for parm in parm_tuple:
+                a_parm_vals.append(parm.evalAsString())
+                parm_labels.append(parm.name())
+        for parm_tuple in b_parms[node]:
+            for parm in parm_tuple:
+                b_parm_vals.append(parm.evalAsString())
+
+        if a_parm_vals != b_parm_vals:
+            message += "Changed parameters in node {}:".format(node) + '\n\n'
+            for val in range(0, len(parm_labels) - 1):
+                if a_parm_vals[val] != b_parm_vals[val]:
+                    message += "    Value in '{}' for '{}': {}".format \
+                               (net_a_name, parm_labels[val], a_parm_vals[val]) + \
+                               '\n' + \
+                               "    Value in '{}' for '{}': {}".format \
+                               (net_b_name, parm_labels[val], b_parm_vals[val]) + \
+                               '\n\n'
+
+    return message
+
+# Script start
+
+networks = hou.selectedNodes()
+net_a_name = networks[0].name()
+net_b_name = networks[1].name()
+network_a, network_b = get_node_names(networks)
+
+nodes_added = network_b.issuperset(network_a)
+nodes_removed = network_a.issuperset(network_b)
+shared_nodes = list(network_a.intersection(network_b))
+
+parm_dicts = get_parms(networks, shared_nodes)
+
+a = 'added'
+r = 'removed'
+
+if nodes_added:
+    hou.ui.displayMessage(print_added_or_removed_nodes(a))
+elif nodes_removed:
+    hou.ui.displayMessage(print_added_or_removed_nodes(r))
+else:
+    hou.ui.displayMessage(print_added_and_removed_nodes())
+
+hou.ui.displayMessage(compare_parms(parm_dicts, shared_nodes))]]></script>
   </tool>
 </shelfDocument>
