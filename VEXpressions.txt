@@ -1,0 +1,126 @@
+ attribwrangle/snippet
+    ae_include
+    include <aevex.vfl>
+    include <ease.vfl>
+
+attribwrangle/snippet
+    ae_chramp_clr
+    float r = rand( @ptnum );
+    @Cd = chramp("ramp", r);
+
+attribwrangle/snippet
+    pt/numpt
+	f@t = float(@ptnum)/(@numpt-1);
+
+attribwrangle/snippet
+    ae_NFromP
+    @N = normalize(@P);
+
+attribwrangle/snippet
+    ae_roundfloat
+    float step = 0.5;
+    float val = @P;
+    val = step * rint(val/step);
+
+attribwrangle/snippet
+    ae_visualise_pieces
+    @Cd = rand(opdigits(s@name)+4545);
+
+attribwrangle/snippet
+    ae_PACKED_EXTRACT_AND_APPLY
+    int id = point(0,"ptid", @primnum);
+    matrix3 transform = primintrinsic(1, "transform", id);
+    vector pivot = primintrinsic(1, "pivot", id);
+    vector pos = point(1, "P", id);
+    setprimintrinsic(0, "transform", id, transform, "set");
+    setprimintrinsic(0, "pivot", id, pivot, "set");
+    setpointattrib(0, "P", id, pos, "set");
+
+attribwrangle/snippet
+    Scale bullet objects
+    // set the scale amount
+    float scale_value = 1.0f;
+    if(@Frame%40<20) {
+        scale_value = fit(f@dist_from_center, 0, 1, 1.1, 1);
+    }
+    else {
+        scale_value = fit(f@dist_from_center, 0, 1, 0.9, 1);
+    }
+    vector scale_amount = set(scale_value, scale_value, scale_value);
+
+    // get the current transform from the intrinsics and apply the scale
+    matrix3 m = primintrinsic(0, "transform", @primnum);
+    matrix scalem = maketransform(0, 0, {0,0,0}, {0,0,0}, scale_amount, @P);
+    m *= matrix3(scalem);
+    setprimintrinsic(0, "transform", @primnum, m);
+
+    // delete the id from the points to force the collision hull to regenerate
+    int pts[] = primpoints(0,i@primnum);
+    setpointattrib(0,"id",pts[0],-1);
+
+attribwrangle/snippet
+    ae_intrinsic_setprimintrinsic
+    matrix3 m = ident();
+    float angle = @Time;
+    rotate(m, angle, set(0,1,0));
+    setprimintrinsic(0, "transform", @primnum, m);
+
+attribwrangle/snippet
+    ae_cracktranform_reconstruct_intrinsic
+    // reconstruct transform
+    matrix3 mytransform = primintrinsic(0, "transform", @primnum);
+    vector t = cracktransform(XFORM_TRS, XFORM_XYZ, 0, set(0,0,0), mytransform);
+    vector r = cracktransform(XFORM_TRS, XFORM_XYZ, 1, set(0,0,0), mytransform);
+    vector s = cracktransform(XFORM_TRS, XFORM_XYZ, 2, set(0,0,0), mytransform);
+
+    float ss = xnoise(0.5*@P);
+    matrix newxf = maketransform(XFORM_TRS, XFORM_XYZ, t, r, set(ss,ss,ss));
+    setprimintrinsic(0, "transform", @primnum, matrix3(newxf), "set");
+
+attribwrangle/snippet
+    ae_intrinsic_pointinstancetransform
+    setprimintrinsic(0, "pointinstancetransform", @primnum, 1);
+
+attribwrangle/snippet
+    ae_primuv
+    int prim;
+    vector primuv;
+    //float dist = xyzdist(1, @P, prim, primuv);
+    float dist = uvdist(1, "uv", v@uv, prim, primuv);
+    vector p = primuv(1, "P", prim, primuv);
+
+attribwrangle/snippet
+    ae_rotateprim
+    float a = @Time * @primnum * 20;
+    vector4 q = quaternion(radians(a), set(0,1,0));
+    vector cen = set(0);
+    @P -= cen;
+    @P = qrotate(q, @P);
+    @P += cen;
+
+attribwrangle/snippet
+    ae_nicks_distribution
+    float r = rand(@ptnum*555+888 + chi("sd"));
+    float a = chf("scale")/ (chf("max_limit") + pow( fit01(r, 0, 1) , chf("pow") ));
+
+attribwrangle/snippet
+    ae_multiattrib_modify
+    string str = chs("attribs");
+    string attrs[] = split(str);
+    foreach(string s; attrs){
+        if(haspointattrib(0, s) >= 0){
+            vector v = point(0, s, @ptnum);
+            // do something
+            v = normalize(v)*0.5;
+            setpointattrib(0, s, @ptnum, v);
+        }
+    }
+
+attribwrangle/snippet
+    ae_del_pts_or_prims
+    if(rand(@ptnum + 978.88) < 0.5){
+        removepoint(0, @ptnum);
+    }
+    if(rand(@primnum + 978.88) < 0.5){
+        removeprim(0, @primnum, 1);
+    }
