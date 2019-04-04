@@ -2,6 +2,7 @@
 otls/backup
 gallery/backup
 examples/backup
+.vs 
 
 # backup files
 *_bak*.hip
