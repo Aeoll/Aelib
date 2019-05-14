@@ -26,6 +26,7 @@
     <memberTool name="Compiled_CopyToPoints"/>
     <memberTool name="Scope All"/>
     <memberTool name="CompareNetworks"/>
+    <memberTool name="ToggleCameraLock"/>
   </toolshelf>
 
   <tool name="blast_to_split" label="Blast to Split" icon="OBJ_geo">
@@ -2631,5 +2632,20 @@ else:
     hou.ui.displayMessage(print_added_and_removed_nodes())
 
 hou.ui.displayMessage(compare_parms(parm_dicts, shared_nodes))]]></script>
+  </tool>
+
+  <tool name="ToggleCameraLock" label="Toggle Camera Lock" icon="hicon:/SVGIcons.index?CHANNELS_auto_scope_off.svg">
+    <script scriptType="python"><![CDATA[import soputils
+import toolutils
+
+v = toolutils.sceneViewer()
+geoview = v.curViewport()
+
+locked = geoview.isCameraLockedToView()
+if locked:
+    geoview.lockCameraToView(False)
+else:
+    geoview.lockCameraToView(True)
+    #geoview.useDefaultCamera()]]></script>
   </tool>
 </shelfDocument>
