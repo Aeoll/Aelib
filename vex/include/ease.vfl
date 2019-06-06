@@ -64,8 +64,15 @@ float function_PennerEaseOutQuadratic (float x) {
 float function_PennerEaseInOutQuadratic (float x) {
   string functionName = "Penner's EaseInOut Quadratic";
   // if ((x/=1.f/2) < 1) return 1.f/2*x*x;
-  if ((x/=1.f/2) < 1) return 1.f/2*x*x;
-  return -1.f/2 * ((--x)*(x-2) - 1);
+//   if ((x/=1.f/2) < 1) return 1.f/2*x*x;
+//   return -1.f/2 * ((--x)*(x-2) - 1);
+    float x2 = 2*x;
+    if( x2 < 1.0 ){
+        return 0.5*function_PennerEaseInQuadratic(x2);
+    }
+    else{
+        return 0.5 + 0.5*function_PennerEaseOutQuadratic(x2-1);
+    }
 }
 
 //------------------------------------------------------------------
