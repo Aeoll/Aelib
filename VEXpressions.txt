@@ -36,6 +36,10 @@ attribwrangle/snippet
     setprimintrinsic(0, "pivot", id, pivot, "set");
     setpointattrib(0, "P", id, pos, "set");
 
+    // can just use packedfulltransform too?
+    // matrix M = primintrinsic(1, "packedfulltransform", 0);
+    // @P = @P * M;
+
 attribwrangle/snippet
     Scale bullet objects
     // set the scale amount
