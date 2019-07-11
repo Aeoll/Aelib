@@ -498,7 +498,7 @@ def collectProject(settings):
     # ignore archived/proxy files
     proxy = ['.ifd', '.ass', '.rs']
     # ignore refs with these extensions for refs not in $HIP or $JOB
-    ignoredExt = ['.hda', '.hdalc', '.hdanc', '.otl', '.pc', '.pmap', '.simdata', '.h']       
+    ignoredExt = ['.hda', '.hdalc', '.hdanc', '.otl', '.pc', '.pmap', '.simdata', '.h', '.exe']       
     # filetype whitelist 
     if FILETYPE_FILTER:
         extfilter = ['.' + x for x in FILETYPES.split()]
