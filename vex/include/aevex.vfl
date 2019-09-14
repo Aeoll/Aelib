@@ -35,7 +35,8 @@ vector topolar(vector v)
 vector2 topolar(vector2 v)
 {
     float r = length(v);
-    float th = acos(v.x/r);
+    float th = atan2(v.y, v.x);
+    // float th = acos(v.x/r);
     vector2 a = set(r,th);
     return a;
 }
@@ -58,11 +59,11 @@ vector2 frompolar(vector2 v)
 }
 
 vector toPolar(vector v){
-    return topolar(v); 
+    return topolar(v);
 }
 
 vector toCartesian(vector v){
-    return frompolar(v); 
+    return frompolar(v);
 }
 
 // forward and reverse stereographic projection from 3D-4D
@@ -73,7 +74,7 @@ vector4 inverseStereo4(vector p; float mul) {
 
 vector stereo4(vector4 p; float mul) {
     return set(p.x/(1-p.w),p.y/(1-p.w),p.z/(1-p.w));
-    //return set(p.x/(1+p.w),p.y/(1+p.w),p.z/(1+p.w)); wrong but fun  
+    //return set(p.x/(1+p.w),p.y/(1+p.w),p.z/(1+p.w)); wrong but fun
 }
 
 // from hemesh
@@ -92,7 +93,7 @@ float ptplanedist(vector p,  o,  n) {
     float sd = length2(n);
     vector isec = p + n*(sn / sd);
     return distance(isec, p);
-}       
+}
 
 // ==============================
 // Useful maths functions
@@ -130,8 +131,8 @@ vector aebias(vector t, bias){
 float aegain(float t, gain){
     if(t < 0.5) {
         return bias(t * 2.0,gain)/2.0;
-    }   
-    else { 
+    }
+    else {
         return bias(t * 2.0 - 1.0,1.0 - gain)/2.0 + 0.5;
     }
 }
@@ -139,8 +140,8 @@ float aegain(float t, gain){
 vector aegain(vector t, gain){
     if(t < 0.5) {
         return bias(t * 2.0,gain)/2.0;
-    }   
-    else { 
+    }
+    else {
         return bias(t * 2.0 - 1.0,1.0 - gain)/2.0 + 0.5;
     }
 }
@@ -153,7 +154,7 @@ float sinc(float x) {
   float pix = M_PI*x;
   if (x == 0) {
     return 1.0;
-  } 
+  }
   else {
     return (sin(pix) / pix);
   }
@@ -164,7 +165,7 @@ int randint(int a; int b){
     int sd = random_shash(__DATE__+__TIME__);
     return int(fit01(rand(sd), a, b+1));
 }
- 
+
 int randint(int a; int b; int seed){
     // return int(fit01(rand(seed), a, b+1));
     return int(fit01(rand(seed), 0, b+1-a))+a;
@@ -190,59 +191,59 @@ float randuniform(float a; float b; int seed){
 // Smoothsteps
 //======================
 
-float smoothstep(float x){                
+float smoothstep(float x){
     return x * x * (3 - 2 * x);
 }
 
-float smoothstep(float e0, e1, t){                
+float smoothstep(float e0, e1, t){
     float x = clamp((t - e0) / (e1 - e0), 0.0, 1.0);
     return x * x * (3 - 2 * x);
 }
 
 //double smoothsteps
-float doublesmoothstep(float e0, e1, e2, e3, t){                
+float doublesmoothstep(float e0, e1, e2, e3, t){
     float x = smoothstep(e0, e1, t);
     float y = 1- smoothstep(e2, e3, t);
     return min(x, y);
 }
 
-float dsmooth(float e0, e1, e2, e3, t){                
+float dsmooth(float e0, e1, e2, e3, t){
     return doublesmoothstep(e0, e1, e2, e3, t);
 }
 
 // ends at 0 and 1
-float doublesmoothstep(float e1, e2, t){                
+float doublesmoothstep(float e1, e2, t){
     float x = smoothstep(0, e1, t);
     float y = 1- smoothstep(e2, 1, t);
     return min(x, y);
 }
 
-float dsmooth(float e1, e2, t){                
+float dsmooth(float e1, e2, t){
     return doublesmoothstep(e1, e2, t);
 }
 
 //smoothersteps
-float smootherstep(float x){                
+float smootherstep(float x){
     return x*x*x*(x*(x*6 - 15) + 10);
 }
 
-float smootherstep(float e0, e1, t){                
+float smootherstep(float e0, e1, t){
     float x = clamp((t - e0) / (e1 - e0), 0.0, 1.0);
     return x*x*x*(x*(x*6 - 15) + 10);
 }
 
-vector smoothstep(float e0, e1; vector t){                
+vector smoothstep(float e0, e1; vector t){
     vector x = clamp((t - e0) / (e1 - e0), 0.0, 1.0);
     return x * x * (3 - 2 * x);
 }
 
-vector smootherstep(float e0, e1; vector t){                
+vector smootherstep(float e0, e1; vector t){
     vector x = clamp((t - e0) / (e1 - e0), 0.0, 1.0);
     return x*x*x*(x*(x*6 - 15) + 10);
 }
 
 // normal step function??
-float step(float e0, t){               
+float step(float e0, t){
     return (t<e0)?0:1;
 }
 
@@ -258,7 +259,7 @@ float fitclamp01(float t, clampStart, clampEnd){
     return fit(clamp(t, clampStart, clampEnd), clampStart, clampEnd, 0,1);
 }
 
-// maps a 0->1 edge of the form _/'' to a symmetric triangular pulse (0->h->0) over the edge width _/\_ 
+// maps a 0->1 edge of the form _/'' to a symmetric triangular pulse (0->h->0) over the edge width _/\_
 float ramptotri(float t, h){
     float a = 1-2*abs(0.5 - t);
     return a*h;
