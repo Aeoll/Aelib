@@ -375,6 +375,17 @@ float[] shuffle(float arr[]; float seed) {
    return arr;
 }
 
+// simple rnadom choice from array
+int randchoice(int arr[]; float seed){
+    int ind = randint(0, len(arr)-1, seed);
+    return arr[ind];
+}
+
+float randchoice(float arr[]; float seed){
+    int ind = randint(0, len(arr)-1, seed);
+    return arr[ind];
+}
+
 // fisher yates argshuffle with seed
 // UNFINISHED TODO
 arg[] argshuffle(float arr[]; float seed) {
