@@ -18,19 +18,31 @@ function void interpAttribs(int new; int a; int b; float wt){
     append(wts, 1 - wt);
     append(wts, wt);
     setpointattrib(0, "pts", new, pts, "set");
-    setpointattrib(0, "wts", new, wts, "set");    
+    setpointattrib(0, "wts", new, wts, "set");
     setpointattrib(0, "newpt", new, 1, "set");
 }
 
 function void interpAttribsSet(int new; int pts[]; float wts[]){
     setpointattrib(0, "pts", new, pts, "set");
-    setpointattrib(0, "wts", new, wts, "set");    
+    setpointattrib(0, "wts", new, wts, "set");
     setpointattrib(0, "newpt", new, 1, "set");
 }
 
 function void setPrimAtts(int p; int prim){
     setprimattrib(0, "prid", p, int(prim(0, "prid", prim)), "set");
     setprimattrib(0, "depth", p, int(prim(0, "depth", prim))+1, "set");
+}
+
+function void setPrimAtts(int p; int prim; int cenGroup){
+    setprimattrib(0, "prid", p, int(prim(0, "prid", prim)), "set");
+    setprimattrib(0, "depth", p, int(prim(0, "depth", prim))+1, "set");
+    if(cenGroup){
+        setprimgroup(0, "front", p, 1);
+    }
+}
+
+function void setFront(int prim){
+    setprimgroup(0, "front", prim, 1);
 }
 
 function int[] splitedges(int prim; int splits){
@@ -79,6 +91,17 @@ function int[] splitedgesat(int prim; float splitpos){
     return newpts;
 }
 
+// primitive centroid - point average
+vector primcen(int prim){
+    int pts[] = primpoints(0, prim);
+    vector c = set(0);
+    foreach (int pt; pts){
+        c += point(0, "P", pt);
+    }
+    c /= len(pts);
+    return c;
+}
+
 // ===================================
 // ALGOS
 // ===================================
@@ -93,7 +116,42 @@ void midrot(int prim; float scale){
         setPrimAtts(p, prim);
     }
     int centre = addprim(0, "poly", newpts);
-    setPrimAtts(centre, prim);
+    setPrimAtts(centre, prim, 1);
+}
+
+// TODO BETTER VERSION WOULD USE THE MIDROT WITHOUT CUTTING EDGES AND THEN BLEND INWARDS?
+// creates N*2 + 1 prims
+// connect to the 2 nearest corners? maximum rotate depends on pt count
+// we don't check if the centre prim moves outside the input prim edges
+void midrotinset(int prim; float scale; vector offset){
+    int pts[] = primpoints(0, prim);
+    int n = len(pts);
+    vector cen = primcen(prim);
+    vector N  = prim(0, "N", prim);
+    vector4 q = quaternion(2 * 3.141596 * scale * (1.0/n), N); // rotator
+
+    // create central pts
+    int newpts[];
+    foreach (int pt; pts){
+        vector pos = point(0, "P", pt);
+        vector spine = pos - cen;
+        vector posnew = qrotate(q, spine);
+        posnew += cen;
+        posnew = lerp(posnew, cen, pow(scale,0.5));
+        posnew += offset;
+        int new = addpoint(0, posnew);
+        append(newpts, new);
+    }
+
+    // create new prims
+    for(int i=0; i<n; i++){
+        int p = addprim(0, "poly", pts[(i+0)%n], newpts[i], newpts[((i+1)%n)]);
+        setPrimAtts(p, prim);
+        p = addprim(0, "poly", pts[i], pts[(i+1)%n], newpts[((i+1)%n)]);
+        setPrimAtts(p, prim);
+    }
+    int centre = addprim(0, "poly", newpts);
+    setPrimAtts(centre, prim, 1);
 }
 
 // fan to point
@@ -131,7 +189,13 @@ void cornerbevel(int prim; vector cen; float scale; vector offset){
         setPrimAtts(p, prim);
     }
     int centre = addprim(0, "poly", newpts);
-    setPrimAtts(centre, prim);
+    setPrimAtts(centre, prim, 1);
+}
+
+// use prim centroid
+void cornerbevel(int prim; float scale; vector offset){
+    vector cen = primcen(prim);
+    cornerbevel(prim, cen, scale, offset);
 }
 
 void cornerfull(int prim; vector cen; vector offset){
@@ -149,8 +213,14 @@ void cornerfull(int prim; vector cen; vector offset){
     // create new prims
     for(int i=0; i<n; i++){
         int p = addprim(0, "poly", pts[i], pts[(i+1)%n], cpt);
-        setPrimAtts(p, prim);  
+        setPrimAtts(p, prim);
     }
+}
+
+// use prim centroid
+void cornerfull(int prim; vector offset){
+    vector cen = primcen(prim);
+    cornerfull(prim, cen, offset);
 }
 
 // tweak this to also add the midpts?
@@ -167,7 +237,7 @@ void midbevel(int prim; vector cen; float scale; vector offset){
         a = hedge_srcpoint(0, h);
         posa = point(0, "P", a);
         b = hedge_dstpoint(0, h);
-        posb = point(0, "P", b);        
+        posb = point(0, "P", b);
         vector mid = lerp(posa, posb, 0.5);
         int p1 = addpoint(0, lerp(mid, cen+offset, scale));
         append(newpts, p1);
@@ -178,12 +248,12 @@ void midbevel(int prim; vector cen; float scale; vector offset){
     // create new prims
     for(int i=0; i<n; i++){
         int p1 = addprim(0, "poly", pts[i], pts[(i+1)%n], newpts[i]);
-        setPrimAtts(p1, prim);        
+        setPrimAtts(p1, prim);
         int p2 = addprim(0, "poly", newpts[(i+n-1)%n], pts[i], newpts[i]);
-        setPrimAtts(p2, prim);   
+        setPrimAtts(p2, prim);
     }
     int centre = addprim(0, "poly", newpts);
-    setPrimAtts(centre, prim);   
+    setPrimAtts(centre, prim, 1);
 }
 
 
@@ -196,12 +266,12 @@ void midfull(int prim; vector cen; vector offset){
     for(int i=0; i<n; i++){
         //int p = addprim(0, "poly", pts[i], newpts[i], cpt, newpts[((i+n-1)%n)]);
         //int p1 = addprim(0, "poly", pts[i], newpts[i], cpt);
-        //int p2 = addprim(0, "poly", pts[i], cpt, newpts[((i+n-1)%n)]);        
-        int p2 = addprim(0, "poly", newpts[i], cpt, newpts[((i+n-1)%n)]);           
-        setPrimAtts(p2, prim);         
+        //int p2 = addprim(0, "poly", pts[i], cpt, newpts[((i+n-1)%n)]);
+        int p2 = addprim(0, "poly", newpts[i], cpt, newpts[((i+n-1)%n)]);
+        setPrimAtts(p2, prim);
         int p1 = addprim(0, "poly", pts[i], newpts[((i+n-1)%n)], newpts[i]);
-        setPrimAtts(p1, prim);        
-    }    
+        setPrimAtts(p1, prim);
+    }
 }
 
 // odd - pt index to new mid
@@ -243,7 +313,7 @@ void halve(int prim; float t){
         vector ea = point(0, "P", pts[floor(e)]);
         vector eb = point(0, "P", pts[int(ceil(e))%n]);
         en = addpoint(0, lerp(ea, eb, frac(e)));
-        // interpAttribs(en, int(e), int(ceil(e))%n, frac(e));        
+        // interpAttribs(en, int(e), int(ceil(e))%n, frac(e));
         insert(newpts, addeds + int(ceil(e)), en);
         ind_e = addeds + int(ceil(e));
         addede = 1;
@@ -251,23 +321,23 @@ void halve(int prim; float t){
     else{
         en = pts[int(e)];
         ind_e = int(ceil(e)) + addeds;
-    }    
+    }
 
     // create prims. messy but seems to work...
     int first[] = slice(newpts, ind_s, ind_e+1);
-    int p = addprim(0, "poly", first);    
+    int p = addprim(0, "poly", first);
     setPrimAtts(p, prim);
 
     int second[] = slice(newpts, ind_e, len(newpts)); // 2nd part to end of array
     int extra[] = slice(newpts, 0, ind_s+1); // start of array to first cut
     append( second, extra);
     int p2 = addprim(0, "poly", second);
-    setPrimAtts(p2, prim);       
+    setPrimAtts(p2, prim);
 }
 
 // TODO
 // generalised split. Not really working yet
-void split(int prim; float t1; float t2){
+void primsplit(int prim; float t1; float t2){
     int pts[] = primpoints(0, prim);
     int newpts[] = pts;
     int n = len(pts);
@@ -307,13 +377,13 @@ void split(int prim; float t1; float t2){
     else{
         en = pts[int(e)];
         ind_e = int(ceil(e)) + addeds;
-    }    
+    }
 
     // create prims. messy but seems to work...
     int first[] = slice(newpts, ind_s, ind_e+1);
-    int pr = addprim(0, "poly", first);    
+    int pr = addprim(0, "poly", first);
     int second[] = slice(newpts, ind_e, len(newpts)); // 2nd part to end of array
     int extra[] = slice(newpts, 0, ind_s+1); // start of array to first cut
     append( second, extra);
-    int pr2 = addprim(0, "poly", second);    
+    int pr2 = addprim(0, "poly", second);
 }
