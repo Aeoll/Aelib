@@ -6,3 +6,6 @@ examples/backup
 
 # backup files
 *_bak*.hip
+
+.DS_Store
+.vs
