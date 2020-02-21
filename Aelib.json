@@ -1,0 +1,10 @@
+{
+	"env": [
+        {
+			"AELIB": "PATH/TO/aelib"
+        }
+	],
+	"path": [
+        "$AELIB"
+    ]
+}
