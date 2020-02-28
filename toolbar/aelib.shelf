@@ -27,6 +27,7 @@
     <memberTool name="CompareNetworks"/>
     <memberTool name="ToggleCameraLock"/>
     <memberTool name="Cam_Rigged"/>
+    <memberTool name="Transform"/>
   </toolshelf>
 
   <tool name="blast_to_split" label="Blast to Split" icon="OBJ_geo">
@@ -2812,5 +2813,21 @@ opcf $saved_path
 '''
 hou.hscript(h_preamble + h_extra_args + h_cmd)
 ]]></script>
+  </tool>
+
+  <tool name="Transform" label="Transform" icon="PLASMA_App">
+    <script scriptType="python"><![CDATA[# TODO insert into stream if the node has an ouput
+
+sel = hou.selectedNodes()
+if sel:
+    node = hou.selectedNodes()[0]
+    if node.type().category() == hou.sopNodeTypeCategory():
+        parent = node.parent()
+        wrangle = parent.createNode("transform")
+        wrangle.setNextInput(node)
+        wrangle.moveToGoodPosition(True, False, True, True) 
+        wrangle.setSelected(True, True, False)  
+        wrangle.setDisplayFlag(True)
+        wrangle.setRenderFlag(True)]]></script>
   </tool>
 </shelfDocument>
