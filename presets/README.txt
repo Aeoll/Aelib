@@ -1,1 +1,0 @@
-Default settings for nodes

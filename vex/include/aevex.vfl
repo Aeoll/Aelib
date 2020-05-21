@@ -375,6 +375,20 @@ float[] shuffle(float arr[]; float seed) {
    return arr;
 }
 
+// fisher yates shuffle with seed
+int[] shuffleInt(int arr[]; float seed) {
+    int n = len(arr);
+    int i, j;
+    float tmp;
+    for (i = n - 1; i > 0; i--) {
+        j = int((i+1)*rand(101 + i*seed + 1337*seed));
+        tmp = arr[j];
+        arr[j] = arr[i];
+        arr[i] = tmp;
+   }
+   return arr;
+}
+
 // simple rnadom choice from array
 int randchoice(int arr[]; float seed){
     int ind = randint(0, len(arr)-1, seed);
