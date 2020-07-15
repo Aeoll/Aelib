@@ -1,47 +1,39 @@
  attribwrangle/snippet
-    ae_include
+    [ae] ae_include
     include <aevex.vfl>
-    include <ease.vfl>
+    //include <ease.vfl>
+    // we should include a bunch of function examples here
+    // or at least a list of all definitions
 
 attribwrangle/snippet
-    ae_chramp_clr
-    float r = rand( @ptnum );
-    @Cd = chramp("ramp", r);
-
-attribwrangle/snippet
-    pt/numpt
-	f@t = float(@ptnum)/(@numpt-1);
-
-attribwrangle/snippet
-    ae_NFromP
-    @N = normalize(@P);
-
-attribwrangle/snippet
-    ae_roundfloat
-    float step = 0.5;
-    float val = @P;
-    val = step * rint(val/step);
-
-attribwrangle/snippet
-    ae_visualise_pieces
-    @Cd = rand(opdigits(s@name)+4545);
-
-attribwrangle/snippet
-    ae_PACKED_EXTRACT_AND_APPLY
+    [ae] Extract packed intrinsic transform and reapply
+    // extract
     int id = point(0,"ptid", @primnum);
     matrix3 transform = primintrinsic(1, "transform", id);
     vector pivot = primintrinsic(1, "pivot", id);
     vector pos = point(1, "P", id);
+
+    // reapply
     setprimintrinsic(0, "transform", id, transform, "set");
     setprimintrinsic(0, "pivot", id, pivot, "set");
     setpointattrib(0, "P", id, pos, "set");
-
-    // can just use packedfulltransform too?
-    // matrix M = primintrinsic(1, "packedfulltransform", 0);
-    // @P = @P * M;
+    // can use packedfulltransform too?
 
 attribwrangle/snippet
-    Scale bullet objects
+    [ae] Extract packed intrinsic transform (cracktransform) and reapply
+    // reconstruct transform
+    matrix3 mytransform = primintrinsic(0, "transform", @primnum);
+    vector t = cracktransform(XFORM_TRS, XFORM_XYZ, 0, set(0,0,0), mytransform);
+    vector r = cracktransform(XFORM_TRS, XFORM_XYZ, 1, set(0,0,0), mytransform);
+    vector s = cracktransform(XFORM_TRS, XFORM_XYZ, 2, set(0,0,0), mytransform);
+
+    float ss = xnoise(0.5*@P);
+    matrix newxf = maketransform(XFORM_TRS, XFORM_XYZ, t, r, set(ss,ss,ss));
+    setprimintrinsic(0, "transform", @primnum, matrix3(newxf), "set");
+
+attribwrangle/snippet
+    [ae] Scale Bullet objects
+    // set this for geometry wrangle/pop wrangle and not attrib wrangle?
     // set the scale amount
     float scale_value = 1.0f;
     if(@Frame%40<20) {
@@ -62,31 +54,25 @@ attribwrangle/snippet
     int pts[] = primpoints(0,i@primnum);
     setpointattrib(0,"id",pts[0],-1);
 
-attribwrangle/snippet
-    ae_intrinsic_setprimintrinsic
-    matrix3 m = ident();
-    float angle = @Time;
-    rotate(m, angle, set(0,1,0));
-    setprimintrinsic(0, "transform", @primnum, m);
+    attribwrangle/snippet
+    [ae] Colour Ramp
+    float r = rand( @ptnum );
+    @Cd = vector(chramp("ramp", r));
 
 attribwrangle/snippet
-    ae_cracktranform_reconstruct_intrinsic
-    // reconstruct transform
-    matrix3 mytransform = primintrinsic(0, "transform", @primnum);
-    vector t = cracktransform(XFORM_TRS, XFORM_XYZ, 0, set(0,0,0), mytransform);
-    vector r = cracktransform(XFORM_TRS, XFORM_XYZ, 1, set(0,0,0), mytransform);
-    vector s = cracktransform(XFORM_TRS, XFORM_XYZ, 2, set(0,0,0), mytransform);
-
-    float ss = xnoise(0.5*@P);
-    matrix newxf = maketransform(XFORM_TRS, XFORM_XYZ, t, r, set(ss,ss,ss));
-    setprimintrinsic(0, "transform", @primnum, matrix3(newxf), "set");
-
-attribwrangle/snippet
-    ae_intrinsic_pointinstancetransform
-    setprimintrinsic(0, "pointinstancetransform", @primnum, 1);
+    [ae] Edged Window Threshold
+    // takes an attrib a in 0-1 range, an animation range and edge window size and transitions
+    float a = 0.5*(1+sin(@P));
+    int s = 0;
+    int e = 100;
+    float edge = 0.5;
+    float t = fit(@Frame, s, e, 0 ,1);
+    float t_max = fit(@Frame, s, e, 0, 1+edge);
+    float t_min = fit(@Frame, s, e, -edge, 1);
+    @Cd = fit(a, t_min, t_max, 0, 1);
 
 attribwrangle/snippet
-    ae_primuv
+    [ae] xyzdist-primuv or uvdist-primuv
     int prim;
     vector primuv;
     //float dist = xyzdist(1, @P, prim, primuv);
@@ -94,7 +80,7 @@ attribwrangle/snippet
     vector p = primuv(1, "P", prim, primuv);
 
 attribwrangle/snippet
-    ae_rotateprim
+    [ae] Rotate points about axis
     float a = @Time * @primnum * 20;
     vector4 q = quaternion(radians(a), set(0,1,0));
     vector cen = set(0);
@@ -103,12 +89,20 @@ attribwrangle/snippet
     @P += cen;
 
 attribwrangle/snippet
-    ae_nicks_distribution
+    [ae] pt/numpt
+	f@t = float(@ptnum)/(@numpt-1);
+
+attribwrangle/snippet
+    [ae] Visualise Pieces
+    @Cd = rand(opdigits(s@name)+4545);
+
+attribwrangle/snippet
+    [ae] Nicks distribution (heavy bias towards 1)
     float r = rand(@ptnum*555+888 + chi("sd"));
     float a = chf("scale")/ (chf("max_limit") + pow( fit01(r, 0, 1) , chf("pow") ));
 
 attribwrangle/snippet
-    ae_multiattrib_modify
+    [ae] Modify Multiple Attributes
     string str = chs("attribs");
     string attrs[] = split(str);
     foreach(string s; attrs){
@@ -118,13 +112,4 @@ attribwrangle/snippet
             v = normalize(v)*0.5;
             setpointattrib(0, s, @ptnum, v);
         }
-    }
-
-attribwrangle/snippet
-    ae_del_pts_or_prims
-    if(rand(@ptnum + 978.88) < 0.5){
-        removepoint(0, @ptnum);
-    }
-    if(rand(@primnum + 978.88) < 0.5){
-        removeprim(0, @primnum, 1);
     }
