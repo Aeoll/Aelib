@@ -2563,7 +2563,7 @@ if sel:
     node = hou.selectedNodes()[0]
     if node.type().category() == hou.sopNodeTypeCategory():
         parent = node.parent()
-        wrangle = parent.createNode("transform")
+        wrangle = parent.createNode("xform")
         wrangle.setNextInput(node)
         wrangle.moveToGoodPosition(True, False, True, True) 
         wrangle.setSelected(True, True, False)  
