@@ -28,6 +28,7 @@
     <memberTool name="Compiled_CopyToPoints"/>
     <memberTool name="Scope All"/>
     <memberTool name="CompareNetworks"/>
+    <memberTool name="ForLoop_WithMeta"/>
   </toolshelf>
 
   <tool name="blast_to_split" label="Blast to Split" icon="OBJ_geo">
