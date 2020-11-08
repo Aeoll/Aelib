@@ -2,7 +2,7 @@
 
 A library of Digital Assets, Presets and Scripts for SideFX Houdini.
 
-The /otls folder contains many HDAs (mostly SOP level) which are available from the 'aelib' tab submenu.
+The /otls folder contains many HDAs (mostly SOP level) which are available from the 'aelib' Tab submenu.
 
 Highlights:
 * Curve Tools - Framing, Carving, Offsetting, Duplication, UVs, Rounded corners and more
@@ -14,15 +14,15 @@ Highlights:
 
 Assets which are complete and stable have this icon:
 
-![alt text](otls/aelib_logo_small.png)
+![alt text](icons/aelib_logo_small.png)
 
 'Work in progress' assets have this icon:
 
-![alt text](otls/aelib_logo_wip_small.png)
+![alt text](icons/aelib_logo_wip_small.png)
 
 WIP assets are missing functionality or have known bugs.
 
-## Installation
+## Installation (Houdini 17.5+)
 
 * Download and extract the repository and move it to any location
 * Create a folder called 'packages' in your Houdini home directory (e.g C:/Users/MY_USER/Documents/houdini18.0)
