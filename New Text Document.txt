@@ -1,0 +1,17 @@
+from pathlib import Path
+import sys, os, shutil
+
+def create_hips():
+    pass
+    hda_dir = Path("Z:/_HOUDINI/HDA/aelib/otls")
+    hdas = list(hda_dir.glob("*.hda"))
+
+    template = Path("Z:/_HOUDINI/HDA/aelib/examples/BASE.hip")
+
+    for h in hdas:
+        dst = Path("Z:/_HOUDINI/HDA/aelib/examples")
+        dst = dst.joinpath(h.stem + ".hip")
+        # print(dst)
+        shutil.move(template, dst)
+
+create_hips()
