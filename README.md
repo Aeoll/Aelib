@@ -5,22 +5,12 @@ A library of Digital Assets, Presets and Scripts for SideFX Houdini.
 The /otls folder contains many HDAs (mostly SOP level) which are available from the 'aelib' Tab submenu.
 
 Highlights:
-* Curve Tools - Framing, Carving, Offsetting, Duplication, UVs, Rounded corners and more
+* Curve Tools - Carving, Offsetting, Duplication, UVs, Rounded corners and more
 * Shape generators - Polyhedra, Parametric Curves, Capsule, CubeSphere, Softbox, Spirals
-* A Plethora of utility SOPs - Ramp Manager, Neighbours, Orient, SVG Import/Export, Camera HUD, Containment
+* A Plethora of utility SOPs - Palette Manager, Neighbours, Orient, SVG Import/Export, Camera HUD, Containment
 * Deformers - Sphere Inversion, 4D Transformation, Mandala, Polarise
 * Useful Solvers - Accumulation, Temporal smoothing, Spring Solver, Chaotic attractors
 * Tweaks to standard Houdini SOPs - Match Size, Axis Transform, Clip
-
-Assets which are complete and stable have this icon:
-
-![alt text](icons/aelib_logo_small.png)
-
-'Work in progress' assets have this icon:
-
-![alt text](icons/aelib_logo_wip_small.png)
-
-WIP assets are missing functionality or have known bugs.
 
 ## Installation (Houdini 17.5+)
 
