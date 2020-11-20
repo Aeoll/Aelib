@@ -11,7 +11,6 @@
     <memberTool name="ExtractEach"/>
     <memberTool name="CombineAll"/>
     <memberTool name="MultiReferenceCopy"/>
-    <memberTool name="merge"/>
     <memberTool name="wrangle"/>
     <memberTool name="Transform"/>
     <memberTool name="swap"/>
@@ -19,16 +18,13 @@
     <memberTool name="ae_HipVersionIncrementer"/>
     <memberTool name="openhip"/>
     <memberTool name="CollectProject"/>
-    <memberTool name="Init_RS"/>
     <memberTool name="Clear_RS"/>
     <memberTool name="ToggleCameraLock"/>
-    <memberTool name="focused_rs_cam"/>
     <memberTool name="Cam_Rigged"/>
     <memberTool name="lazyproject"/>
     <memberTool name="Compiled_CopyToPoints"/>
-    <memberTool name="Scope All"/>
-    <memberTool name="CompareNetworks"/>
     <memberTool name="ForLoop_WithMeta"/>
+    <memberTool name="Scope All"/>
   </toolshelf>
 
   <tool name="blast_to_split" label="Blast to Split" icon="OBJ_geo">
@@ -189,29 +185,6 @@ p = sel[0].parent()
 p.copyItems(tup, True, False)]]></script>
   </tool>
 
-  <tool name="merge" label="Merge" icon="hicon:/SVGIcons.index?SOP_merge.svg">
-    <script scriptType="python"><![CDATA[nodes = hou.selectedNodes()
-parent = nodes[0].parent()
-
-merge = parent.createNode("merge")
-
-for node in nodes:
-    if(node.type().category() == hou.sopNodeTypeCategory()):
-        merge.setNextInput(node)
-    elif(node.type().category() == hou.dopNodeTypeCategory()):
-        merge.setNextInput(node)
-    
-merge.moveToGoodPosition(True, False, True, True) 
-
-try:
-    merge.setSelected(True, True, False)   
-    merge.setRenderFlag(True) # turn this off if u want
-    merge.setDisplayFlag(True)
-except:
-    merge.setDisplayFlag(False)
-    pass # dop merge case]]></script>
-  </tool>
-
   <tool name="wrangle" label="Wrangle" icon="hicon:/SVGIcons.index?SOP_attribwrangle.svg">
     <script scriptType="python"><![CDATA[# TODO insert into stream if the node has an ouput
 
@@ -348,15 +321,6 @@ if ipr:
     # ipr.saveFrame(path, snapshot=0, xres=-1, yres=-1, color='C', alpha='C', scope='*', lut='', gamma=1.0, convert=True)]]></script>
   </tool>
 
-  <tool name="Init_RS" label="Init_RS" icon="ROP_Redshift_ROP">
-    <script scriptType="python"><![CDATA[import hou
-import aeutils as ae
-
-ae.init_RS()
-
-]]></script>
-  </tool>
-
   <tool name="CollectProject" label="Collect Project" icon="hicon:/SVGIcons.index?NETVIEW_vex_cached_badge.svg">
     <script scriptType="python"><![CDATA[import hou, os, re, sys
 import shutil
@@ -435,15 +399,7 @@ class collectSettingsDialog(QDialog):
         bbox.rejected.connect(self.reject)
         layout.addWidget(bbox)
                       
-        self.setLayout(layout)      
-                
-        # Style all checkboxes test
-#        cbs = self.findChildren(QCheckBox)        
-#        for w in cbs:
-#                w.setStyleSheet("""QCheckBox::checked {
-#                color: #00FF00;
-#                }""")        
-                
+        self.setLayout(layout)                      
                      
     def getValues(self):
         return [self.ch_a.isChecked(), self.ch_b.isChecked(), self.ch_c.isChecked(), self.ch_d.isChecked(), self.ch_archive.isChecked(), self.ch_filetype.isChecked(), self.ext.text()]   
@@ -471,9 +427,40 @@ def getObjParent(node):
     
 # copying with larger buffer for better performance?    
 def fastCopy(src, dst):
+    #os.system("xcopy /s %s %s" % (src, dst))
     with open(src, 'rb') as fin:
         with open(dst, 'wb') as fout:
             shutil.copyfileobj(fin, fout, 128*1024)
+            
+def RemoveMvsmFileNodes(node):
+    p = None
+    r = None
+    
+    os = node.outputs()
+    if os:
+        try:
+            # extract the file ref from the full path
+            try:
+                fp = node.parm("filepath").eval()
+            except:
+                fp = node.parm("finalfileprev").eval()
+            fp = fp.replace("\\", "/")
+            
+            o = os[0]
+            # create file sop and connect
+            f = node.parent().createNode("file")
+            pos = node.position()
+            f.setPosition(pos)
+            f.shiftPosition(hou.Vector2(1.0, -1.0))
+            f.parm("file").set(fp)
+            o.setFirstInput(f)
+            
+            # reset the parm and ref
+            p = f.parm("file")
+            r = fp
+        except:
+            pass
+    return p, r
     
 def collectProject(settings):
     IGNORE_BYPASSED = settings[0]
@@ -513,7 +500,16 @@ def collectProject(settings):
     for ref in refs:
         parm = ref[0]
         r = ref[1]
+                        
         if parm:
+            # check for mvsm nodes and replace with file nodes
+            if "mvsm" in parm.node().type().name().lower():
+                p, r = RemoveMvsmFileNodes(parm.node())
+                # set the parm and file ref to this new file node if found
+                if p and r:
+                    parm, ref = p, r
+                continue # skip this iteration...
+        
             for i in xrange(10): # hack to get referenced parm since isRef is not implemented?
                 parm = parm.getReferencedParm()                
             bypassed = parm.node().isGenericFlagSet(hou.nodeFlag.Bypass)
@@ -553,14 +549,18 @@ def collectProject(settings):
     numToCopy = len(toCopy) + len(toCopyMisc)
     pbar = QProgressDialog("Copying Files", "Abort", 0, numToCopy);
     pbar.setWindowTitle("Collect Progress")  
-    pbar.setWindowModality(Qt.WindowModal);        
+    #pbar.setWindowModality(Qt.WindowModal);        
     pbar.setStyleSheet(hou.ui.qtStyleSheet())
     l = pbar.layout()
     if l:
         l.setSizeConstraint(QLayout.SetMaximumSize)
     pbar.setValue(0)        
     pbar.forceShow()
-                       
+    
+    print("====================")
+    print("copying HIP/JOB Files")
+    print("====================")
+    
     # ==============================================================
     # Copy Relative files HIP/JOB
     # ==============================================================
@@ -578,6 +578,10 @@ def collectProject(settings):
             parm = ref[0]
             for i in xrange(10): # hack since isRef is not implemented?
                 parm = parm.getReferencedParm() 
+            
+            # change all $JOB refs to $HIP? As settings $JOB to $HIP laters doesnt seem to work?
+            parm.set(re.sub('\$JOB', '\$HIP', r))
+            
             r = re.sub('\$OS', parm.node().name(), r)
             
             p = r[4:]
@@ -608,6 +612,7 @@ def collectProject(settings):
                 try:
                     print "$HIP/$JOB File found:" + str(r)
                     if not os.path.exists(collectedPath):
+                        print(collectedPath)
                         shutil.copy(hou.expandString(r), collectedPath)             
                 except Exception as e:
                     pass
@@ -625,6 +630,10 @@ def collectProject(settings):
     if DEBUG:
         print toCopyMisc
         print collectDir
+        
+    print("====================")        
+    print("copying non-HIP/JOB Files")
+    print("====================")
     
     if COPY_NON_RELATIVE and not DEBUG:
         # Create misc dir
@@ -632,7 +641,7 @@ def collectProject(settings):
         if toCopyMisc:
             collectedMisc = collectDir + '/misc'
             if not os.path.exists(collectedMisc):
-                    os.makedirs(collectedMisc)         
+                os.makedirs(collectedMisc)         
     
         for ref in toCopyMisc:
             r = ref[1]
@@ -690,19 +699,13 @@ def collectProject(settings):
                 try:
                     print "Non-$HIP/$JOB File found:" + str(r)                 
                     if not os.path.exists(collectedMiscTemp):
+                        print(collectedMiscTemp)
                         fastCopy(hou.expandString(r), collectedMiscTemp)
-                        #shutil.copy(hou.expandString(r), collectedMiscTemp)  
-                        # use system / subprocess?
-#                        if sys.platform == 'win32':
-#                            # this pops up a window for some reason..?
-#                            os.system('xcopy "%s" "%s"' % (hou.expandString(r), collectedMiscTemp))
-#                        else:
-#                            shutil.copy(hou.expandString(r), collectedMiscTemp)
                 except Exception as e:
                     pass
                     # print(e)          
     # set JOB to new HIP loc
-    hou.putenv('$JOB', collectDir)
+    hou.putenv('JOB', collectDir)
 
 dialog = collectSettingsDialog()
 dialog.exec_()
@@ -710,8 +713,7 @@ if dialog.result() == 1:
     settings = dialog.getValues()
     collectProject(settings)    
 else:
-    pass
-    # print "Collect Project Cancelled"]]></script>
+    pass]]></script>
   </tool>
 
   <tool name="openhip" label="Open HIP Folder" icon="hicon:/SVGIcons.index?DATATYPES_bundle.svg">
@@ -1048,122 +1050,6 @@ def scopeChildren():
 scopeChildren()]]></script>
   </tool>
 
-  <tool name="CompareNetworks" label="Compare Networks" icon="PLASMA_App">
-    <script scriptType="python"><![CDATA[# https://forums.odforce.net/topic/24410-compare-difference-between-two-networks/
-# or use node.ascode and diff ??
-
-# still not working...
-
-# Houdini Python shelf tool for comparing node networks
-# Prints changes in networks followed by changes in parameters
-
-# Usage: Select first network, shift-select second network, launch tool
-
-# Network comparison functions
-
-def get_node_names(networks):
-    node_lists = ()
-
-    for network in networks:
-        nodes = network.children()
-        node_lists += (set([node.name() for node in nodes]),)
-
-    return node_lists
-
-def print_added_or_removed_nodes(a_or_r):
-    if a_or_r == 'added':
-        nodes = list(network_b.difference(network_a))
-        message = "Nodes added to '{}': \n\n".format(net_b_name)
-    else:
-        nodes = list(network_a.difference(network_b))
-        message = "Nodes removed in '{}': \n\n".format(net_b_name)
-
-    if nodes != []:
-       nodes.sort()
-
-    for node in nodes:
-        message += "    " + node + '\n'
-
-    return message
-
-def print_added_and_removed_nodes():
-    message = print_added_or_removed_nodes(a) + '\n' + \
-              print_added_or_removed_nodes(r)
-
-    return message
-
-# Parameter comparison functions
-
-def get_parms(networks, shared_nodes):
-    parm_dicts = ()
-
-    for network in networks:
-        node_parms = {}
-        nodes = network.children()
-        for node in nodes:
-            if node.name() in shared_nodes:
-                parm_tuple = [(node.name(), node.parmTuples())]
-                node_parms.update(parm_tuple)
-        parm_dicts += (node_parms,)
-
-    return parm_dicts
-
-def compare_parms(parm_dicts, shared_nodes):
-    message = ""
-    a_parms, b_parms = parm_dicts
-
-    for node in shared_nodes:
-        a_parm_vals = []
-        b_parm_vals = []
-        parm_labels = []
-
-        for parm_tuple in a_parms[node]:
-            for parm in parm_tuple:
-                a_parm_vals.append(parm.evalAsString())
-                parm_labels.append(parm.name())
-        for parm_tuple in b_parms[node]:
-            for parm in parm_tuple:
-                b_parm_vals.append(parm.evalAsString())
-
-        if a_parm_vals != b_parm_vals:
-            message += "Changed parameters in node {}:".format(node) + '\n\n'
-            for val in range(0, len(parm_labels) - 1):
-                if a_parm_vals[val] != b_parm_vals[val]:
-                    message += "    Value in '{}' for '{}': {}".format \
-                               (net_a_name, parm_labels[val], a_parm_vals[val]) + \
-                               '\n' + \
-                               "    Value in '{}' for '{}': {}".format \
-                               (net_b_name, parm_labels[val], b_parm_vals[val]) + \
-                               '\n\n'
-
-    return message
-
-# Script start
-
-networks = hou.selectedNodes()
-net_a_name = networks[0].name()
-net_b_name = networks[1].name()
-network_a, network_b = get_node_names(networks)
-
-nodes_added = network_b.issuperset(network_a)
-nodes_removed = network_a.issuperset(network_b)
-shared_nodes = list(network_a.intersection(network_b))
-
-parm_dicts = get_parms(networks, shared_nodes)
-
-a = 'added'
-r = 'removed'
-
-if nodes_added:
-    hou.ui.displayMessage(print_added_or_removed_nodes(a))
-elif nodes_removed:
-    hou.ui.displayMessage(print_added_or_removed_nodes(r))
-else:
-    hou.ui.displayMessage(print_added_and_removed_nodes())
-
-hou.ui.displayMessage(compare_parms(parm_dicts, shared_nodes))]]></script>
-  </tool>
-
   <tool name="ToggleCameraLock" label="Toggle Camera Lock" icon="hicon:/SVGIcons.index?CHANNELS_auto_scope_off.svg">
     <script scriptType="python"><![CDATA[import soputils
 import toolutils
@@ -1179,7 +1065,7 @@ else:
     #geoview.useDefaultCamera()]]></script>
   </tool>
 
-  <tool name="Cam_Rigged" label="Cam_Rigged" icon="MISC_generic">
+  <tool name="Cam_Rigged" label="Cam_Rigged" icon="hicon:/SVGIcons.index?COP2_defocus.svg">
     <toolMenuContext name="network">
       <contextOpType>Object/null</contextOpType>
     </toolMenuContext>
@@ -2556,7 +2442,7 @@ hou.hscript(h_preamble + h_extra_args + h_cmd)
 ]]></script>
   </tool>
 
-  <tool name="Transform" label="Transform" icon="PLASMA_App">
+  <tool name="Transform" label="Transform" icon="hicon:/SVGIcons.index?SOP_xform.svg">
     <script scriptType="python"><![CDATA[# TODO insert into stream if the node has an ouput
 
 sel = hou.selectedNodes()
@@ -2570,267 +2456,5 @@ if sel:
         wrangle.setSelected(True, True, False)  
         wrangle.setDisplayFlag(True)
         wrangle.setRenderFlag(True)]]></script>
-  </tool>
-
-  <tool name="focused_rs_cam" label="Focused RS Cam" icon="hicon:/SVGIcons.index?COP2_defocus.svg">
-    <toolMenuContext name="network">
-      <contextOpType>Object/cam</contextOpType>
-    </toolMenuContext>
-    <script scriptType="python"><![CDATA[
-import sys
-import toolutils
-
-outputitem = None
-inputindex = -1
-inputitem = None
-outputindex = -1
-
-num_args = 1
-h_extra_args = ''
-pane = toolutils.activePane(kwargs)
-if not isinstance(pane, hou.NetworkEditor):
-    pane = hou.ui.paneTabOfType(hou.paneTabType.NetworkEditor)
-    if pane is None:
-       hou.ui.displayMessage(
-               'Cannot create node: cannot find any network pane')
-       sys.exit(0)
-else: # We're creating this tool from the TAB menu inside a network editor
-    pane_node = pane.pwd()
-    if kwargs.has_key("outputnodename") and kwargs.has_key("inputindex"):
-        outputitem = pane_node.item(kwargs["outputnodename"])
-        inputindex = kwargs["inputindex"]
-        h_extra_args += 'set arg4 = "' + kwargs["outputnodename"] + '"\n'
-        h_extra_args += 'set arg5 = "' + str(inputindex) + '"\n'
-        num_args = 6
-    if kwargs.has_key("inputnodename") and kwargs.has_key("outputindex"):
-        inputitem = pane_node.item(kwargs["inputnodename"])
-        outputindex = kwargs["outputindex"]
-        h_extra_args += 'set arg6 = "' + kwargs["inputnodename"] + '"\n'
-        h_extra_args += 'set arg9 = "' + str(outputindex) + '"\n'
-        num_args = 9 
-    if kwargs.has_key("autoplace"):
-        autoplace = kwargs["autoplace"]
-    else:
-        autoplace = False
-    # If shift-clicked we want to auto append to the current
-    # node
-    if kwargs.has_key("shiftclick") and kwargs["shiftclick"]:
-        if inputitem is None:
-            inputitem = pane.currentNode()
-            outputindex = 0
-    if kwargs.has_key("nodepositionx") and             kwargs.has_key("nodepositiony"):
-        try:
-            pos = [ float( kwargs["nodepositionx"] ),
-                    float( kwargs["nodepositiony"] )]
-        except:
-            pos = None
-    else:
-        pos = None
-
-    if not autoplace and not pane.listMode():
-        if pos is not None:
-            pass
-        elif outputitem is None:
-            pos = pane.selectPosition(inputitem, outputindex, None, -1)
-        else:
-            pos = pane.selectPosition(inputitem, outputindex,
-                                      outputitem, inputindex)
-
-    if pos is not None:
-        if kwargs.has_key("node_bbox"):
-            size = kwargs["node_bbox"]
-            pos[0] -= size[0] / 2
-            pos[1] -= size[1] / 2
-        else:
-            pos[0] -= 0.573625
-            pos[1] -= 0.220625
-        h_extra_args += 'set arg2 = "' + str(pos[0]) + '"\n'
-        h_extra_args += 'set arg3 = "' + str(pos[1]) + '"\n'
-h_extra_args += 'set argc = "' + str(num_args) + '"\n'
-            
-pane_node = pane.pwd()
-child_type = pane_node.childTypeCategory().nodeTypes()
-
-if not child_type.has_key('null'):
-   hou.ui.displayMessage(
-           'Cannot create node: incompatible pane network type')
-   sys.exit(0)
-
-# First clear the node selection
-pane_node.setSelected(False, True)
-
-h_path = pane_node.path()
-h_preamble = 'set arg1 = "' + h_path + '"\n'
-h_cmd = r''' 
-if ($argc < 2 || "$arg2" == "") then
-   set arg2 = 0
-endif
-if ($argc < 3 || "$arg3" == "") then
-   set arg3 = 0
-endif
-# Automatically generated script
-# $arg1 - the path to add this node
-# $arg2 - x position of the tile
-# $arg3 - y position of the tile
-# $arg4 - input node to wire to
-# $arg5 - which input to wire to
-# $arg6 - output node to wire to
-# $arg7 - the type of this node
-# $arg8 - the node is an indirect input
-# $arg9 - index of output from $arg6
-
-\set noalias = 1
-set saved_path = `execute("oppwf")`
-opcf $arg1
-
-# Node $_obj_cam_1081 (Object/cam)
-set _obj_cam_1081 = `run("opadd -e -n -v cam cam_1081")`
-oplocate -x `$arg2 + 0` -y `$arg3 + 0` $_obj_cam_1081
-opspareds '    group {         name    "stdswitcher3"         label   "Transform"          parm {             name    "xOrd"             baseparm             label   "Transform Order"             joinnext             export  none         }         parm {             name    "rOrd"             baseparm             label   "Rotate Order"             nolabel             export  none         }         parm {             name    "t"             baseparm             label   "Translate"             export  all         }         parm {             name    "r"             baseparm             label   "Rotate"             export  all         }         parm {             name    "s"             baseparm             label   "Scale"             invisible             export  none         }         parm {             name    "p"             baseparm             label   "Pivot Translate"             export  none         }         parm {             name    "pr"             baseparm             label   "Pivot Rotate"             export  none         }         parm {             name    "scale"             baseparm             label   "Uniform Scale"             invisible             export  none         }         parm {             name    "pre_xform"             baseparm             label   "Modify Pre-Transform"             export  none         }         parm {             name    "keeppos"             baseparm             label   "Keep Position When Parenting"             export  none         }         parm {             name    "childcomp"             baseparm             label   "Child Compensation"             export  none         }         parm {             name    "constraints_on"             baseparm             label   "Enable Constraints"             export  none         }         parm {             name    "constraints_path"             baseparm             label   "Constraints"             export  none         }         parm {             name    "lookatpath"             baseparm             label   "Look At"             invisible             export  none         }         parm {             name    "lookupobjpath"             baseparm             label   "Look Up Object"             invisible             export  none         }         parm {             name    "lookup"             baseparm             label   "Look At Up Vector"             invisible             export  none         }         parm {             name    "pathobjpath"             baseparm             label   "Path Object"             invisible             export  none         }         parm {             name    "roll"             baseparm             label   "Roll"             invisible             export  none         }         parm {             name    "pos"             baseparm             label   "Position"             invisible             export  none         }         parm {             name    "uparmtype"             baseparm             label   "Parameterization"             invisible             export  none         }         parm {             name    "pathorient"             baseparm             label   "Orient Along Path"             invisible             export  none         }         parm {             name    "up"             baseparm             label   "Orient Up Vector"             invisible             export  none         }         parm {             name    "bank"             baseparm             label   "Auto-Bank factor"             invisible             export  none         }     }      group {         name    "stdswitcher3_1"         label   "Render"          parm {             name    "tdisplay"             baseparm             label   "Display"             joinnext             export  none         }         parm {             name    "display"             baseparm             label   "Display"             export  none         }         parm {             name    "use_dcolor"             baseparm             label   "Set Wireframe Color"             export  none         }         parm {             name    "dcolor"             baseparm             label   "Wireframe Color"             export  none         }         parm {             name    "picking"             baseparm             label   "Viewport Selecting Enabled"             export  none         }         parm {             name    "pickscript"             baseparm             label   "Select Script"             export  none         }         parm {             name    "caching"             baseparm             label   "Cache Object Transform"             export  none         }     }      group {         name    "stdswitcher3_2"         label   "View"          parm {             name    "iconscale"             label   "Icon Scale"             type    float             default { "1" }             range   { 0.001 10 }             parmtag { "spare_category" "View" }         }         parm {             name    "res"             label   "Resolution"             type    intvector2             joinnext             size    2             default { "1280" "720" }             range   { -1 1 }             parmtag { "cook_dependent" "1" }             parmtag { "spare_category" "View" }         }         parm {             name    "resMenu"             label   "Choose Resolution"             type    button             nolabel             default { "0" }             menumini {                 [ "echo `pythonexprs(\\"__import__(\'toolutils\').parseDialogScriptMenu(\'FBres\')\\")`" ]             }             parmtag { "script_callback" "opparm . res ( `arg(\\"$script_value\\", 0)` `arg(\\"$script_value\\", 1)` aspect ( `arg(\\"$script_value\\", 2)` )" }             parmtag { "spare_category" "View" }         }         parm {             name    "aspect"             label   "Pixel Aspect Ratio"             type    float             default { "1" }             range   { 0.05 2 }             parmtag { "spare_category" "View" }         }         parm {             name    "projection"             label   "Projection"             type    ordinal             default { "perspective" }             menu {                 "perspective"   "Perspective"                 "ortho"         "Orthographic"                 "sphere"        "Polar (panoramic)"                 "cylinder"      "Cylindrical (panoramic)"                 "lens"          "Lens Shader"             }             parmtag { "spare_category" "View" }         }         parm {             name    "vm_lensshader"             label   "Lens Shader"             type    oppath             default { "" }             disablewhen "{ projection != lens }"             parmtag { "oprelative" "." }             parmtag { "spare_category" "View" }         }         parm {             name    "focal"             label   "Focal Length"             type    float             joinnext             default { "50" }             range   { 1 100 }         }         parm {             name    "focalunits"             label   "Focal Units"             type    string             default { "mm" }             menu {                 "mm"    "millimeters"                 "m"     "meters"                 "nm"    "nanometers"                 "in"    "inches"                 "ft"    "feet"             }         }         parm {             name    "aperture"             label   "Aperture"             type    float             default { "41.4214" }             range   { 1 100 }             parmtag { "spare_category" "View" }         }         parm {             name    "orthowidth"             label   "Ortho Width"             type    float             default { "2" }             disablewhen "{ projection != ortho }"             range   { 0.001 10 }             parmtag { "spare_category" "View" }         }         parm {             name    "near"             label   "Near Clipping"             type    float             default { "0.001" }             range   { 0 10 }             parmtag { "spare_category" "View" }         }         parm {             name    "far"             label   "Far Clipping"             type    float             default { "10000" }             range   { 1 10000 }             parmtag { "spare_category" "View" }         }         parm {             name    "vm_bgenable"             label   "Enable Background Image"             type    toggle             default { "1" }             parmtag { "mantra_class" "image" }             parmtag { "mantra_name" "bgenable" }             parmtag { "spare_category" "View" }         }         parm {             name    "vm_background"             label   "Background Image"             type    image             default { "" }             disablewhen "{ vm_bgenable == 0 }"             parmtag { "filechooser_mode" "read" }             parmtag { "mantra_class" "image" }             parmtag { "mantra_name" "background" }             parmtag { "spare_category" "View" }         }         parm {             name    "win"             label   "Screen Window X/Y"             type    vector2             size    2             default { "0" "0" }             disablewhen "{ winmask != \\"\\" }"             range   { -1 1 }         }         parm {             name    "winsize"             label   "Screen Window Size"             type    vector2             size    2             default { "1" "1" }             disablewhen "{ winmask != \\"\\" }"             range   { 0.01 10 }         }         parm {             name    "winmask"             label   "Screen Window Mask"             type    oplist             default { "" }             disablewhen "{ projection != ortho projection != perspective }"             parmtag { "opexpand" "1" }             parmtag { "opfilter" "!!OBJ/GEOMETRY!!" }             parmtag { "oprelative" "/obj" }         }         parm {             name    "cropl"             label   "Left Crop"             type    float             default { "0" }             disablewhen "{ cropmask != \\"\\" }"             range   { 0 1 }         }         parm {             name    "cropr"             label   "Right Crop"             type    float             default { "1" }             disablewhen "{ cropmask != \\"\\" }"             range   { 0 1 }         }         parm {             name    "cropb"             label   "Bottom Crop"             type    float             default { "0" }             disablewhen "{ cropmask != \\"\\" }"             range   { 0 1 }         }         parm {             name    "cropt"             label   "Top Crop"             type    float             default { "1" }             disablewhen "{ cropmask != \\"\\" }"             range   { 0 1 }         }         parm {             name    "cropmask"             label   "Crop Mask"             type    oplist             default { "" }             disablewhen "{ projection != ortho projection != perspective }"             parmtag { "opexpand" "1" }             parmtag { "opfilter" "!!OBJ/GEOMETRY!!" }             parmtag { "oprelative" "/obj" }         }     }      group {         name    "stdswitcher3_3"         label   "Sampling"          parm {             name    "shutter"             label   "Shutter Time"             type    float             default { "0.5" }             disablewhen "{ allowmotionblur == 0 }"             range   { 0 1 }             parmtag { "spare_category" "Sampling" }         }         parm {             name    "focus"             label   "Focus Distance"             type    float             default { "5" }             disablewhen "{ vm_dof == 0 }"             range   { 0.001 1000 }             parmtag { "mantra_class" "camera" }             parmtag { "mantra_name" "focus" }             parmtag { "spare_category" "Sampling" }         }         parm {             name    "fstop"             label   "F-Stop"             type    log             default { "5.6" }             disablewhen "{ vm_dof == 0 }"             range   { 1.4 22 }             parmtag { "mantra_class" "camera" }             parmtag { "mantra_name" "fstop" }             parmtag { "spare_category" "Sampling" }         }         parm {             name    "vm_bokeh"             label   "Bokeh"             type    string             default { "radial" }             menureplace {                 "radial"    "Radial Bokeh"                 "file"      "Image File Bokeh"                 "box"       "Box Filter Bokeh"                 "null"      "Disable Bokeh"             }             parmtag { "spare_category" "Sampling" }         }         parm {             name    "vm_bokehfile"             label   "Bokeh Image File"             type    image             default { "default.pic" }             disablewhen "{ vm_bokeh != file }"             parmtag { "filechooser_mode" "read" }             parmtag { "mantra_class" "bokeh" }             parmtag { "mantra_name" "-f" }             parmtag { "spare_category" "Sampling" }         }         parm {             name    "vm_bokehrotation"             label   "Bokeh Rotation"             type    float             default { "0" }             disablewhen "{ vm_bokeh != file }"             range   { 0 360 }             parmtag { "mantra_class" "bokeh" }             parmtag { "mantra_name" "-r" }             parmtag { "spare_category" "Sampling" }         }     }      group {         name    "stdswitcher3_4"         label   "Redshift Camera"          group {             name    "RS_camprop_switcher"             label   "Settings"              parm {                 name    "RS_campro_first"                 label   "RS_campro_first"                 type    integer                 invisible                 default { "0" }                 range   { 0 10 }             }             parm {                 name    "RS_campro_label0"                 label   " "                 type    label                 default { "" }             }             parm {                 name    "RS_campro_projection"                 label   "Camera Projection"                 type    ordinal                 default { "0" }                 menu {                     "houdini_camera"    "Houdini Camera Projection"                     "fisheye"           "Fisheye Projection"                     "stereo_spherical"  "Stereo Spherical Projection"                 }             }             parm {                 name    "RS_campro_sep1b"                 label   "RS_campro_sep1b"                 type    separator                 default { "" }             }             parm {                 name    "RS_campro_label1"                 label   "Fisheye Camera Settings"                 type    label                 default { "" }             }             parm {                 name    "RS_campro_fisheyeHScale"                 label   "Horizontal Scale"                 type    float                 default { "1" }                 disablewhen "{ RS_campro_projection != fisheye }"                 range   { 0.1 10 }             }             parm {                 name    "RS_campro_fisheyeVScale"                 label   "Vertical Scale"                 type    float                 default { "1" }                 disablewhen "{ RS_campro_projection != fisheye }"                 range   { 0.1 10 }             }             parm {                 name    "RS_campro_fisheyeFOV"                 label   "FOV Angle"                 type    float                 default { "90" }                 disablewhen "{ RS_campro_projection != fisheye }"                 range   { 1 180 }             }             parm {                 name    "RS_campro_sep2"                 label   "RS_campro_sep2"                 type    separator                 default { "" }             }             parm {                 name    "RS_campro_label2"                 label   "Cylindrical Camera Settings"                 type    label                 default { "" }             }             parm {                 name    "RS_campro_cylHFOV"                 label   "Horizontal FOV"                 type    float                 default { "360" }                 disablewhen "{ projection != cylinder } { RS_campro_projection != houdini_camera }"                 range   { 0! 360! }             }             parm {                 name    "RS_campro_cylVFOV"                 label   "Vertical FOV"                 type    float                 default { "180" }                 disablewhen "{ projection != cylinder } { RS_campro_projection != houdini_camera }"                 range   { 0! 180! }             }             parm {                 name    "RS_campro_cylOrtho"                 label   "Othographic Cylindrical"                 type    toggle                 default { "0" }                 disablewhen "{ projection != cylinder } { RS_campro_projection != houdini_camera }"             }             parm {                 name    "RS_campro_cylOrthoHeight"                 label   "Othographic Height"                 type    float                 default { "100" }                 disablewhen "{ projection != cylinder } { RS_campro_projection != houdini_camera }"                 range   { 1 500 }             }             parm {                 name    "RS_campro_sep3"                 label   "RS_campro_sep3"                 type    separator                 default { "" }             }             parm {                 name    "RS_campro_label3"                 label   "Stereo Cameras Settings"                 type    label                 default { "" }             }             parm {                 name    "RS_campro_stereoMode"                 label   "Render Mode"                 type    ordinal                 default { "0" }                 disablewhen "{ RS_campro_projection != stereo_spherical RS_campro_projection != stereo_cube }"                 menu {                     "side_by_side"  "Side by Side"                     "top_botton"    "Top Botton"                     "left_only"     "Left Only"                     "right_only"    "Right Only"                 }             }             parm {                 name    "RS_campro_stereoSeparation"                 label   "Cameras Separation"                 type    float                 default { "0" }                 disablewhen "{ RS_campro_projection != stereo_spherical RS_campro_projection != stereo_cube }"                 range   { 0 100 }             }             parm {                 name    "RS_campro_stereoFocus"                 label   "Enable Focus"                 type    toggle                 default { "0" }                 disablewhen "{ RS_campro_projection != stereo_spherical RS_campro_projection != stereo_cube }"             }             parm {                 name    "RS_campro_stereoFocusCam"                 label   "Derive Focus Distance From Camera"                 type    toggle                 default { "1" }                 disablewhen "{ RS_campro_projection != stereo_spherical RS_campro_projection != stereo_cube } { RS_campro_stereoFocus == 0 }"             }             parm {                 name    "RS_campro_stereoFocusDist"                 label   "Focus Distance"                 type    float                 default { "1" }                 disablewhen "{ RS_campro_projection != stereo_spherical RS_campro_projection != stereo_cube } { RS_campro_stereoFocus == 0 } { RS_campro_stereoFocusCam == 1 }"                 range   { 0! 100 }             }             parm {                 name    "RS_campro_stereoHFov"                 label   "Horizontal FOV"                 type    float                 default { "360" }                 disablewhen "{ RS_campro_projection != stereo_spherical RS_campro_projection != stereo_cube }"                 range   { 0! 360! }             }             parm {                 name    "RS_campro_stereoVFov"                 label   "Vertical FOV"                 type    float                 default { "180" }                 disablewhen "{ RS_campro_projection != stereo_spherical RS_campro_projection != stereo_cube }"                 range   { 0! 180! }             }             parm {                 name    "RS_campro_sep3b"                 label   "RS_campro_sep3b"                 type    separator                 default { "" }             }             parm {                 name    "RS_campro_mbDisable"                 label   "Disable Motion Blur"                 type    toggle                 default { "0" }             }         }          group {             name    "RS_camprop_switcher_1"             label   "DOF"              parm {                 name    "RS_campro_label4"                 label   " "                 type    label                 default { "" }             }             parm {                 name    "RS_campro_dofEnable"                 label   "Enable DOF"                 type    toggle                 default { "0" }             }             parm {                 name    "RS_campro_sep5"                 label   "RS_campro_sep5"                 type    separator                 default { "" }             }             parm {                 name    "RS_campro_dofUseHoudiniCamera"                 label   "Use Houdini camera focus/fstop"                 type    toggle                 default { "1" }                 disablewhen "{ RS_campro_dofEnable == 0 }"             }             parm {                 name    "RS_campro_dofLegacyTechnique"                 label   "Enable Legacy DOF Technique"                 type    toggle                 default { "0" }                 disablewhen "{ RS_campro_dofEnable == 0 } { RS_campro_dofUseHoudiniCamera == 0 }"             }             parm {                 name    "RS_campro_dofDistance"                 label   "Focus Distance"                 type    log                 default { "10" }                 disablewhen "{ RS_campro_dofEnable == 0 } { RS_campro_dofUseHoudiniCamera == 1 }"                 range   { 0 1000 }             }             parm {                 name    "RS_campro_dofCoC"                 label   "CoC Radius"                 type    log                 default { "1" }                 disablewhen "{ RS_campro_dofEnable == 0 } { RS_campro_dofUseHoudiniCamera == 1 }"                 range   { 0 100 }             }             parm {                 name    "RS_campro_dofPower"                 label   "Power"                 type    float                 default { "1" }                 disablewhen "{ RS_campro_dofEnable == 0 }"                 range   { 0 100 }             }             parm {                 name    "RS_campro_dofApect"                 label   "Aspect"                 type    float                 default { "1" }                 disablewhen "{ RS_campro_dofEnable == 0 }"                 range   { 0 4 }             }             parm {                 name    "RS_campro_sep6"                 label   "RS_campro_sep6"                 type    separator                 default { "" }             }             parm {                 name    "RS_campro_dofBladesCount"                 label   "Shutter Blades Count"                 type    integer                 default { "0" }                 disablewhen "{ RS_campro_dofEnable == 0 }"                 range   { 0 64 }             }             parm {                 name    "RS_campro_dofBladesAngle"                 label   "Shutter Blades Angle"                 type    float                 default { "0" }                 disablewhen "{ RS_campro_dofEnable == 0 }"                 range   { 0 1 }             }             parm {                 name    "RS_campro_sep7"                 label   "RS_campro_sep7"                 type    separator                 default { "" }             }             parm {                 name    "RS_campro_dofBokeh"                 label   "Use Bokeh Image"                 type    toggle                 default { "0" }                 disablewhen "{ RS_campro_dofEnable == 0 }"             }             parm {                 name    "RS_campro_dofBokehNorm"                 label   "Bokeh Image Normalization"                 type    ordinal                 default { "0" }                 disablewhen "{ RS_campro_dofEnable == 0 } { RS_campro_dofBokeh == 0 }"                 menu {                     "1" "None"                     "2" "Unit Intensity"                     "3" "White Color Sum"                 }             }             parm {                 name    "RS_campro_dofBokehImage"                 label   "Bokeh Image"                 type    image                 default { "ImageFile" }                 disablewhen "{ RS_campro_dofEnable == 0 } { RS_campro_dofBokeh == 0 }"             }         }          group {             name    "RS_camprop_switcher_2"             label   "Photographic Exposure"              parm {                 name    "RS_campro_label5"                 label   " "                 type    label                 default { "" }             }             parm {                 name    "RS_campro_PyCamEnable"                 label   "Enable Photographic Exposure"                 type    toggle                 default { "0" }             }             parm {                 name    "RS_campro_sep8"                 label   "RS_campro_sep8"                 type    separator                 default { "" }             }             parm {                 name    "RS_campro_label5b"                 label   "Film Settings"                 type    label                 default { "" }             }             parm {                 name    "RS_campro_PyCamISO"                 label   "Film Speed (ISO)"                 type    float                 default { "100" }                 disablewhen "{ RS_campro_PyCamEnable == 0 }"                 range   { 0 3200 }             }             parm {                 name    "RS_campro_PyCamShutter"                 label   "Shutter Time Ratio"                 type    float                 default { "100" }                 disablewhen "{ RS_campro_PyCamEnable == 0 }"                 range   { 0.01 8000 }             }             parm {                 name    "RS_campro_PyCamfstop"                 label   "f-Stop Number"                 type    float                 default { "8" }                 disablewhen "{ RS_campro_PyCamEnable == 0 }"                 range   { 1 64 }             }             parm {                 name    "RS_campro_PyCamWPoint"                 label   "White Point"                 type    color                 size    3                 default { "1" "1" "1" }                 disablewhen "{ RS_campro_PyCamEnable == 0 }"                 range   { 0 1 }             }             parm {                 name    "RS_campro_PyCamVignetting"                 label   "Vignetting"                 type    float                 default { "1" }                 disablewhen "{ RS_campro_PyCamEnable == 0 }"                 range   { 0 25 }             }             parm {                 name    "RS_campro_sep9"                 label   "RS_campro_sep9"                 type    separator                 default { "" }             }             parm {                 name    "RS_campro_label5c"                 label   "Tone Mapping"                 type    label                 default { "" }             }             parm {                 name    "RS_campro_PyCamOverExp"                 label   "Allowed Overexposure"                 type    float                 default { "0.2" }                 disablewhen "{ RS_campro_PyCamEnable == 0 }"                 range   { 0 1 }             }             parm {                 name    "RS_campro_PyCamAllowDesat"                 label   "Allow Overexposure Desaturation"                 type    toggle                 default { "0" }                 disablewhen "{ RS_campro_PyCamEnable == 0 }"             }             parm {                 name    "RS_campro_PyCamCrushT"                 label   "Black Crush Threshold"                 type    float                 default { "0.25" }                 disablewhen "{ RS_campro_PyCamEnable == 0 }"                 range   { 0 1 }             }             parm {                 name    "RS_campro_PyCamCrushA"                 label   "Black Crush Amount"                 type    float                 default { "0" }                 disablewhen "{ RS_campro_PyCamEnable == 0 }"                 range   { 0 1 }             }             parm {                 name    "RS_campro_PyCamSaturation"                 label   "Saturation"                 type    float                 default { "1" }                 disablewhen "{ RS_campro_PyCamEnable == 0 }"                 range   { 0 2 }             }         }          group {             name    "RS_camprop_switcher_3"             label   "PostFX"              parm {                 name    "RS_campro_label7"                 label   " "                 type    label                 default { "" }             }             parm {                 name    "RS_campro_enablePFX"                 label   "Enable PostFX"                 type    toggle                 default { "1" }             }             parm {                 name    "RS_campro_applyPFX"                 label   "Apply to File Output"                 type    toggle                 default { "1" }             }             groupsimple {                 name    "RS_campro_colorMSwitcher"                 label   "RenderView Color Management"                 invisibletab                  parm {                     name    "RS_campro_colorMMode"                     label   "Display Mode"                     type    string                     invisible                     default { "RS_COLORMANAGEMENTDISPLAYMODE_SRGB" }                 }                 parm {                     name    "RS_campro_colorMGamma"                     label   "Custom Gamma"                     type    float                     invisible                     default { "2.2" }                     range   { 0 10 }                 }                 parm {                     name    "RS_campro_colorMOcioFile"                     label   "OCIO File"                     type    string                     invisible                     default { "" }                 }                 parm {                     name    "RS_campro_colorMOcioView"                     label   "OCIO View"                     type    string                     invisible                     default { "" }                 }                 parm {                     name    "RS_campro_colorMOcioDisplay"                     label   "OCIO Display"                     type    string                     invisible                     default { "" }                 }             }              groupsimple {                 name    "RS_campro_lutSwitcher"                 label   "LUT"                  parm {                     name    "RS_campro_lutEnable"                     label   "Enable LUT"                     type    toggle                     default { "0" }                     disablewhen "{ RS_campro_enablePFX == 0 }"                 }                 parm {                     name    "RS_campro_lutFile"                     label   "LUT File"                     type    file                     default { "" }                     disablewhen "{ RS_campro_lutEnable == 0 } { RS_campro_enablePFX == 0 }"                 }                 parm {                     name    "RS_campro_lutBeforeCM"                     label   "Apply Color Management"                     type    toggle                     default { "0" }                     disablewhen "{ RS_campro_lutEnable == 0 } { RS_campro_enablePFX == 0 }"                 }                 parm {                     name    "RS_campro_lutIsLog"                     label   "Convert to Log Space"                     type    toggle                     default { "0" }                     disablewhen "{ RS_campro_lutEnable == 0 } { RS_campro_enablePFX == 0 }"                 }                 parm {                     name    "RS_campro_lutStrength"                     label   "LUT Strength"                     type    float                     default { "1" }                     disablewhen "{ RS_campro_lutEnable == 0 } { RS_campro_enablePFX == 0 }"                     range   { 0! 1! }                 }             }              groupsimple {                 name    "RS_campro_colorSwitcher"                 label   "Color Controls"                  parm {                     name    "RS_campro_colorEnable"                     label   "Enable Color Controls"                     type    toggle                     default { "0" }                     disablewhen "{ RS_campro_enablePFX == 0 }"                 }                 parm {                     name    "RS_campro_colorExposure"                     label   "Exposure"                     type    float                     default { "0" }                     disablewhen "{ RS_campro_colorEnable == 0 } { RS_campro_enablePFX == 0 }"                     range   { -4 4 }                 }                 parm {                     name    "RS_campro_colorContrast"                     label   "Constrast"                     type    float                     default { "0" }                     disablewhen "{ RS_campro_colorEnable == 0 } { RS_campro_enablePFX == 0 }"                     range   { -1 1 }                 }                 groupcollapsible {                     name    "RS_campro_colorCurvesSwitcher"                     label   "Curves Data"                     disablewhen "{ RS_campro_colorEnable == 0 } { RS_campro_enablePFX == 0 }"                      parm {                         name    "RS_campro_colorCurvesR"                         label   "Red"                         type    string                         default { "2 0.0 0.0 1.0 1.0" }                     }                     parm {                         name    "RS_campro_colorCurvesG"                         label   "Green"                         type    string                         default { "2 0.0 0.0 1.0 1.0" }                     }                     parm {                         name    "RS_campro_colorCurvesB"                         label   "Blue"                         type    string                         default { "2 0.0 0.0 1.0 1.0" }                     }                     parm {                         name    "RS_campro_colorCurvesRGB"                         label   "RGB"                         type    string                         default { "2 0.0 0.0 1.0 1.0" }                     }                 }              }              groupsimple {                 name    "RS_campro_bloomSwitcher"                 label   "Bloom"                  parm {                     name    "RS_campro_bloomEnable"                     label   "Enable Bloom"                     type    toggle                     default { "0" }                     disablewhen "{ RS_campro_enablePFX == 0 }"                 }                 parm {                     name    "RS_campro_bloomThreshold"                     label   "Bloom Threshold"                     type    float                     default { "20" }                     disablewhen "{ RS_campro_bloomEnable == 0 } { RS_campro_enablePFX == 0 }"                     range   { 0! 50! }                 }                 parm {                     name    "RS_campro_bloomSoftness"                     label   "Bloom Softness"                     type    float                     default { "0.2" }                     disablewhen "{ RS_campro_bloomEnable == 0 } { RS_campro_enablePFX == 0 }"                     range   { 0! 1! }                 }                 parm {                     name    "RS_campro_bloomIntensity"                     label   "Bloom Intensity"                     type    float                     default { "1" }                     disablewhen "{ RS_campro_bloomEnable == 0 } { RS_campro_enablePFX == 0 }"                     range   { 0! 4! }                 }                 groupcollapsible {                     name    "RS_campro_bloomTintSwicther"                     label   "Bloom Tint"                     disablewhen "{ RS_campro_bloomEnable == 0 } { RS_campro_enablePFX == 0 }"                      parm {                         name    "RS_campro_bloomTint1"                         label   "Tint Key 1"                         type    color                         size    3                         default { "1" "1" "1" }                         range   { 0 1 }                     }                     parm {                         name    "RS_campro_bloomTint2"                         label   "Tint Key 2"                         type    color                         size    3                         default { "1" "1" "1" }                         range   { 0 1 }                     }                     parm {                         name    "RS_campro_bloomTint3"                         label   "Tint Key 3"                         type    color                         size    3                         default { "1" "1" "1" }                         range   { 0 1 }                     }                     parm {                         name    "RS_campro_bloomTint4"                         label   "Tint Key 4"                         type    color                         size    3                         default { "1" "1" "1" }                         range   { 0 1 }                     }                     parm {                         name    "RS_campro_bloomTint5"                         label   "Tint Key 5"                         type    color                         size    3                         default { "1" "1" "1" }                         range   { 0 1 }                     }                 }              }              groupsimple {                 name    "RS_campro_flareSwitcher"                 label   "Flare"                  parm {                     name    "RS_campro_flareEnable"                     label   "Enable Flares"                     type    toggle                     default { "0" }                     disablewhen "{ RS_campro_enablePFX == 0 }"                 }                 parm {                     name    "RS_campro_flareThreshold"                     label   "Flare Threshold"                     type    float                     default { "20" }                     disablewhen "{ RS_campro_flareEnable == 0 } { RS_campro_enablePFX == 0 }"                     range   { 0! 50! }                 }                 parm {                     name    "RS_campro_flareSoftness"                     label   "Flare Softness"                     type    float                     default { "0" }                     disablewhen "{ RS_campro_flareEnable == 0 } { RS_campro_enablePFX == 0 }"                     range   { 0! 1! }                 }                 parm {                     name    "RS_campro_flareChromatic"                     label   "Flare Chromatic"                     type    float                     default { "4" }                     disablewhen "{ RS_campro_flareEnable == 0 } { RS_campro_enablePFX == 0 }"                     range   { 0! 10! }                 }                 parm {                     name    "RS_campro_flareSize"                     label   "Flare Size"                     type    float                     default { "0.5" }                     disablewhen "{ RS_campro_flareEnable == 0 } { RS_campro_enablePFX == 0 }"                     range   { 0! 1! }                 }                 parm {                     name    "RS_campro_flareHalo"                     label   "Flare Halo"                     type    float                     default { "0.6" }                     disablewhen "{ RS_campro_flareEnable == 0 } { RS_campro_enablePFX == 0 }"                     range   { 0! 1! }                 }                 parm {                     name    "RS_campro_flareIntensity"                     label   "Flare Intensity"                     type    float                     default { "0.2" }                     disablewhen "{ RS_campro_flareEnable == 0 } { RS_campro_enablePFX == 0 }"                     range   { 0! 4! }                 }                 groupcollapsible {                     name    "RS_campro_flareTintSwitcher"                     label   "Flare Tint"                     disablewhen "{ RS_campro_flareEnable == 0 } { RS_campro_enablePFX == 0 }"                      parm {                         name    "RS_campro_flareTint1"                         label   "Tint Key 1"                         type    color                         size    3                         default { "1" "1" "1" }                         range   { 0 1 }                     }                     parm {                         name    "RS_campro_flareTint2"                         label   "Tint Key 2"                         type    color                         size    3                         default { "1" "1" "1" }                         range   { 0 1 }                     }                     parm {                         name    "RS_campro_flareTint3"                         label   "Tint Key 3"                         type    color                         size    3                         default { "1" "1" "1" }                         range   { 0 1 }                     }                     parm {                         name    "RS_campro_flareTint4"                         label   "Tint Key 4"                         type    color                         size    3                         default { "1" "1" "1" }                         range   { 0 1 }                     }                     parm {                         name    "RS_campro_flareTint5"                         label   "Tint Key 5"                         type    color                         size    3                         default { "1" "1" "1" }                         range   { 0 1 }                     }                     parm {                         name    "RS_campro_flareTint6"                         label   "Tint Key 6"                         type    color                         size    3                         default { "1" "1" "1" }                         range   { 0 1 }                     }                 }              }              groupsimple {                 name    "RS_campro_streakSwitcher"                 label   "Streak"                 disablewhen "{ RS_campro_enablePFX == 0 }"                  parm {                     name    "RS_campro_streakEnable"                     label   "Enable Streaks"                     type    toggle                     default { "0" }                 }                 parm {                     name    "RS_campro_streakThreshold"                     label   "Streak Threshold"                     type    float                     default { "20" }                     disablewhen "{ RS_campro_streakEnable == 0 } { RS_campro_enablePFX == 0 }"                     range   { 0! 50! }                 }                 parm {                     name    "RS_campro_streakTail"                     label   "Streak Tail"                     type    float                     default { "0.5" }                     disablewhen "{ RS_campro_streakEnable == 0 } { RS_campro_enablePFX == 0 }"                     range   { 0.25! 1! }                 }                 parm {                     name    "RS_campro_streakSoftness"                     label   "Streak Softness"                     type    float                     default { "0" }                     disablewhen "{ RS_campro_streakEnable == 0 } { RS_campro_enablePFX == 0 }"                     range   { 0! 1! }                 }                 parm {                     name    "RS_campro_streakNumber"                     label   "Streak Number"                     type    integer                     default { "3" }                     disablewhen "{ RS_campro_streakEnable == 0 } { RS_campro_enablePFX == 0 }"                     range   { 1! 8! }                 }                 parm {                     name    "RS_campro_streakAngle"                     label   "Streak Angle"                     type    integer                     default { "20" }                     disablewhen "{ RS_campro_streakEnable == 0 } { RS_campro_enablePFX == 0 }"                     range   { 0! 360! }                 }                 parm {                     name    "RS_campro_streakIntensity"                     label   "Streak Intensity"                     type    float                     default { "1" }                     disablewhen "{ RS_campro_streakEnable == 0 } { RS_campro_enablePFX == 0 }"                     range   { 0! 4! }                 }             }          }          group {             name    "RS_camprop_switcher_4"             label   "Lens Distortion"              parm {                 name    "RS_campro_label6"                 label   " "                 type    label                 default { "" }             }             parm {                 name    "RS_campro_distortionEnable"                 label   "Enable Lens Distortion"                 type    toggle                 default { "0" }             }             parm {                 name    "RS_campro_sep10"                 label   "RS_campro_sep10"                 type    separator                 default { "" }             }             parm {                 name    "RS_campro_distortionImage"                 label   "Distortion Image"                 type    image                 default { "ImageFile" }                 disablewhen "{ RS_campro_distortionEnable == 0 }"             }             parm {                 name    "RS_campro_last"                 label   "RS_campro_last"                 type    integer                 invisible                 default { "0" }                 range   { 0 10 }             }         }      }  ' $_obj_cam_1081
-chblockbegin
-chadd -t 0 0 $_obj_cam_1081 sx
-chkey -t 0 -v 1 -m 0 -a 0 -A 0 -T a  -F 'lock(1)' $_obj_cam_1081/sx
-chadd -t 0 0 $_obj_cam_1081 sy
-chkey -t 0 -v 1 -m 0 -a 0 -A 0 -T a  -F 'lock(1)' $_obj_cam_1081/sy
-chadd -t 0 0 $_obj_cam_1081 sz
-chkey -t 0 -v 1 -m 0 -a 0 -A 0 -T a  -F 'lock(1)' $_obj_cam_1081/sz
-chadd -t 0 0 $_obj_cam_1081 scale
-chkey -t 0 -v 1 -m 0 -a 0 -A 0 -T a  -F 'lock(1)' $_obj_cam_1081/scale
-chadd -t 0 0 $_obj_cam_1081 RS_campro_dofDistance
-chkey -t 0 -v 10 -m 0 -a 0 -A 0 -T a  -F 'vlength(vtorigin(".", "../FOCUSss"))' $_obj_cam_1081/RS_campro_dofDistance
-chblockend
-opset -S on $_obj_cam_1081
-opparm -V 18.0.391 $_obj_cam_1081 stdswitcher3 ( 2 2 2 2 2 ) res ( 1920 1080 ) RS_camprop_switcher ( 1 1 1 1 1 ) RS_campro_dofEnable ( on ) RS_campro_dofUseHoudiniCamera ( off ) RS_campro_dofDistance ( RS_campro_dofDistance )
-chautoscope $_obj_cam_1081 +tx +ty +tz +rx +ry +rz +sx +sy +sz
-opcolor -c 0.61599999666213989 0.87099999189376831 0.76899999380111694 $_obj_cam_1081
-opset -d on -r off -h off -f off -y off -t off -l off -s off -u off -F off -c on -e on -b off -x off $_obj_cam_1081
-opexprlanguage -s hscript $_obj_cam_1081
-opuserdata -n '___Version___' -v '18.0.391' $_obj_cam_1081
-opuserdata -n 'wirestyle' -v 'rounded' $_obj_cam_1081
-opcf $_obj_cam_1081
-
-# Node $_obj_cam_1081_camOrigin (Sop/add)
-set _obj_cam_1081_camOrigin = `run("opadd -e -n -v add camOrigin")`
-oplocate -x `$arg2 + 2` -y `$arg3 + 3` $_obj_cam_1081_camOrigin
-opparm $_obj_cam_1081_camOrigin  points ( 1 ) prims ( 1 )
-opparm -V 18.0.391 $_obj_cam_1081_camOrigin usept0 ( on )
-opset -d off -r off -h off -f off -y off -t off -l off -s off -u off -F on -c on -e on -b off $_obj_cam_1081_camOrigin
-opexprlanguage -s hscript $_obj_cam_1081_camOrigin
-opuserdata -n '___Version___' -v '18.0.391' $_obj_cam_1081_camOrigin
-
-# Node $_obj_cam_1081_file1 (Sop/file)
-set _obj_cam_1081_file1 = `run("opadd -e -n -v file file1")`
-oplocate -x `$arg2 + 0.17999999999999999` -y `$arg3 + 3` $_obj_cam_1081_file1
-chblockbegin
-chadd -t 0 0 $_obj_cam_1081_file1 index
-chkey -t 0 -v 0 -m 0 -a 0 -A 0 -T a  -F '$FF-ch("f1")' $_obj_cam_1081_file1/index
-chblockend
-opparm -V 18.0.391 $_obj_cam_1081_file1 file ( defcam.bgeo )
-opset -d off -r off -h off -f off -y off -t off -l off -s off -u off -F on -c on -e on -b off $_obj_cam_1081_file1
-opexprlanguage -s hscript $_obj_cam_1081_file1
-opuserdata -n '___Version___' -v '18.0.391' $_obj_cam_1081_file1
-
-# Node $_obj_cam_1081_xform1 (Sop/xform)
-set _obj_cam_1081_xform1 = `run("opadd -e -n -v xform xform1")`
-oplocate -x `$arg2 + 0.17999999999999999` -y `$arg3 + 1.5` $_obj_cam_1081_xform1
-chblockbegin
-chadd -t 0 0 $_obj_cam_1081_xform1 scale
-chkey -t 0 -v 0 -m 0 -a 0 -A 0 -T a  -F 'property("../iconscale", 1)' $_obj_cam_1081_xform1/scale
-chblockend
-opset -d on -r on -h off -f off -y off -t off -l off -s off -u off -F on -c on -e on -b off $_obj_cam_1081_xform1
-opexprlanguage -s hscript $_obj_cam_1081_xform1
-opuserdata -n '___Version___' -v '18.0.391' $_obj_cam_1081_xform1
-oporder -e camOrigin file1 xform1 
-opcf ..
-opset -p on $_obj_cam_1081
-opcf $arg1
-
-# Node $_obj_FOCUS (Object/null)
-set _obj_FOCUS = `run("opadd -e -n -v null FOCUS")`
-oplocate -x `$arg2 + 0` -y `$arg3 + -1.1027000069618225` $_obj_FOCUS
-opset -S on $_obj_FOCUS
-opparm -V 18.0.391 $_obj_FOCUS keeppos ( on )
-chautoscope $_obj_FOCUS +tx +ty +tz +rx +ry +rz +sx +sy +sz
-opcolor -c 0.61599999666213989 0.87099999189376831 0.76899999380111694 $_obj_FOCUS
-opset -d on -r off -h off -f off -y on -t off -l off -s off -u off -F off -c on -e on -b off -x off $_obj_FOCUS
-opexprlanguage -s hscript $_obj_FOCUS
-opuserdata -n '___Version___' -v '18.0.391' $_obj_FOCUS
-opuserdata -n '___toolcount___' -v '12' $_obj_FOCUS
-opuserdata -n '___toolid___' -v 'focused_rs_cam' $_obj_FOCUS
-opuserdata -n 'wirestyle' -v 'rounded' $_obj_FOCUS
-opcf $_obj_FOCUS
-
-# Node $_obj_FOCUS_control1 (Sop/control)
-set _obj_FOCUS_control1 = `run("opadd -e -n -v control control1")`
-oplocate -x `$arg2 + 0.5` -y `$arg3 + 1` $_obj_FOCUS_control1
-opparm $_obj_FOCUS_control1  numsnappoints ( 0 )
-chblockbegin
-chadd -t 0 0 $_obj_FOCUS_control1 colorr
-chkey -t 0 -v 0 -m 0 -a 0 -A 0 -T a  -F 'if (ch("../use_dcolor"), ch("../dcolorr"), 0.7)' $_obj_FOCUS_control1/colorr
-chadd -t 0 0 $_obj_FOCUS_control1 colorg
-chkey -t 0 -v 0 -m 0 -a 0 -A 0 -T a  -F 'if (ch("../use_dcolor"), ch("../dcolorg"), 0.7)' $_obj_FOCUS_control1/colorg
-chadd -t 0 0 $_obj_FOCUS_control1 colorb
-chkey -t 0 -v 0 -m 0 -a 0 -A 0 -T a  -F 'if (ch("../use_dcolor"), ch("../dcolorb"), 0.7)' $_obj_FOCUS_control1/colorb
-chadd -t 0 0 $_obj_FOCUS_control1 scale
-chkey -t 0 -v 1 -m 0 -a 0 -A 0 -T a  -F 'ch("../geoscale")' $_obj_FOCUS_control1/scale
-chadd -t 0 0 $_obj_FOCUS_control1 displayicon
-chkey -t 0 -v 0 -m 0 -a 0 -A 0 -T a  -F 'ch("../displayicon")' $_obj_FOCUS_control1/displayicon
-chadd -t 0 0 $_obj_FOCUS_control1 controltype
-chkey -t 0 -v 0 -m 0 -a 0 -A 0 -T a  -F 'ch("../controltype")' $_obj_FOCUS_control1/controltype
-chadd -t 0 0 $_obj_FOCUS_control1 orientation
-chkey -t 0 -v 0 -m 0 -a 0 -A 0 -T a  -F 'ch("../orientation")' $_obj_FOCUS_control1/orientation
-chadd -t 0 0 $_obj_FOCUS_control1 shadedmode
-chkey -t 0 -v 0 -m 0 -a 0 -A 0 -T a  -F 'ch("../shadedmode")' $_obj_FOCUS_control1/shadedmode
-chblockend
-opparm -V 18.0.391 $_obj_FOCUS_control1 color ( colorr colorg colorb ) scale ( scale ) displayicon ( displayicon ) controltype ( controltype ) orientation ( orientation ) shadedmode ( shadedmode )
-opset -d on -r on -h off -f off -y off -t off -l off -s off -u off -F on -c on -e on -b off $_obj_FOCUS_control1
-opexprlanguage -s hscript $_obj_FOCUS_control1
-opuserdata -n '___Version___' -v '18.0.391' $_obj_FOCUS_control1
-opuserdata -n '___toolcount___' -v '12' $_obj_FOCUS_control1
-opuserdata -n '___toolid___' -v 'focused_rs_cam' $_obj_FOCUS_control1
-
-# Node $_obj_FOCUS_point1 (Sop/add)
-set _obj_FOCUS_point1 = `run("opadd -e -n -v add point1")`
-oplocate -x `$arg2 + 2.5` -y `$arg3 + 1` $_obj_FOCUS_point1
-opparm $_obj_FOCUS_point1  points ( 1 ) prims ( 1 )
-opparm -V 18.0.391 $_obj_FOCUS_point1 usept0 ( on )
-opset -d off -r off -h off -f off -y off -t off -l off -s off -u off -F on -c on -e on -b off $_obj_FOCUS_point1
-opexprlanguage -s hscript $_obj_FOCUS_point1
-opuserdata -n '___Version___' -v '18.0.391' $_obj_FOCUS_point1
-opuserdata -n '___toolcount___' -v '12' $_obj_FOCUS_point1
-opuserdata -n '___toolid___' -v 'focused_rs_cam' $_obj_FOCUS_point1
-oporder -e control1 point1 
-opcf ..
-opset -p on $_obj_FOCUS
-
-opcf $arg1
-opcf $_obj_cam_1081
-opwire -n $_obj_cam_1081_file1 -0 $_obj_cam_1081_xform1
-opcf ..
-opcf $arg1
-opcf $_obj_FOCUS
-opcf ..
-
-set oidx = 0
-if ($argc >= 9 && "$arg9" != "") then
-    set oidx = $arg9
-endif
-
-if ($argc >= 5 && "$arg4" != "") then
-    set output = $_obj_FOCUS
-    opwire -n $output -$arg5 $arg4
-endif
-if ($argc >= 6 && "$arg6" != "") then
-    set input = $_obj_cam_1081
-    if ($arg8) then
-        opwire -n -i $arg6 -0 $input
-    else
-        opwire -n -o $oidx $arg6 -0 $input
-    endif
-endif
-opcf $saved_path
-'''
-hou.hscript(h_preamble + h_extra_args + h_cmd)
-]]></script>
   </tool>
 </shelfDocument>
