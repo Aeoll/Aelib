@@ -11,5 +11,5 @@ examples/backup
 .vs
 Thumbs.db
 
-# bacompiled python files
-.pyc
+# compiled python files
+*.pyc
