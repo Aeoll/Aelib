@@ -25,6 +25,7 @@
     <memberTool name="Compiled_CopyToPoints"/>
     <memberTool name="ForLoop_WithMeta"/>
     <memberTool name="Scope All"/>
+    <memberTool name="patr"/>
   </toolshelf>
 
   <tool name="blast_to_split" label="Blast to Split" icon="OBJ_geo">
@@ -735,7 +736,7 @@ else: #linux
 ]]></script>
   </tool>
 
-  <tool name="Clear_RS" label="Clear RS" icon="hicon:/SVGIcons.index?PARTS_delete_x.svg">
+  <tool name="Clear_RS" label="Clear Redshift" icon="hicon:/SVGIcons.index?PARTS_delete_x.svg">
     <script scriptType="python"><![CDATA[import hou
 
 rem = ['Redshift', 'redshift', 'RS', 'rs']
@@ -2456,5 +2457,11 @@ if sel:
         wrangle.setSelected(True, True, False)  
         wrangle.setDisplayFlag(True)
         wrangle.setRenderFlag(True)]]></script>
+  </tool>
+
+  <tool name="patr" label="Support on Patreon" icon="opdef:/ae::Sop/SVG_Import::2?patreon.svg">
+    <script scriptType="python"><![CDATA[import webbrowser
+url = 'https://www.patreon.com/aeoll'
+webbrowser.open(url)]]></script>
   </tool>
 </shelfDocument>
