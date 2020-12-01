@@ -39,7 +39,10 @@ There are plans to add a github wiki to this repository, but it has not yet been
 
 HDAs are periodically removed from the main library due to being superceded by new Aelib nodes or new Houdini nodes. These are kept in /otls/archive
 
-If you would like to support the development of Aelib you can subscribe on [Patreon](https://www.patreon.com/aeoll) Feedback and bug reports are always welcome!
+If you would like to support the development of Aelib you can subscribe on [Patreon](https://www.patreon.com/aeoll).
 
-This library is been heavily inspired by [qLib](https://github.com/qLab/qLib)
+Feedback and bug reports are always welcome!
+
+This library is been heavily inspired by [qLib](https://github.com/qLab/qLib).
+
 qLib is an incredible resource and I would highly recommended installing and exploring it.
