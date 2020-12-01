@@ -76,12 +76,15 @@ struct array2d
     }
 
     // not finished
-    int l(int x; int y){
-        if(x >= cols || y >= rows){
+    int l(int x; int y)
+    {
+        if (x >= cols || y >= rows)
+        {
             return -1;
         }
-        else{
-            return x-1;
+        else
+        {
+            return x - 1;
         }
     }
 

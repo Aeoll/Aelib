@@ -6,10 +6,9 @@
 // ==========================
 // TODO
 // ==========================
-// Make gallery presets for some of these in AttribWrangle?
 // Line-Line Dist
-// ptlined with extras
-// circ from 2/3 pts etc? (Hemesh?)
+// ptlined with extras?
+// circ from 2/3 pts etc?
 
 // ==============================
 // Vector manipulation
@@ -23,8 +22,7 @@ vector2 normalizeto(vector2 v; float l) {
     return l*normalize(v);
 }
 
-vector topolar(vector v)
-{
+vector topolar(vector v){
     float r = length(v);
     float th = acos(v.z/r);
     float phi = atan2(v.y, v.x);
@@ -32,17 +30,14 @@ vector topolar(vector v)
     return a;
 }
 
-vector2 topolar(vector2 v)
-{
+vector2 topolar(vector2 v){
     float r = length(v);
     float th = atan2(v.y, v.x);
-    // float th = acos(v.x/r);
     vector2 a = set(r,th);
     return a;
 }
 
-vector frompolar(vector v)
-{
+vector frompolar(vector v){
     float x=v.x*sin(v.y)*cos(v.z);
     float y=v.x*sin(v.y)*sin(v.z);
     float z=v.x*cos(v.y);
@@ -50,8 +45,7 @@ vector frompolar(vector v)
     return a;
 }
 
-vector2 frompolar(vector2 v)
-{
+vector2 frompolar(vector2 v){
     float x=v.x*cos(v.y);
     float y=v.x*sin(v.y);
     vector2 a = set(x,y);
@@ -74,7 +68,6 @@ vector4 inverseStereo4(vector p; float mul) {
 
 vector stereo4(vector4 p; float mul) {
     return set(p.x/(1-p.w),p.y/(1-p.w),p.z/(1-p.w));
-    //return set(p.x/(1+p.w),p.y/(1+p.w),p.z/(1+p.w)); wrong but fun
 }
 
 // from hemesh
@@ -167,7 +160,6 @@ int randint(int a; int b){
 }
 
 int randint(int a; int b; int seed){
-    // return int(fit01(rand(seed), a, b+1));
     return int(fit01(rand(seed), 0, b+1-a))+a;
 }
 
@@ -358,8 +350,6 @@ function vector[] primpointpositions(int input; int prim){
 // ==============================
 // Arrays
 // ==============================
-
-// TODO array subtraction / exclusive merge?
 
 // fisher yates shuffle with seed
 float[] shuffle(float arr[]; float seed) {

@@ -1,10 +1,10 @@
 // =======================================
 // TODO
 // =======================================
+// More subdiv types
 // non-halve split
-// Full attrib interpolation for newly added points
+// Full attrib interpolation for newly added points/prims?
 // Full Attrib transfer for new prims
-// further algos (star bevel? aligned bevel?)
 
 // ==========================================
 // UTILITY
@@ -264,9 +264,6 @@ void midfull(int prim; vector cen; vector offset){
     int cpt = addpoint(0, cen+offset);
     // create new prims
     for(int i=0; i<n; i++){
-        //int p = addprim(0, "poly", pts[i], newpts[i], cpt, newpts[((i+n-1)%n)]);
-        //int p1 = addprim(0, "poly", pts[i], newpts[i], cpt);
-        //int p2 = addprim(0, "poly", pts[i], cpt, newpts[((i+n-1)%n)]);
         int p2 = addprim(0, "poly", newpts[i], cpt, newpts[((i+n-1)%n)]);
         setPrimAtts(p2, prim);
         int p1 = addprim(0, "poly", pts[i], newpts[((i+n-1)%n)], newpts[i]);
