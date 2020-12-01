@@ -1,5 +1,7 @@
 # Aelib
 
+![aelib](./icons/ae_active.svg)
+
 A library of Digital Assets, Tools and Scripts for SideFX Houdini.
 
 The /otls folder contains approximately 100 SOP level HDAs which are available from the 'aelib' Tab submenu. These are categorised into the following sections:
