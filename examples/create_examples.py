@@ -11,6 +11,7 @@ def create_hips():
     for h in hdas:
         dst = ROOT.joinpath("examples")
         dst = dst.joinpath(h.stem + ".hip")
-        shutil.copy(template, dst)
+        if not os.path.exists(dst):
+            shutil.copy(template, dst)
 
 create_hips()
