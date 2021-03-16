@@ -1,0 +1,21 @@
+body {
+  margin: 14px;
+  padding: 14px;
+}
+
+label {
+  display: inline-block;
+  clear: left;
+  width: 160px;
+  text-align: right;
+}
+
+input {
+    display: inline-block;
+    width: 100px;
+}
+
+.inputwide{
+    display: inline-block;
+    width: 300px;
+}

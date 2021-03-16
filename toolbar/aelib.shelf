@@ -38,7 +38,8 @@
   </tool>
 
   <tool name="ae_HipVersionIncrementer" label="HIP_Increment" icon="SOP_file">
-    <script scriptType="python"><![CDATA[import os, re
+    <script scriptType="python"><![CDATA[from __future__ import print_function
+import os, re
 
 def hipIncrementVersion():
     # SETTINGS ==================
@@ -72,9 +73,9 @@ def hipIncrementVersion():
             versionSections = [hipfile, "0"*autoversionzfill]
             versionType = "_v"
             orighip = orighip.replace(hipfile, hipfile + versionType + "0"*autoversionzfill)
-            print "No version found in hip name - Autoversioning"
+            print("No version found in hip name - Autoversioning")
         else:
-            print "No version found in hip name - Exiting"
+            print("No version found in hip name - Exiting")
             return 1
 
     # regex - match numbers after version splitter. Match until non-numeric value is hit.  
@@ -82,17 +83,17 @@ def hipIncrementVersion():
     if match:
         versionNumber = match.group(0)
     else:
-        print "Problem encountered matching version number - Exiting"
+        print("Problem encountered matching version number - Exiting")
         return 1
     
     # Create new filename
     oldVersion = versionType + versionNumber
     if debug:
-        print "Old version: " + oldVersion
+        print("Old version: " + oldVersion)
     newVersion = versionType + str(int(versionNumber) + 1).zfill(len(versionNumber))
     newhip = orighip.replace(oldVersion, newVersion)
     if debug:    
-        print "New file: " + newhip
+        print("New file: " + newhip)
         
     # ===================================
     # set MVSM_VERSION
@@ -323,7 +324,9 @@ if ipr:
   </tool>
 
   <tool name="CollectProject" label="Collect Project" icon="hicon:/SVGIcons.index?NETVIEW_vex_cached_badge.svg">
-    <script scriptType="python"><![CDATA[import hou, os, re, sys
+    <script scriptType="python"><![CDATA[from __future__ import print_function
+
+import hou, os, re, sys
 import shutil
 import glob
 from PySide2.QtGui import *
@@ -596,7 +599,7 @@ def collectProject(settings):
             if re.search('\$F', r):
                 s = re.sub('\$F\d+', '*', r)
                 s = re.sub('\$F', '*', s)
-                print "$HIP/$JOB Sequence found:" + hou.expandString(s) 
+                print("$HIP/$JOB Sequence found:" + hou.expandString(s))
                 seqFiles = glob.glob(hou.expandString(s))
                 if seqFiles:
                     for f in seqFiles:
@@ -607,11 +610,11 @@ def collectProject(settings):
                         except:
                             pass
                 else:
-                    print "Error Finding File Sequence - No items copied"
+                    print("Error Finding File Sequence - No items copied")
             # Copy Single Files
             else:
                 try:
-                    print "$HIP/$JOB File found:" + str(r)
+                    print("$HIP/$JOB File found:" + str(r))
                     if not os.path.exists(collectedPath):
                         print(collectedPath)
                         shutil.copy(hou.expandString(r), collectedPath)             
@@ -629,8 +632,8 @@ def collectProject(settings):
     # Debugging
     DEBUG = False
     if DEBUG:
-        print toCopyMisc
-        print collectDir
+        print(toCopyMisc)
+        print(collectDir)
         
     print("====================")        
     print("copying non-HIP/JOB Files")
@@ -663,18 +666,18 @@ def collectProject(settings):
             if re.search('\$F', r):                
                 s = re.sub('\$F\d+', '*', r)
                 s = re.sub('\$F', '*', s)
-                print "Non-$HIP/$JOB Sequence found:" + hou.expandString(s) 
+                print("Non-$HIP/$JOB Sequence found:" + hou.expandString(s))
                 seqFiles = glob.glob(hou.expandString(s))
                 if seqFiles:
                     try:
                         l = parm.expression()
-                        print "not adjusting parm value as it contains an expression"                             
+                        print("not adjusting parm value as it contains an expression")                             
                         # set new parm value (with correct unexpanded $F string?)
                     except:
                         try:
                             parm.set('$HIP/misc/'+ os.path.basename(r))                
                         except:
-                            print "unable to change parm: "+parm.path()                   
+                            print("unable to change parm: "+parm.path())                   
                     for f in seqFiles:
                         try:
                             copiedFilePath = collectedMisc + '/' + os.path.basename(f)                    
@@ -683,7 +686,7 @@ def collectProject(settings):
                         except:
                             pass
                 else:
-                    print "Error Finding File Sequence - No items copied"
+                    print("Error Finding File Sequence - No items copied")
             # Copy Single Files
             else:
                 filename = os.path.basename(hou.expandString(r))
@@ -691,14 +694,14 @@ def collectProject(settings):
                 # try to set new parm value
                 try:
                     l = parm.expression()        
-                    print "not adjusting parm value as it contains an expression"                              
+                    print("not adjusting parm value as it contains an expression")                              
                 except:
                     try:
                         parm.set('$HIP/misc/'+filename)
                     except:
-                        print "unable to change parm: "+parm.path()
+                        print("unable to change parm: "+parm.path())
                 try:
-                    print "Non-$HIP/$JOB File found:" + str(r)                 
+                    print("Non-$HIP/$JOB File found:" + str(r))                 
                     if not os.path.exists(collectedMiscTemp):
                         print(collectedMiscTemp)
                         fastCopy(hou.expandString(r), collectedMiscTemp)
@@ -745,8 +748,6 @@ allNodes = hou.node('/').allSubChildren()
 for n in allNodes:
     try:
         type = n.type().name()
-        # print type
-        # if any (x in type for x in rem):
         if any (type.startswith(x) for x in rem):
             try:
                 n.destroy()
@@ -754,14 +755,7 @@ for n in allNodes:
                 # print "couldnt delete node as inside locked parent"
     except: pass
         # print "node has destroyed already by parent deletion"
-
-        
-# Still can't get the RS hscript commands working from python
-#objnodes = hou.node('/obj').children()
-#for o in objnodes:
-#    n.setCurrent(True, True)
-#    rs = hou.hscript('Redshift_removeObjectSpareParameters')
-#    print rs]]></script>
+]]></script>
   </tool>
 
   <tool name="lazyproject" label="Lazy Project Create" icon="hicon:/SVGIcons.index?DATATYPES_bundle.svg">
