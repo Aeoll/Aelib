@@ -514,7 +514,7 @@ def collectProject(settings):
                     parm, ref = p, r
                 continue # skip this iteration...
         
-            for i in xrange(10): # hack to get referenced parm since isRef is not implemented?
+            for i in range(10): # hack to get referenced parm since isRef is not implemented?
                 parm = parm.getReferencedParm()                
             bypassed = parm.node().isGenericFlagSet(hou.nodeFlag.Bypass)
             # Testing for display flag. Could also apply to DOPs but maybe a bad idea..
@@ -580,11 +580,11 @@ def collectProject(settings):
             
             # Check if the the ref is linked to another channel. If so, expand that channel value instead (to fix $OS references?)
             parm = ref[0]
-            for i in xrange(10): # hack since isRef is not implemented?
+            for i in range(10): # hack since isRef is not implemented?
                 parm = parm.getReferencedParm() 
             
             # change all $JOB refs to $HIP? As settings $JOB to $HIP laters doesnt seem to work?
-            parm.set(re.sub('\$JOB', '\$HIP', r))
+            parm.set(re.sub('\$JOB', '$HIP', r))
             
             r = re.sub('\$OS', parm.node().name(), r)
             
@@ -658,7 +658,7 @@ def collectProject(settings):
             
             # Check if the the ref is linked to another channel. If so, expand that channel value instead (to fix $OS references?)
             parm = ref[0]
-            for i in xrange(10): # hack since isRef is not implemented?
+            for i in range(10): # hack since isRef is not implemented?
                 parm = parm.getReferencedParm() 
             r = re.sub('\$OS', parm.node().name(), r)
                          
