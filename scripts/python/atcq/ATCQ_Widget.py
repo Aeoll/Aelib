@@ -124,7 +124,7 @@ class ATCQ_Dialog(QDialog):
         placements = np.cumsum(wts)
 
         ramp.set(nodes)
-        for i in xrange(nodes):
+        for i in range(nodes):
             posParm = self.node.parm(ramp.name() + str(i + 1) + "pos")
             posParm.set(placements[i])
 
