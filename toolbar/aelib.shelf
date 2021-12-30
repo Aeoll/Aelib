@@ -227,6 +227,12 @@ for ind, node in enumerate(sel):
   </tool>
 
   <tool name="swap" label="Swap Nodes" icon="hicon:/SVGIcons.index?BUTTONS_cook.svg">
+    <toolMenuContext name="network">
+      <contextNetType>OBJ</contextNetType>
+      <contextNetType>SOP</contextNetType>
+      <contextNetType>ROP</contextNetType>
+      <contextNetType>DOP</contextNetType>
+    </toolMenuContext>
     <script scriptType="python"><![CDATA[# TODO 
 # swap multiple outputs .. messy
 
