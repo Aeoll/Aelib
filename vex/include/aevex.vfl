@@ -271,6 +271,38 @@ float fitclamp01(float t, clampStart, clampEnd){
     return fit(clamp(t, clampStart, clampEnd), clampStart, clampEnd, 0,1);
 }
 
+float filteredge(float step, edge, val; int type){
+    float e = max(edge, 1e-7); // prevent zero edge
+    float t = step - val;
+    if(type == 0){
+        t = max(t, 0);
+    }
+    else if(type == 1){
+        t = max(-1*t, 0);
+    }
+    else{
+        t = abs(t);
+    }
+    float a = fit(clamp(t, 0, e), 0, e, 0, 1); // linear
+    return a;
+}
+
+float filteredge01(float step, edge, val; int type){ // accounts for the edge in the remapping TODO
+    float e = max(edge, 1e-7); // prevent zero edge
+    float t = (step + step*edge) - val;
+    if(type == 0){
+        t = max(t, 0);
+    }
+    else if(type == 1){
+        t = max(-1*t, 0);
+    }
+    else{
+        t = abs(t);
+    }
+    float a = fit(clamp(t, 0, e), 0, e, 0, 1); // linear
+    return a;
+}
+
 // maps a 0->1 edge of the form _/'' to a symmetric triangular pulse (0->h->0) over the edge width _/\_
 float ramptotri(float t, h){
     float a = 1-2*abs(0.5 - t);
