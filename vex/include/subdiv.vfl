@@ -145,7 +145,8 @@ void midrotinset(int prim; float scale; vector offset){
 
     // create new prims
     for(int i=0; i<n; i++){
-        int p = addprim(0, "poly", pts[(i+0)%n], newpts[i], newpts[((i+1)%n)]);
+        int p = addprim(0, "poly", pts[(i+0)%n], newpts[((i+1)%n)], newpts[i]);
+        // int p = addprim(0, "poly", pts[(i+0)%n], newpts[i], newpts[((i+1)%n)]);
         setPrimAtts(p, prim);
         p = addprim(0, "poly", pts[i], pts[(i+1)%n], newpts[((i+1)%n)]);
         setPrimAtts(p, prim);
