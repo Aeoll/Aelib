@@ -54,11 +54,6 @@ attribwrangle/snippet
     int pts[] = primpoints(0,i@primnum);
     setpointattrib(0,"id",pts[0],-1);
 
-    attribwrangle/snippet
-    [ae] Colour Ramp
-    float r = rand( @ptnum );
-    @Cd = vector(chramp("ramp", r));
-
 attribwrangle/snippet
     [ae] Edged Window Threshold
     // takes an attrib a in 0-1 range, an animation range and edge window size and transitions
@@ -89,15 +84,7 @@ attribwrangle/snippet
     @P += cen;
 
 attribwrangle/snippet
-    [ae] pt/numpt
-	f@t = float(@ptnum)/(@numpt-1);
-
-attribwrangle/snippet
-    [ae] Visualise Pieces
-    @Cd = rand(opdigits(s@name)+4545);
-
-attribwrangle/snippet
-    [ae] Nicks distribution (heavy bias towards 1)
+    [ae] Nicks distribution
     float r = rand(@ptnum*555+888 + chi("sd"));
     float a = chf("scale")/ (chf("max_limit") + pow( fit01(r, 0, 1) , chf("pow") ));
 
@@ -113,3 +100,17 @@ attribwrangle/snippet
             setpointattrib(0, s, @ptnum, v);
         }
     }
+
+attribwrangle/snippet
+    [ae][kinefx] Procedural Rotation
+    vector axis = set(1,0,0);
+    float angle = chf("amp")*pow(sin(@Time*chf("freq")), 3);
+    // rotate!
+    prerotate(4@localtransform, angle, axis);
+
+rigattribwrangle/snippet
+    [ae][kinefx] Procedural Rotation 2
+    vector axis = set(1,0,0);
+    float angle = chf("amp")*pow(sin(@Time*chf("freq")), 3);
+    // rotate!
+    prerotate(4@localtransform, angle, axis);
