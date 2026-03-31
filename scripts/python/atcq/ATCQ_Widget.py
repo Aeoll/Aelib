@@ -19,11 +19,11 @@ import json
 
 import numpy as np
 
-from PySide2.QtGui import *
-from PySide2.QtWidgets import *
-from PySide2 import QtCore
-from PySide2.QtWebEngineWidgets import QWebEngineView
-from PySide2.QtWebChannel import QWebChannel
+from PySide6.QtGui import *
+from PySide6.QtWidgets import *
+from PySide6 import QtCore
+from PySide6.QtWebEngineWidgets import QWebEngineView
+from PySide6.QtWebChannel import QWebChannel
 
 # Can we use the houdini embedded browser at all? https://www.sidefx.com/docs/houdini/hom/browserpython.html
 
