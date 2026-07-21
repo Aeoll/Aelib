@@ -102,6 +102,12 @@ attribwrangle/snippet
     }
 
 attribwrangle/snippet
+    [ae] Volume Sample + Gradient
+    float f = volumesample(1, 0, @P);
+    vector gr = volumegradient(1, 0, @P);
+    vector v = f * normalize(gr);    
+
+attribwrangle/snippet
     [ae][kinefx] Procedural Rotation
     vector axis = set(1,0,0);
     float angle = chf("amp")*pow(sin(@Time*chf("freq")), 3);
