@@ -118,7 +118,7 @@ def parse_path(pathdef, current_pos=0j):
             # Smooth curve. First control point is the "reflection" of
             # the second control point in the previous path.
 
-            if last_command not in "CS":
+            if last_command not in ("C", "S"):
                 # If there is no previous command or if the previous command
                 # was not an C, c, S or s, assume the first control point is
                 # coincident with the current point.
@@ -154,7 +154,7 @@ def parse_path(pathdef, current_pos=0j):
             # Smooth curve. Control point is the "reflection" of
             # the second control point in the previous path.
 
-            if last_command not in "QT":
+            if last_command not in ("Q", "T"):
                 # If there is no previous command or if the previous command
                 # was not an Q, q, T or t, assume the first control point is
                 # coincident with the current point.
