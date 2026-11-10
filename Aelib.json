@@ -1,7 +1,7 @@
 {
 	"env": [
         {
-			"AELIB": "PATH/TO/aelib"
+			"AELIB": "F:/Yandex.Disk/aaa_HOUSTAFF/Aelib-master"
         }
 	],
 	"path": [
